@@ -1,0 +1,158 @@
+﻿CONTRATO DE LICENCIA DE SOFTWARE DE CANON
+
+IMPORTANTE
+
+El presente documento es un contrato legal (el "Contrato") entre usted y Canon Inc. ("Canon") 
+que rige el uso de los programas de software de Canon, incluidos sus correspondientes 
+manuales o cualquier otro material impreso sobre dichos programas (el "SOFTWARE") para 
+determinados equipos de copia, impresoras y periféricos multifuncionales de Canon (los 
+"Productos").
+
+LEA DETENIDAMENTE ESTE DOCUMENTO Y ACEPTE TODOS LOS DERECHOS Y 
+RESTRICCIONES DESCRITOS EN EL PRESENTE CONTRATO ANTES DE INSTALAR 
+EL SOFTWARE.  AL HACER CLIC EN EL BOTÓN QUE INDICA QUE ACEPTA EL 
+PRESENTE CONTRATO TAL COMO SE INDICA A CONTINUACIÓN O AL INSTALAR 
+EL SOFTWARE, ACEPTA TAMBIÉN VINCULARSE A SUS TÉRMINOS Y 
+CONDICIONES.  SI USTED NO ACEPTA LOS TÉRMINOS SIGUIENTES NI LAS 
+CONDICIONES DEL PRESENTE CONTRATO, NO UTILICE ESTE SOFTWARE.  
+
+
+1.  CONCESIÓN DE LA LICENCIA
+Canon le otorga una licencia personal, limitada y no exclusiva para utilizar (el término "utilizar" 
+según su significado en el presente documento hace referencia a guardar, cargar, instalar, 
+acceder, ejecutar o visualizar en pantalla) el SOFTWARE únicamente junto con los Productos y 
+sólo en ordenadores conectados directamente o a través de una red con los Productos (el 
+"Ordenador asignado"). 
+Puede permitir a los usuarios de otros ordenadores conectados al Ordenador asignado que 
+utilicen el SOFTWARE, siempre que dichos usuarios acepten los términos de este Contrato, así 
+como las restricciones y obligaciones a las que usted está sujeto en virtud del presente 
+documento.
+
+Solo podrá realizar una copia del SOFTWARE para utilizarla como copia de seguridad.
+
+2.  RESTRICCIONES
+No podrá utilizar el SOFTWARE de ningún modo salvo lo establecido o permitido 
+expresamente en el presente documento, asimismo, no podrá ceder, subcontratar, vender, 
+alquilar, arrendar, prestar, traspasar ni transferir el SOFTWARE a terceras partes. No podrá 
+alterar, traducir ni convertir el SOFTWARE a otro lenguaje de programación, ni modificarlo, 
+desmontarlo, descompilarlo ni realizar ingeniería inversa en él y no deberá permitir que 
+terceras partes ejecuten tales procesos.
+
+3.  AVISO DE COPYRIGHT
+No podrá modificar, suprimir ni eliminar ninguno de los avisos de copyright de Canon o sus 
+licenciatarios que este SOFTWARE contenga, así como cualquier copia que de él se haga.
+
+4.  PROPIEDAD
+Canon y sus licenciatarios poseen pleno dominio sobre el título, la posesión y los derechos de 
+propiedad intelectual relacionados con el SOFTWARE.  A excepción de lo expuesto 
+expresamente en el presente documento, Canon no otorga ni concede por medio de este 
+contrato derechos ni autorización, ya sea de forma implícita o explícita, relacionados con la 
+propiedad intelectual de Canon y sus licenciatarios.
+
+5.  CONTROL DE EXPORTACIÓN
+Acepta cumplir con todas las leyes de exportación, así como con las restricciones y regulaciones 
+del país implicado, y no exportar o reexportar, directa o indirectamente, el SOFTWARE 
+incumpliendo dichas leyes, restricciones y regulaciones, o si no cuenta con las aprobaciones 
+necesarias.
+
+6.  ASISTENCIA Y ACTUALIZACIONES
+CANON, SUS SUBSIDIARIAS O FILIALES, DISTRIBUIDORES, PROVEEDORES O 
+LICENCIATARIOS NO SE HACEN RESPONSABLES DEL MANTENIMIENTO NI DE 
+LA ASISTENCIA PARA UTILIZAR EL SOFTWARE, NI DEL SUMINISTRO DE 
+NINGÚN TIPO DE ACTUALIZACIÓN, CORRECCIÓN O SOPORTE PARA EL 
+SOFTWARE QUE SE INDICA EN EL PRESENTE DOCUMENTO.
+
+7.  DESCARGO DE RESPONSABILIDAD Y GARANTÍAS
+[SIN GARANTÍA]  EL SOFTWARE SE SUMINISTRA "TAL CUAL", SIN GARANTÍA DE 
+NINGÚN TIPO, YA SEA IMPLÍCITA O EXPLÍCITA, INCLUIDAS, ENTRE OTRAS, LAS 
+GARANTÍAS IMPLÍCITAS DE COMERCIALIZACIÓN E IDONEIDAD PARA UN 
+PROPÓSITO EN CONCRETO.  TODO EL RIESGO EN LO RELATIVO A LA CALIDAD Y 
+EL RENDIMIENTO DEL SOFTWARE CORRE A SU CARGO.  SI EL SOFTWARE 
+RESULTARA DEFECTUOSO, USTED ASUMIRÁ TODOS LOS COSTES 
+RELACIONADOS CON LOS SERVICIOS, REPARACIONES O ARREGLOS 
+NECESARIOS.  DETERMINADOS ESTADOS Y JURISDICCIONES LEGALES NO 
+PERMITEN EXCLUIR LAS GARANTÍAS IMPLÍCITAS; EN ESTOS CASOS, LA 
+EXCLUSIÓN ANTES DESCRITA NO LE AFECTARÁ.  
+ESTA GARANTÍA LE OTORGA DERECHOS LEGALES ESPECÍFICOS. TAMBIÉN 
+DISPONDRÁ DE OTROS DERECHOS EN FUNCIÓN DEL ESTADO O JURISDICCIÓN 
+AL QUE PERTENEZCA.
+
+CANON, SUS SUBSIDIARIAS O FILIALES, DISTRIBUIDORES, PROVEEDORES O 
+LICENCIATARIOS NO GARANTIZAN QUE LAS FUNCIONES DE ESTE SOFTWARE 
+VAYAN A SATISFACER SUS NECESIDADES, NI QUE EL SOFTWARE FUNCIONE DE 
+MANERA ININTERRUMPIDA Y SIN NINGÚN TIPO DE ERROR.
+
+[EXENCIÓN DE RESPONSABILIDAD POR DAÑOS]  CANON, SUS SUBSIDIARIAS O 
+FILIALES, DISTRIBUIDORES, PROVEEDORES O LICENCIATARIOS NO SE HARÁN 
+RESPONSABLES BAJO NINGÚN CONCEPTO DE NINGÚN TIPO DE DAÑO 
+(INCLUIDOS, ENTRE OTROS, LA PÉRDIDA DE BENEFICIOS EMPRESARIALES, LA 
+PÉRDIDA DE INFORMACIÓN COMERCIAL, LA PÉRDIDA DE NEGOCIO POR 
+INTERRUPCIÓN DE LA ACTIVIDAD Y OTROS DAÑOS COMPENSATORIOS, 
+ACCIDENTALES O CONSECUENTES) DERIVADO DEL SOFTWARE, DE SU USO O DE 
+LA IMPOSIBILIDAD DE UTILIZAR DICHO SOFTWARE, INCLUSO SI CANON, SUS 
+SUBSIDIARIAS O FILIALES, DISTRIBUIDORES, PROVEEDORES O 
+LICENCIATARIOS HUBIERAN RECIBIDO PREVIO AVISO DE LA POSIBILIDAD DE 
+QUE DICHOS DAÑOS PUDIERAN PRODUCIRSE.  DETERMINADOS ESTADOS O 
+JURISDICCIONES LEGALES NO PERMITEN LA LIMITACIÓN O EXENCIÓN DE 
+RESPONSABILIDAD POR DAÑOS ACCIDENTALES O CONSECUENTES, NI POR 
+LESIONES PERSONALES O CASOS DE MUERTE QUE SE HAYAN PRODUCIDO POR 
+NEGLIGENCIA DEL VENDEDOR; EN ESTOS CASOS, LA EXCLUSIÓN ANTES 
+DESCRITA NO LE AFECTARÁ.
+
+[EXENCIÓN DE RESPONSABILIDAD]  HASTA EL MÁXIMO ALCANCE PERMITIDO 
+POR LA LEY VIGENTE, USTED EXONERA POR EL PRESENTE DOCUMENTO A 
+CANON, SUS SUBSIDIARIAS Y FILIALES, DISTRIBUIDORES, PROVEEDORES Y 
+LICENCIATARIOS DE TODA RESPONSABILIDAD DERIVADA O RELACIONADA 
+CON LAS RECLAMACIONES QUE SURJAN CON OBJETO DEL SOFTWARE Y SU USO.
+
+8.  PERÍODO DE VIGENCIA
+Este Contrato entra en vigor a partir de la aceptación del presente documento al hacer clic en 
+el botón que indica su aceptación tal como se indica a continuación o al 	instalar el 
+SOFTWARE, y permanecerá vigente hasta su rescisión.  Este Contrato dejará de ser válido en el 
+momento en que destruya el SOFTWARE y cualquier copia que haya realizado de él. 
+Este Contrato dejará de ser válido también si incumple alguno de los términos y condiciones 
+del presente documento.  Cuando se produzca la expiración del presente Contrato, deberá 
+destruir el SOFTWARE y todas sus copias inmediatamente para proteger los derechos legales 
+de Canon, que también ejercerá sus derechos legales respectivos.  Sin perjuicio de lo antes 
+expuesto, los apartados 4, y del 7 al 11, permanecerán vigentes ante cualquier finalización del 
+presente Contrato.
+
+9.  CLÁUSULA DE RESTRICCIÓN DE DERECHOS APLICABLE AL GOBIERNO DE 
+EE. UU.
+A "US Government End User" shall mean any agency or entity of the government of the United 
+States.  If you are a US Government End User, the following shall apply: The SOFTWARE is a 
+"commercial item," as that term is defined at 48 C.F.R. 2.101 (October 1995), consisting of 
+"commercial computer software" and "commercial computer software documentation," as 
+such terms are used in 48 C.F.R. 12.212 (September 1995).  Consistent with 48 C.F.R. 12.212 
+and 48 C.F.R. 227.7202-1 through 227.7202-4 (June 1995), all U.S. Government End Users 
+shall acquire the SOFTWARE with only those rights set forth herein.  The manufacturer is 
+Canon Inc./30-2, Shimomaruko 3-chome, Ohta-ku, Tokyo 146-8501, Japan.
+
+10.  DIVISIBILIDAD
+En el caso de que cualquier juzgado o tribunal de una jurisdicción competente declarase ilegal 
+alguno de los apartados anteriores, dicho apartado se anulará y dejará de ser válido de 
+acuerdo con la decisión tomada por dicho juzgado o tribunal y el resto de disposiciones del 
+presente documento permanecerá en vigor y con pleno efecto.
+
+11.  RECONOCIMIENTO
+AL HACER CLIC EN EL BOTÓN QUE INDICA SU ACEPTACIÓN TAL COMO SE 
+INDICA A CONTINUACIÓN O AL INSTALAR EL SOFTWARE, USTED DECLARA 
+HABER LEÍDO Y COMPRENDIDO EL PRESENTE CONTRATO Y ACEPTA 
+VINCULARSE A SUS TÉRMINOS Y CONDICIONES.  TAMBIÉN ACEPTA QUE ESTE 
+CONTRATO ES EL ACUERDO COMPLETO Y EXCLUSIVO ENTRE USTED Y CANON EN 
+LO QUE CONCIERNE AL OBJETO DEL PRESENTE DOCUMENTO, REVOCANDO 
+CUALQUIER PROPUESTA O CONTRATO ANTERIOR, YA SEA VERBAL O POR 
+ESCRITO, ASÍ COMO CUALQUIER OTRA COMUNICACIÓN ENTRE USTED Y CANON 
+EN LO QUE CONCIERNE AL OBJETO DEL PRESENTE DOCUMENTO.  PARA QUE 
+PUEDA ENTRAR EN VIGOR UNA ENMIENDA AL PRESENTE CONTRATO, DEBERÁ 
+TENER EL CONSENTIMIENTO Y LA FIRMA DE UN REPRESENTANTE LEGAL 
+AUTORIZADO DE CANON.
+
+
+Si tiene alguna duda con respecto al presente Contrato o si desea ponerse en contacto con 
+Canon por cualquier otro motivo, escriba a la subsidiaria de ventas o al distribuidor/proveedor 
+de Canon del país en el que adquirió los Productos.
+
+N.º 023758
+
+

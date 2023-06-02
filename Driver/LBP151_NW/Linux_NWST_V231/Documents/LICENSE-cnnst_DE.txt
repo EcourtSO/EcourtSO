@@ -1,0 +1,160 @@
+﻿LIZENZVEREINBARUNG ZUR CANON-SOFTWARE
+
+WICHTIG
+
+Dieses Dokument stellt eine rechtlich bindende Lizenzvereinbarung ("Vereinbarung") zwischen 
+Ihnen und Canon Inc. ("Canon") dar. Es regelt Ihre Verwendung der Softwareprogramme von 
+Canon, einschließlich deren zugehöriger Handbücher oder davon ausgedruckten Materials (die 
+"Software") für bestimmte Kopiergeräte, Drucker und Multifunktionszubehör (die 
+"Produkte").
+
+LESEN SIE DIE IN DIESER VEREINBARUNG BESCHRIEBENEN RECHTE UND 
+BESCHRÄNKUNGEN AUFMERKSAM DURCH UND MACHEN SIE SICH DAMIT 
+VERTRAUT, BEVOR SIE DIE SOFTWARE INSTALLIEREN.  DURCH KLICKEN AUF 
+DIE SCHALTFLÄCHE ZUR BEKUNDUNG IHRER ZUSTIMMUNG (WIE UNTEN 
+ANGEGEBEN) ODER DURCH INSTALLATION DER SOFTWARE VERPFLICHTEN SIE 
+SICH, SICH AN DIE BESTIMMUNGEN DIESER VEREINBARUNG ZU HALTEN.  
+SOFERN SIE DEN BEDINGUNGEN DIESER VEREINBARUNG NICHT ZUSTIMMEN, 
+BENUTZEN SIE DIESE SOFTWARE BITTE NICHT.  
+
+
+1.  LIZENZGEWÄHRUNG
+Canon gewährt Ihnen eine persönliche, nicht ausschließliche Lizenz, die SOFTWARE zu 
+benutzen ("benutzen" umfasst hierbei das Speichern, Laden, Installieren, den Zugang, die 
+Ausführung oder die Darstellung), und zwar ausschließlich zur Steuerung von Produkten, die 
+unmittelbar oder über ein Netzwerk mit den Produkten (dem "designierten Computer") 
+verbunden sind. 
+Sie dürfen anderen Benutzern oder anderen mit Ihrem designierten Computer verbundenen 
+Computern erlauben, die SOFTWARE zu verwenden, vorausgesetzt, Sie stellen sicher, dass alle 
+diese Benutzer die Bestimmungen dieser Vereinbarung einhalten und den Beschränkungen 
+und Verpflichtungen, die Ihnen im Folgenden entstehen, unterliegen.
+
+Ihnen wird gestattet, eine Kopie der SOFTWARE zu Sicherungszwecken anzufertigen.
+
+2.  BESCHRÄNKUNGEN
+Sofern dies nicht ausdrücklich in dieser Vereinbarung gestattet ist, dürfen Sie die SOFTWARE 
+nicht zuteilen, unterlizenzieren, verbreiten, verkaufen, vermieten, verpachten, verleihen, 
+weitergeben oder an Dritte übertragen.  Sie dürfen die SOFTWARE nicht modifizieren, 
+übersetzen oder in eine andere Programmiersprache konvertieren, sie nicht dekompilieren 
+oder auf andere Weise ein Reverse Engineering durchführen oder Dritte anweisen, dies zu tun.
+
+3.  URHEBERRECHTSHINWEIS
+Sie dürfen einen Urheberrechtshinweis von Canon und seinen Lizenzgebern, der in der 
+SOFTWARE einschließlich aller Kopien enthalten ist, nicht verändern, entfernen oder löschen.
+
+4.  EIGENTUMSRECHT
+ Canon und seine Lizenzgeber behalten sich bezüglich der SOFTWARE das alleinige 
+Urheberrecht, Eigentumsrecht sowie das ausschließliche Nutzungsrecht an geistigem 
+Eigentum vor.  Canon überträgt Ihnen, ausdrücklich oder stillschweigend, keine weiteren 
+Lizenz- oder Nutzungsrechte an geistigem Eigentum von Canon oder seinen Lizenzgebern, die 
+über die ausdrücklichen Bestimmungen dieser Vereinbarung hinausgehen.
+
+5.  EXPORTKONTROLLE
+Sie stimmen der Einhaltung aller Exportgesetze, -beschränkungen und –verordnungen des 
+jeweiligen Landes zu, und verpflichten sich, die SOFTWARE entgegen den Bestimmungen 
+dieser Gesetze, Beschränkungen und Verordnungen oder ohne alle erforderlichen 
+Genehmigungen nicht direkt oder indirekt zu exportieren oder zu reexportieren.
+
+6.  SUPPORT UND UPDATES
+CANON, CANONS TOCHTER- UND KONZERNGESELLSCHAFTEN, DEREN 
+DISTRIBUTOREN UND HÄNDLER SOWIE CANONS LIZENZGEBER SIND NICHT 
+VERPFLICHTET, IHNEN BEI DER VERWENDUNG ODER WARTUNG DER 
+SOFTWARE ZU HELFEN ODER IHNEN UPDATES, FEHLERBEHEBUNGEN ODER 
+SUPPORT ZUR VERFÜGUNG ZU STELLEN.
+
+7.  HAFTUNGSAUSSCHLUSS UND GARANTIEBESTIMMUNGEN
+[GARANTIEAUSSCHLUSS] DIE SOFTWARE WIRD IN DER VORLIEGENDEN FORM 
+BEREITGESTELLT. SÄMTLICHE GARANTIEN AUSDRÜCKLICHER ODER 
+STILLSCHWEIGENDER ART SIND AUSGESCHLOSSEN, EINSCHLIESSLICH DER, 
+ABER NICHT BEGRENZT AUF DIE GESETZLICHE GEWÄHRLEISTUNG DER 
+MARKTGÄNGIGKEIT ODER VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK.  
+DER KÄUFER TRÄGT DAS VOLLSTÄNDIGE RISIKO FÜR QUALITÄT UND LEISTUNG 
+DER SOFTWARE.  SOLLTE SICH DIE SOFTWARE ALS FEHLERHAFT ERWEISEN, 
+GEHEN SÄMTLICHE REPARATUR- UND FEHLERBESEITIGUNGSARBEITEN SOWIE 
+DEREN KOSTEN ZU IHREN LASTEN.  IN EINIGEN STAATEN BZW. 
+RECHTSGEBIETEN IST DER AUSSCHLUSS DER MÄNGELHAFTUNG UNZULÄSSIG. 
+AUFGRUND DESSEN TRIFFT OBEN GENANNTER AUSSCHLUSS 
+MÖGLICHERWEISE NICHT AUF SIE ZU.  
+AUS DIESER GARANTIE LEITEN SICH SPEZIFISCHE JURISTISCHE RECHTE FÜR 
+SIE AB. IN EINIGEN STAATEN ODER RECHTSGEBIETEN HABEN SIE 
+MÖGLICHERWEISE DARÜBER HINAUSGEHENDE RECHTE.
+
+WEDER CANON, CANONS TOCHTER- UND KONZERNGESELLSCHAFTEN, NOCH 
+DEREN DISTRIBUTOREN UND HÄNDLER ODER CANONS LIZENZGEBER 
+GARANTIEREN, DASS DIE FUNKTIONEN DER SOFTWARE IHREN 
+ANFORDERUNGEN ENTSPRECHEN, ODER DASS DIE SOFTWARE 
+UNUNTERBROCHEN UND FEHLERLOS AUSGEFÜHRT WERDEN KANN.
+
+[AUSSCHLUSS VON SCHADENERSATZANSPRÜCHEN] CANON, CANONS 
+TOCHTER- ODER KONZERNGESELLSCHAFTEN, DEREN DISTRIBUTOREN, 
+HÄNDLER ODER LIZENZGEBER SIND UNTER KEINEN UMSTÄNDEN HAFTBAR ZU 
+MACHEN FÜR VERLUSTE ODER SCHÄDEN JEGLICHER ART (EINSCHLIESSLICH, 
+ABER NICHT BESCHRÄNKT AUF FOLGE- ODER NEBENSCHÄDEN WIE 
+BEISPIELSWEISE ENTGANGENER GEWINN, GESCHÄFTSDATENVERLUST, 
+BETRIEBSUNTERBRECHUNG), DIE DURCH DIE SOFTWARE, IHREN GEBRAUCH 
+ODER IHRE NICHTGEBRAUCHSFÄHIGKEIT VERURSACHT WERDEN ODER 
+DARAUF ZURÜCKZUFÜHREN SIND, AUCH DANN NICHT, WENN CANON, CANONS 
+TOCHTER- ODER KONZERNGESELLSCHAFTEN, DEREN DISTRIBUTOREN, 
+HÄNDLER oder LIZENZGEBER ÜBER DIE MÖGLICHKEIT DES EINTRITTS 
+SOLCHER SCHÄDEN IN KENNTNIS GESETZT WURDEN.  IN EINIGEN STAATEN 
+ODER RECHTSGEBIETEN IST DIE BEGRENZUNG BZW. DER AUSSCHLUSS DER 
+HAFTUNGSÜBERNAHME FÜR FOLGE- ODER NEBENSCHÄDEN BZW. 
+PERSONENSCHÄDEN, DIE AUFGRUND VON FAHRLÄSSIGKEIT AUF SEITEN DES 
+VERÄUSSERERS AUFTRETEN, UNZULÄSSIG. AUFGRUND DESSEN TRIFFT OBEN 
+GENANNTER AUSSCHLUSS MÖGLICHERWEISE NICHT AUF SIE ZU.
+
+[HAFTUNGSFREISTELLUNG] IM RAHMEN UND IN DEN GRENZEN DES 
+ANWENDBAREN RECHTS STELLEN SIE HIERMIT CANON, CANONS TOCHTER- 
+UND KONZERNGESELLSCHAFTEN, DEREN DISTRIBUTOREN, HÄNDLER ODER 
+LIZENZGEBER VON JEGLICHEN HAFTUNGSFORDERUNGEN FREI, DIE SICH AUS 
+DER VERWENDUNG DER SOFTWARE ERGEBEN ODER DARAUF BEZIEHEN.
+
+8.  DAUER
+Diese Vereinbarung tritt ab Ihrer Zustimmung in Kraft, die Sie durch Klicken auf die 
+Schaltfläche zur Bekundung Ihrer Zustimmung oder durch die Installation der SOFTWARE 
+geben, und bleibt wirksam, sofern sie nicht beendet wird.  Sie können diese Vereinbarung 
+beenden, indem Sie die SOFTWARE sowie sämtliche in Ihrem Besitz befindliche Kopien der 
+SOFTWARE vernichten. 
+Die Wirksamkeit dieser Vereinbarung endet außerdem dann, wenn Sie gegen eine ihrer 
+Bestimmungen verstoßen.  Bei der Beendigung dieser Vereinbarung sind Sie verpflichtet, die 
+SOFTWARE und alle Kopien davon sofort zu zerstören. Ungeachtet dessen behält sich Canon 
+das Recht vor, seine relevanten, gesetzmäßigen Rechte durchzusetzen.  Ungeachtet dessen 
+bleiben die Bestimmungen 4 und 7 bis 11 von der Beendigung dieser Vereinbarung unberührt.
+
+9.  HINWEIS FÜR ENDBENUTZER DER U.S.-REGIERUNGSBEHÖRDEN
+A "US Government End User" shall mean any agency or entity of the government of the United 
+States.  If you are a US Government End User, the following shall apply: The SOFTWARE is a 
+"commercial item," as that term is defined at 48 C.F.R. 2.101 (October 1995), consisting of 
+"commercial computer software" and "commercial computer software documentation," as 
+such terms are used in 48 C.F.R. 12.212 (September 1995).  Consistent with 48 C.F.R. 12.212 
+and 48 C.F.R. 227.7202-1 through 227.7202-4 (June 1995), all U.S. Government End Users 
+shall acquire the SOFTWARE with only those rights set forth herein.  The manufacturer is 
+Canon Inc./30-2, Shimomaruko 3-chome, Ohta-ku, Tokyo 146-8501, Japan.
+
+10.  SALVATORISCHE KLAUSEL
+In dem Fall, dass eine hier enthaltene Bestimmung von einem zuständigen Gericht für 
+ungesetzlich erklärt oder befunden wird, wird diese Bestimmung in Anbetracht der 
+Rechtsprechung dieses Gerichts nichtig. Alle anderen in dieser Vereinbarung enthaltenen 
+Bestimmungen behalten ihre volle Wirksamkeit.
+
+11.  BESTÄTIGUNG
+DURCH KLICKEN DER SCHALTFLÄCHE ZUR BEKUNDUNG IHRER ZUSTIMMUNG 
+WIE NACHFOLGEND DARGELEGT ODER DURCH DIE INSTALLATION DER 
+SOFTWARE BESTÄTIGEN SIE, DASS SIE DIESE VEREINBARUNG GELESEN UND 
+VERSTANDEN HABEN UND SICH VERPFLICHTEN, SICH AN DIE HIERIN 
+ENTHALTENEN BESTIMMUNGEN UND BEDINGUNGEN ZU HALTEN.  SIE 
+STIMMEN WEITER ZU, DASS DIESE VEREINBARUNG DIE VOLLSTÄNDIGE UND 
+EXKLUSIVE VEREINBARUNG ZWISCHEN IHNEN UND CANON BEZÜGLICH DIESES 
+GEGENSTANDS IST UND ALLE VORSCHLÄGE ODER FRÜHEREN 
+VEREINBARUNGEN, MÜNDLICH ODER SCHRIFTLICH, UND JEGLICHE ANDERE 
+KOMMUNIKATION ZWISCHEN IHNEN UND CANON IN BEZUG AUF DIESEN 
+GEGENSTAND ERSETZT.  EINE ÄNDERUNG DIESER VEREINBARUNG WIRD ERST 
+DANN WIRKSAM, WENN SIE VON EINEM ORDNUNGSGEMÄSS AUTORISIERTEN 
+VERTRETER VON CANON UNTERZEICHNET WURDE.
+
+
+Sollten Sie Fragen zu dieser Vereinbarung haben oder aus irgendeinem Grund in Kontakt mit 
+Canon treten wollen, wenden Sie sich schriftlich an eine Vertriebsniederlassung von Canon 
+oder einen Distributor/Händler in dem Land, in dem Sie die Produkte erworben haben.
+
+Nr. 023758

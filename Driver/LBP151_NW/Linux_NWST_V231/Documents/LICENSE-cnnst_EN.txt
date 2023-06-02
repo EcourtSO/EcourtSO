@@ -1,0 +1,145 @@
+﻿CANON SOFTWARE LICENSE AGREEMENT
+
+IMPORTANT
+
+This is a legal agreement ("Agreement") between you and Canon Inc. ("Canon") and 
+governing your use of Canon's software programs including the related manuals or any 
+printed material thereof (the "SOFTWARE") for certain Canon's copying machines, printers 
+and multifunctional peripherals (the "Products").
+
+READ CAREFULLY AND UNDERSTAND ALL OF THE RIGHTS AND RESTRICTIONS 
+DESCRIBED IN THIS AGREEMENT BEFORE INSTALLING THE SOFTWARE.  BY 
+CLICKING THE BUTTON INDICATING YOUR ACCEPTANCE AS STATED BELOW OR 
+INSTALLING THE SOFTWARE, YOU AGREE TO BE BOUND BY THE TERMS AND 
+CONDITIONS OF THIS AGREEMENT.  IF YOU DO NOT AGREE TO THE 
+FOLLOWING TERMS AND CONDITIONS OF THIS AGREEMENT, DO NOT USE THE 
+SOFTWARE.  
+
+
+1.  GRANT OF LICENSE
+Canon grants you a personal, limited and non-exclusive license to use ("use" as used herein 
+shall include storing, loading, installing, accessing, executing or displaying) the SOFTWARE 
+solely for the use with Products only on computers directly or via network connected to the 
+Products (the "Designated Computer"). 
+You may allow other users of other computers connected to your Designated Computer to use 
+the SOFTWARE, provided that you must assure that all such users shall abide by the terms of 
+this Agreement and shall be subject to restrictions and obligations borne by you hereunder.
+
+You may make one copy of the SOFTWARE solely for a back-up purpose.
+
+2.  RESTRICTIONS
+You shall not use the SOFTWARE except as expressly granted or permitted herein, and shall 
+not assign, sublicense, sell, rent, lease, loan, convey or transfer to any third party the 
+SOFTWARE.  You shall not alter, translate or convert to another programming language, 
+modify, disassemble, decompile or otherwise reverse engineer the SOFTWARE and you shall 
+not have any third party to do so.
+
+3.  COPYRIGHT NOTICE
+You shall not modify, remove or delete any copyright notice of Canon or its licensors contained 
+in the SOFTWARE, including any copy thereof.
+
+4.  OWNERSHIP
+Canon and its licensors retain in all respects the title, ownership and intellectual property rights 
+in and to the SOFTWARE.  Except as expressly provided herein, no license or right, express or 
+implied, is hereby conveyed or granted by Canon to you for any intellectual property of Canon 
+and its licensors.
+
+5.  EXPORT CONTROL
+You agree to comply with all export laws and restrictions and regulations of the country 
+involved, and not to export or re-export, directly or indirectly, the SOFTWARE in violation of 
+any such laws, restrictions and regulations, or without all necessary approvals.
+
+6.  SUPPORT AND UPDATE
+NEITHER CANON, CANON'S SUBSIDIARIES OR AFFILIATES, THEIR 
+DISTRIBUTORS, OR DEALERS NOR CANON'S LICENSORS ARE RESPONSIBLE FOR 
+MAINTAINING OR HELPING YOU TO USE THE SOFTWARE, OR PROVIDING YOU 
+WITH ANY UPDATES, FIXES OR SUPPORT FOR THE SOFTWARE HEREUNDER.
+
+7.  DISCLAIMER OF WARRANTIES AND LIABILITY
+[NO WARRANTY]  THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY 
+OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED 
+TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+PARTICULAR PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND 
+PERFORMANCE OF THE SOFTWARE IS WITH YOU.  SHOULD THE SOFTWARE 
+PROVE DEFECTIVE, YOU ASSUME THE ENTIRE COST OF ALL NECESSARY 
+SERVICING, REPAIR OR CORRECTION.  SOME STATES OR LEGAL 
+JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF IMPLIED WARRANTIES, SO 
+THE ABOVE EXCLUSION MAY NOT APPLY TO YOU.  
+THIS WARRANTY GIVES YOU SPECIFIC LEGAL RIGHTS AND YOU MAY ALSO HAVE 
+OTHER RIGHTS WHICH VARY FROM STATE TO STATE OR JURISDICTION TO 
+JURISDICTION.
+
+NEITHER CANON, CANON'S SUBSIDIARIES OR AFFILIATES, THEIR 
+DISTRIBUTORS, OR DEALERS NOR CANON'S LICENSORS WARRANT THAT THE 
+FUNCTIONS CONTAINED IN THE SOFTWARE WILL MEET YOUR REQUIREMENTS 
+OR THAT THE OPERATION OF THE SOFTWARE WILL BE UNINTERRUPTED OR 
+ERROR FREE.
+
+[NO LIABILITY FOR DAMAGES]  IN NO EVENT SHALL EITHER CANON, CANON'S 
+SUBSIDIARIES OR AFFILIATES, THEIR DISTRIBUTORS DEALERS OR CANON'S 
+LICENSORS BE LIABLE FOR ANY DAMAGES WHATSOEVER (INCLUDING 
+WITHOUT LIMITATION, LOSS OF BUSINESS PROFITS, LOSS OF BUSINESS 
+INFORMATION, LOSS OF BUSINESS INTERRUPTION OR OTHER COMPENSATORY, 
+INCIDENTAL OR CONSEQUENTIAL DAMAGES) ARISING OUT OF THE SOFTWARE, 
+USE THEREOF OR INABILITY TO USE THE SOFTWARE EVEN IF EITHER CANON, 
+CANON'S SUBSIDIARIES OR AFFILIATES, THEIR DISTRIBUTORS, DEALERS OR 
+CANON'S LICENSORS HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH 
+DAMAGES.  SOME STATES OR LEGAL JURISDICTIONS DO NOT ALLOW THE 
+LIMITATION OR EXCLUSION OF LIABILITY FOR INCIDENTAL OR 
+CONSEQUENTIAL DAMAGES, OR PERSONAL INJURY OR DEATH RESULTING 
+FROM NEGLIGENCE ON THE PART OF THE SELLER, SO THE ABOVE LIMITATION 
+OR EXCLUSION MAY NOT APPLY TO YOU.
+
+[RELEASE OF LIABILITY]  TO THE FULL EXTENT PERMITTED BY APPLICABLE 
+LAW, YOU HEREBY RELEASE CANON, CANON'S SUBSIDIARIES AND AFFILIATES, 
+THEIR DISTRIBUTORS, DEALERS AND CANON'S LICENSORS FROM ANY AND ALL 
+LIABILITY ARISING FROM OR RELATED TO ALL CLAIMS CONCERNING THE 
+SOFTWARE OR ITS USE.
+
+8.  TERM
+This Agreement is effective upon your acceptance hereof by clicking the button indicating your 
+acceptance as stated below or installing the SOFTWARE and remains in effect until terminated.  
+You may terminate this Agreement by destroying the SOFTWARE including any and all copies 
+thereof. 
+This Agreement shall also terminate if you fail to comply with any terms hereof.  Upon 
+termination of this Agreement, in addition to Canon enforcing its respective legal rights, you 
+must then promptly destroy the SOFTWARE including any and all copies thereof.  
+Notwithstanding the foregoing, Sections 4, and 7 through 11 shall survive any termination of 
+this Agreement.
+
+9.  U.S. GOVERNMENT RESTRICTED RIGHTS NOTICE
+A "US Government End User" shall mean any agency or entity of the government of the United 
+States.  If you are a US Government End User, the following shall apply: The SOFTWARE is a 
+"commercial item," as that term is defined at 48 C.F.R. 2.101 (October 1995), consisting of 
+"commercial computer software" and "commercial computer software documentation," as 
+such terms are used in 48 C.F.R. 12.212 (September 1995).  Consistent with 48 C.F.R. 12.212 
+and 48 C.F.R. 227.7202-1 through 227.7202-4 (June 1995), all U.S. Government End Users 
+shall acquire the SOFTWARE with only those rights set forth herein.  The manufacturer is 
+Canon Inc./30-2, Shimomaruko 3-chome, Ohta-ku, Tokyo 146-8501, Japan.
+
+10.  SEVERABILITY
+In the event that any section hereof is declared or found to be illegal by any court or tribunal 
+of competent jurisdiction, such section shall be null and void with respect to the jurisdiction of 
+that court or tribunal and all the remaining provisions hereof shall remain in full force and 
+effect.
+
+11.  ACKNOWLEDGEMENT
+BY CLICKING THE BUTTON INDICATING YOUR ACCEPTANCE AS STATED BELOW 
+OR INSTALLING THE SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE READ 
+THIS AGREEMENT, UNDERSTOOD IT, AND AGREE TO BE BOUND BY ITS TERMS 
+AND CONDITIONS.  YOU ALSO AGREE THAT THIS AGREEMENT IS THE 
+COMPLETE AND EXCLUSIVE STATEMENT OF AGREEMENT BETWEEN YOU AND 
+CANON CONCERNING THE SUBJECT MATTER HEREOF AND SUPERSEDES ALL 
+PROPOSALS OR PRIOR AGREEMENTS, VERBAL OR WRITTEN, AND ANY OTHER 
+COMMUNICATIONS BETWEEN YOU AND CANON RELATING TO THE SUBJECT 
+MATTER HEREOF.  NO AMENDMENT TO THIS AGREEMENT SHALL BE EFFECTIVE 
+UNLESS SIGNED BY A DULY AUTHORISED REPRESENTATIVE OF CANON.
+
+
+Should you have any questions concerning this Agreement, or if you desire to contact Canon 
+for any reason, please write to Canon's sales subsidiary or distributor/dealer, serving the 
+country where you obtained the Products.
+
+No.023758
+
+

@@ -1,0 +1,2414 @@
+#!/bin/bash
+#
+# Kodak Alaris Inc.
+# i11xx Scanner Driver Install Script
+#
+#
+# Error Codes:
+# --------------------------------------------------------------------
+# 0  success
+#
+# 1  printed usage/help info
+# 2  must be run from root account
+# 3  invalid command-line option
+# 4  invalid operating system
+# 5  hal is not installed, but is required (user must install it)
+# 6  scanner was connected
+# 7  unable to convert .RPM to .DEB
+#
+# 10 did not accept EULA
+# 11 did not want to upgrade OpenUSB and/or TWAIN
+# 12 mono not installed and did not want to run without an UI
+# 13 mono-winforms not installed and did not want to run without an UI
+# 14 SANE not installed and did not want to run without a SANE driver
+# 15 did not want to install QT v3.x from internet
+# 16 did not want to do install
+#
+# 20 QT v3.x could not be installed (no installer program)
+# 21 lubudev0 could not be installed (no installer program)
+# 22 mono-winforms could not be installed (no installer program)
+#
+# 30 no internet so QT v3.x not installed
+#
+# 40 no longer used
+# 41 QT v3.x installation error (install failed or internet failure)
+# 42 libudev0 installation error (install failed or internet failure)
+# 43 mono-winforms installation error (install failed or internet failure)
+# 44 OpenUSB installation error (install failed)
+# 45 libudev0 installation error (install failed)
+# 46 TWAIN DSM installation error (install failed)
+# 47 Scanner Package installation error (install failed)
+#
+# 50 Bad Argument(s) for 'Setup and Connect Scanner'
+# 51 Setup error (scs executable cannot be found)
+# 52 Scanner not found
+#
+# 99 Coding error
+
+
+
+
+################################################################################
+# NOTES
+################################################################################
+# When adding a distro, the following methods need to be updated:
+# - check_qt_installed()
+# - check_mono_installed()
+# - check_libudev_installed()
+
+
+
+################################################################################
+# Initialize key variables
+################################################################################
+strdistrobit=""     # 32-bit or 64-bit Distro string
+distro64bit=0       # Is the distro 64-bit?
+strdistro=""        # What Linux distro are we running on?
+verdistro=""        # The distro's version (verdistroparts will have it split up)
+strdistropkg=""     # packages to install (i.e. .deb or .rpm)
+strdistrodesc=""    # distro's description string (if we can get it)
+strdistrodist=""    # distro's distribution string
+installOpenusb=0    # Do we have to install OpenUSB?
+removeOpenusb=0     # Do we need to remove an older version of OpenUSB?
+halInstalled=0      # Is 'hal' installed?
+needlibudev=1       # Do we need to try to install 'libudev'?
+libudevInstalled=0  # Is 'libudev' installed?
+installlibudev0=0   # install our provided libudev0? (for libudev1 systems)
+needNewOpenUSB=0    # Does this system require the newer version of OpenUSB (0/1)?
+installTwainDsm=0   # Do we have to install a new version of the TWAIN DSM?
+removeTwainDsm=0    # Do we have to remove an older version of the TWAIN DSM?
+qtinstalled=0       # Is the correct version of QT currently installed?
+qtsupported=1       # QT supported?
+needwinforms=0      # Do we need to install a new version of mono-winforms?
+saneInstalled=0     # Is 'sane' installed?
+dpkgpath=""         # What is the path to dpkg (.deb distros)?
+aptgetpath=""       # What is the path to apt-get (.deb distros)?
+yumInstalled=0      # Is yum installed (.rpm distros without zypper)?
+yumpath=""          # Path to 'yum' (.rpm distros without zypper).
+zypperInstalled=0   # Is zypper installed (newer .rpm distros)?
+zypperpath=""       # Path to 'zypper' (newer .rpm distros).
+zypperKeys=""       # --gpg-auto-import-keys for refresh and install, if supported
+useInternet=0       # Do we have an installer on this distro that can access
+                    # the internet?
+seLinuxCheck=0      # Do we need to check for SELinux?
+
+
+
+################################################################################
+# Installer Functions
+################################################################################
+
+
+# clean out the install directory, but leave install log
+clean_instdir()
+{
+	# is there still a temp folder?
+	if [ -d $instdir ]; then
+		# clean out the temp directory, but leave any leftover install log
+		for file in "$instdir"/*
+		do
+			if [ ! -f "$file" ] || [ "$file" != "$installlogfile" ]; then
+				rm -rf "$file"
+			fi
+		done
+	fi
+}
+
+# create install log and temp folder
+install_init()
+{
+	# Figure out the temporary directory and copy all the packages there
+	if [ "$TMPDIR" == "" ]; then
+		TMPDIR=/tmp
+	fi
+
+	instdir="$TMPDIR"/kds_i11xx
+
+	# create name of install log
+	installlogfile="$instdir"/install.log
+
+	# make sure the folder is cleaned out (but leave any leftover install log)
+	clean_instdir
+
+	# make sure directory exists
+	mkdir -p "$instdir"
+}
+
+# copy the install log to product specific one
+install_end()
+{
+	scannerpath="/opt/kodak/kds_i11xx"
+	installedpath="$scannerpath/install"
+
+	# if opt folder, then driver installed (At some point),
+	# so copy the log file contents
+	if [ -d $scannerpath ]; then
+		if [ ! -d "$installedpath" ]; then
+			# no install folder, so create it and just file
+			mkdir -p "$installedpath"
+			chmod 666 "$installedpath"
+			cp "$installlogfile" "$installedpath/install.log"
+			chmod 644 "$installedpath/install.log"
+		else
+			# need to append contents to the existing file
+			cat "$installlogfile" >> "$installedpath/install.log"
+		fi
+
+		# done with install log, so remove everything
+		# (don't want to append the log again)
+		rm -rf "$instdir"
+	else
+		# get rid of everything except the install log
+		# (want to try and append the data next install)
+		clean_instdir
+	fi
+
+	exit $1
+}
+
+# check for command-line parameters (and they can be in any place)
+check_commandline()
+{
+	# do we need to print the usage?
+	if [ "$1" == "-h" ] || [ "$1" == "--h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ] || [ "$1" == "-H" ] || [ "$1" == "--H" ]; then
+		echo ""
+		echo "Usage: $0"
+		echo "       or"
+		echo "       $0 --default [--nostatus] [--nomonook] [--nosaneok]"
+		echo "       or"
+		echo "       $0 --nostatus"
+		echo "       or"
+		echo "       $0 --silent [--nomonook] [--nosaneok]"
+		echo ""
+		echo "    --default       will automatically select default responses so the installation"
+		echo "                    will continue. any problems will be echo'd to the terminal."
+		echo ""
+		echo "    --nostatus      will not echo any status messages to the terminal."
+		echo ""
+		echo "    --silent        nothing is echo'd to the terminal window and it will act as if"
+		echo "                    --default was also on the command line. must use the return"
+		echo "                    code to see if there is any error."
+		echo "                    NOTE: package install status will be echo'd"
+		echo ""
+		echo "    --nomonook      if mono or mono-winforms are not installed, then allow the"
+		echo "                    installation continue. this will automatically select responses"
+		echo "                    so the install continues without the TWAIN user interface."
+		echo ""
+		echo "    --nosaneok      if SANE is not installed, then allow the installation continue."
+		echo "                    this will automatically select responses so the install"
+		echo "                    continues without the SANE driver (will have to use TWAIN)."
+		echo ""
+		exit 1
+	fi
+
+	echo_installfile ""
+	echo_installfile "[*** `date` ***   command-line: $*]"
+
+	# assume no bad arguments
+	badargs=""
+
+	# initialize all options, then parse the command line
+	defaultinstall=0
+	statusinstall=0
+	silentinstall=0
+	nomonook=0
+	nosaneok=0
+	for cmdOpt in ${*:1}
+	do
+		if [ "$cmdOpt" == "--default" ]; then
+			defaultinstall=1
+		elif [ "$cmdOpt" == "--nostatus" ]; then
+			statusinstall=1
+		elif [ "$cmdOpt" == "--silent" ]; then
+			silentinstall=1
+		elif [ "$cmdOpt" == "--nomonook" ]; then
+			nomonook=1
+		elif [ "$cmdOpt" == "--nosaneok" ]; then
+			nosaneok=1
+		elif [ "$cmdOpt" != "" ]; then
+			badargs="$badargs $cmdOpt"
+		fi
+	done
+
+	# make sure --no*ok was used with the correct options
+	if [ $nomonook == 1 ]; then
+		if [ $defaultinstall == 0 ] && [ $silentinstall == 0 ]; then
+			badargs="$badargs --nomonook"
+		fi
+	fi
+	if [ $nosaneok == 1 ]; then
+		if [ $defaultinstall == 0 ] && [ $silentinstall == 0 ]; then
+			badargs="$badargs --nosaneok"
+		fi
+	fi
+
+	# if any invalid optionarguments, then just exit.
+	if [ "$badargs" != "" ]; then
+		echo_silent ""
+		echo_silent ""
+		echo_silent "******************************"
+		echo_silent "Invalid command-line options: $badargs"
+		echo_silent "For list of options, type: $0 --help"
+		echo_silent ""
+		install_end 3
+	fi
+}
+
+# echo line to the install log, even if the line was hidden by
+# the user; that way we can see all the status.
+# if the line is hidden, it will be prefixed with given charater
+# in $1:
+#    d - line hidden because --default is on
+#    s - line hidden because --nostatus is on
+#    * - line hidden because --silent is on
+# 
+lastlinehaven=0
+echo_installfile()
+{
+	# if line hidden from user, then pull out the text into $origstring
+	if [ "$1" == "d" ] || [ "$1" == "s" ] || [ "$1" == "*" ]; then
+		lineprefix="$1 "
+		origstring="${*:2}"
+	else
+		lineprefix=""
+		origstring="$*"
+	fi
+
+	# depending on how we get called, the "-n" maybe the entire 1st
+	# parameter OR it maybe the first part of the 1st parameter
+	echowithn=0
+	if [ "$origstring" == "-n" ]; then
+		echowithn=1
+		echostring="${origstring:2}"
+	elif [ "${origstring:0:3}" == "-n " ]; then
+		echowithn=1
+		echostring="${origstring:3}"
+	elif [ "${origstring:0:3}" == "-n." ]; then
+		echowithn=1
+		echostring="${origstring:3}"
+	else
+		echostring="$origstring"
+	fi
+
+	# if the last line did not include a new-line, then don't re-echo the prefix
+	if [ $lastlinehaven == 1 ]; then
+		lineprefix=""
+	fi
+
+	# echo with the "-n" if needed
+	if [ $echowithn == 1 ]; then
+		lastlinehaven=1
+		echo -n "$lineprefix$echostring" >> "$installlogfile"
+	else
+		lastlinehaven=0
+		echo "$lineprefix$echostring" >> "$installlogfile"
+	fi
+}
+
+# This function will echo given all items if NOT in default mode
+echo_default()
+{
+	if [ $defaultinstall == 1 ]; then
+		echo_installfile "d" "$*"
+		return
+	fi
+
+	# in case silent mode is also on, we need to check that
+	echo_silent "$*"
+}
+
+# This function will echo given all items if NOT in status mode
+echo_status()
+{
+	if [ $statusinstall == 1 ]; then
+		echo_installfile "s" "$*"
+		return
+	fi
+
+	# in case silent mode is also on, we need to check that
+	echo_silent "$*"
+}
+
+# This function will echo given all items if NOT in silent mode
+echo_silent()
+{
+	if [ $silentinstall == 1 ]; then
+		echo_installfile "*" "$*"
+		return
+	fi
+	echo_installfile "$*"
+
+	# depending on how we get called, the "-n" maybe the entire 1st
+	# parameter OR it maybe the first part of the 1st parameter
+	if [ "$1" == "-n" ]; then
+		echo -n "${*:2}"
+		return;
+	fi
+	if [ "${1:0:3}" == "-n " ]; then
+		echo -n "${1:3}"
+		return;
+	fi
+	if [ "${1:0:3}" == "-n." ]; then
+		echo -n "${1:3}"
+		return;
+	fi
+	echo "$*"
+}
+
+# This function will read from the command-line and put into the given
+# variable name if NOT in default mode; otherwise, it will set the
+# given variable name so the 'default' is used
+#
+# $1 - name of variable to fill in with the result
+# $2 - default action when nothing is entered
+# $3 - default to use if in 'default' or 'silent' mode
+read_default()
+{
+	# if in default mode OR silent mode, then use default value
+	if [ $defaultinstall == 1 ] || [ $silentinstall == 1 ]; then
+		readsilenttmp=$3
+	else
+		read readsilenttmp
+	fi
+
+	# handle all variants of what the user may type and convert to
+	# a common value
+	# NOTE: currently only care about Yes and No
+	case "$readsilenttmp" in
+		Y|y|YES|yes|Yes)
+			readsilenttmp="Y"
+			;;
+		n|N|NO|No|no)
+			readsilenttmp="N"
+			;;
+	######################################
+	# and a few letters for configuration
+		a|A)
+			readsilenttmp="A"
+			;;
+		e|E)
+			readsilenttmp="E"
+			;;
+		u|U)
+			readsilenttmp="U"
+			;;
+		w|W)
+			readsilenttmp="W"
+			;;
+		*)
+			readsilenttmp=$2
+			;;
+	esac
+
+	eval $1=$readsilenttmp
+	echo_installfile $readsilenttmp
+}
+
+# This function prompts the user to press enter and waits until they do
+# before exiting. The only argument is the optional error code for exit
+exit_and_pause()
+{
+	# Exit the script and use 'read' to pause
+	echo_default
+	echo_default "Press the 'Enter' key to exit this installation..."
+	read_default installOption
+	install_end $1
+}
+
+# This function prints the 'completed message' and exits
+print_completed_message()
+{
+	# Print the 'completed message' and exit
+	echo_status ""
+	echo_status ""
+	echo_status "******************************"
+	echo_status "Software installation is complete"
+	echo_status ""
+	install_end 0
+}
+
+# This function prints the 'not completed message' and exits
+print_not_completed_message()
+{
+	# Print the 'not completed message' and exit
+	echo_status ""
+	echo_status ""
+	echo_status "******************************"
+	echo_status "Software installation has not been completed."
+	echo_status ""
+	install_end $1
+}
+
+# This function prints the 'cancelled message' and exits
+print_cancelled_message()
+{
+
+	# Print the 'cancelled message' and exit
+	echo_status ""
+	echo_status ""
+	if [ "$2" != "" ]; then		# if cancel message given, then print it always
+		echo_silent "Cancelled: $2"
+		echo_silent ""
+	fi
+	echo_status "******************************"
+	echo_status "Software installation has been cancelled."
+	echo_status "No software has been installed or updated."
+	echo_status ""
+	install_end $1
+}
+
+# This function prints the License Agreement and prompts
+# the user to continue or exit.
+print_license_agreement()
+{
+	echo_default "******************************"
+	echo_default "Kodak Alaris Inc."
+	echo_default "SOFTWARE END USER LICENSE AGREEMENT"
+	echo_default ""
+	echo_default "Read the following terms and conditions carefully before"
+	echo_default "using this Software.  Use of this Software indicates your"
+	echo_default "acceptance of these terms and conditions.  If you do not"
+	echo_default "agree with the terms and conditions, or any of them, you"
+	echo_default "should promptly return the Software in its package in its"
+	echo_default "entirety for a full refund."
+	echo_default ""
+	echo_default "LICENSE"
+	echo_default ""
+	echo_default "Grant of License:  Kodak Alaris Inc. (\"Alaris\") grants"
+	echo_default "you a license to use one copy of the enclosed software"
+	echo_default "program(s) (the \"Software\") subject to the license"
+	echo_default "restrictions set forth below."
+	echo_default ""
+	echo_default "Restrictions on Use:  You may use the Software only on"
+	echo_default "one computer at a time.  For each additional computer on"
+	echo_default "which the Software is running at the same time, you will"
+	echo_default "need an additional licensed copy of the Software.  You may"
+	echo_default "copy the Software as necessary to enable you to use the"
+	echo_default "Software as described above."
+	echo_default ""
+	echo_default "Transfer of Software:  You may permanently transfer the"
+	echo_default "Software to another party if the other party agrees to"
+	echo_default "accept the terms and conditions of this license and you"
+	echo_default "retain no copies of the Software."
+	echo_default ""
+	echo_default "Diagnostic Software:   Software used to maintain Equipment"
+	echo_default "(including diagnosing performance failures)"
+	echo_default "(\"Diagnostic Software\") may be embedded, bundled, packaged,"
+	echo_default "or provided separately.  Diagnostic Software and the manner"
+	echo_default "in which it is implemented constitute valuable proprietary"
+	echo_default "intellectual property of Alaris.  You acknowledge and agree"
+	echo_default "that possession of the Diagnostic Software grants you no"
+	echo_default "right either of ownership or of use of the Diagnostic"
+	echo_default "Software except as stated here.  Unless you are separately"
+	echo_default "licensed by Alaris to do so, you shall not use, reproduce,"
+	echo_default "distribute or disclose the Diagnostic Software for any"
+	echo_default "purpose whatsoever, nor will you allow any other person,"
+	echo_default "for consideration or no consideration, to do so."
+	echo_default "Notwithstanding the foregoing, your express written license"
+	echo_default "rights from Alaris may include the right to use the Diagnostic"
+	echo_default "Software exclusively on the specific [Alaris] Equipment for"
+	echo_default "which such Diagnostic Software was intended.  You further"
+	echo_default "consent that at any time, including after the expiration of"
+	echo_default "any warranty stated herein, Alaris may access, directly or"
+	echo_default "remotely, the Equipment in order to prevent unauthorized use,"
+	echo_default "reproduction or distribution of the Diagnostic Software."
+	echo_default ""
+	echo_default "Copyright:  The Software is owned by Alaris or its suppliers"
+	echo_default "and protected by copyright laws and international treaties."
+	echo_default "You may not copy the Software other than as expressly provided"
+	echo_default "in this license.  You may not reverse engineer, decompile, or"
+	echo_default "disassemble the Software.  If this Software is used within a"
+	echo_default "country of the European Union, nothing in this Agreement shall"
+	echo_default "be construed as restricting any rights available under the"
+	echo_default "European Community Software Directive (91/250/EEC)."
+	echo_default ""
+	echo_default "Term:  This license is effective until terminated. You may"
+	echo_default "terminate it at any time by destroying the Software together"
+	echo_default "with all copies in any form.  It will also terminate if you"
+	echo_default "fail to comply with any term or condition of this Agreement."
+	echo_default "You agree upon such termination to destroy the Software"
+	echo_default "together with all copies in any form."
+	echo_default ""
+	echo_default "LIMITED WARRANTY: This warranty gives you specific legal"
+	echo_default "rights and you may also have other rights.  For a period of"
+	echo_default "90 days after the date of delivery of the Software to you, as"
+	echo_default "evidenced by a copy of your purchase receipt, Alaris warrants"
+	echo_default "(i) the Software will perform substantially in accordance with"
+	echo_default "the accompanying documentation, and (ii) the media on which the"
+	echo_default "Software is furnished will be free from defects in materials"
+	echo_default "and workmanship under normal use.  Alaris does not warrant that"
+	echo_default "the functions contained in the Software will meet your"
+	echo_default "requirements or that the operation of the Software will be"
+	echo_default "uninterrupted or error free.  You assume responsibility for"
+	echo_default "operation of the Software to achieve your intended results,"
+	echo_default "and for the installation, use, and results obtained from the"
+	echo_default "Software."
+	echo_default ""
+	echo_default "Subject to any applicable legislation which prohibits the"
+	echo_default "following exclusions, Alaris MAKES NO OTHER WARRANTIES OF ANY"
+	echo_default "KIND, EITHER EXPRESS OR IMPLIED, INCLUDING THE IMPLIED"
+	echo_default "WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR"
+	echo_default "PURPOSE.  Some states and countries, including Australia, do not"
+	echo_default "allow the exclusion of implied warranties, or have legislation"
+	echo_default "that imposes certain statutory warranties that cannot be"
+	echo_default "excluded, so the above exclusion may not apply to you."
+	echo_default ""
+	echo_default "LIMITATIONS OF REMEDIES:  Subject to any applicable legislation"
+	echo_default "which prohibits the following limitations, Alaris' entire"
+	echo_default "liability and your exclusive remedy shall be, at Alaris' option"
+	echo_default "either (a) the repair or replacement of the Software or any media"
+	echo_default "not meeting Alaris' \"Limited Warranty\" that is returned to Alaris"
+	echo_default "or your dealer with a copy of your receipt, or (b) the return of"
+	echo_default "the price you paid for the Software, provided you have proof of"
+	echo_default "the purchase price you paid.  These remedies are not available"
+	echo_default "if failure of the Software or media is the result of misuse,"
+	echo_default "abuse, or a failure to follow the operating instructions in the"
+	echo_default "accompanying written materials."
+	echo_default ""
+	echo_default "APPLICABLE  LAW:  If the Software was purchased in the United"
+	echo_default "States, this Agreement is governed by the laws of the State of"
+	echo_default "New York.  If the Software is purchased outside the United States,"
+	echo_default "this Agreement is governed by the laws of the country in which"
+	echo_default "it was purchased."
+	echo_default ""
+	echo_default "__________________________________________"
+	echo_default "U.S. GOVERNMENT RESTRICTED RIGHTS"
+	echo_default "The SOFTWARE and documentation are provided with RESTRICTED RIGHTS."
+	echo_default "Use, duplication, or disclosure by the Government is subject to"
+	echo_default "restrictions as set forth in subdivision (c)(1)(ii) of The Rights"
+	echo_default "in Technical Data and Computer Software clause DFAR 252.227-7013"
+	echo_default "or such other applicable government or agency regulation providing"
+	echo_default "equivalent protection.  Contractor / manufacturer is"
+	echo_default "Kodak Alaris Inc., 2400 Mount Read Blvd., Rochester, New York, 14615."
+	echo_default ""
+	echo_default ""
+	echo_default "******************************"
+	echo_default "KODAK SCANMATE i1100 Scanners v2.16"
+	echo_default ""
+	echo_default -n "Do you agree with the terms of the above software license agreement? (y/N) "
+	read_default installOption N Y		# force Yes when silent
+	if [ "$installOption" == "N" ]; then
+		# User wants to cancel the install.
+		print_cancelled_message 10 "license agreement not accepted"
+	fi
+	# User wants to continue with the installation.
+	echo_default ""
+}
+
+# This function checks if tools are available to install from the internet
+check_for_internet()
+{
+	if [ "$aptgetpath" != "" ] || [ $yumInstalled == 1 ] || [ $zypperInstalled == 1 ]; then
+		useInternet=1
+	fi
+}
+
+# This function checks if the correct version of QT is installed
+#
+# on exit:
+#	qtsupported		0  distro doesn't support it
+#			1  distro supports it and we will want it
+#			-1 ScanTWAIN not supported, so we don't need it
+#	qtinstalled	has no meaning if qtsupported is -1
+#			0 verified that QT is already installed
+#			1 QT is installed (or act like it is)
+#	qt3cmd		command to install QT from this package
+check_qt_installed()
+{
+	# ScanTWAIN is a 32-bit app, so we don't install it on 64-bit OSes.
+	# So since we won't have ScanTWAIN, we don't care if QT is there
+	# or not; so just act like it is installed
+	if [ $distro64bit == 1 ]; then
+		qtsupported=-1
+		qtinstalled=1
+		return
+	fi
+
+	# handle distro differences
+	case "$strdistro" in
+		Ubuntu)
+			qt3cmd="$aptgetpath install -y -qq libqt3-mt"
+
+			# starting with Ubuntu 12.10, QT3 is no longer available. so if we are
+			# running on that version or higher, then say QT is installed so we
+			# don't waste time trying to install it
+			if [ ${verdistroparts[0]} -ge 12 ]; then
+				qtsupported=0
+				qtinstalled=1
+				return
+			fi
+			# is old enough, so do the default check
+			;;
+		Debian)
+			qt3cmd="$aptgetpath install -y -qq libqt3-mt"
+			# do the default check
+			;;
+		Pardus)
+			# we don't know about 32-bit just yet (LPO was only for 64-bit)
+			# so we will assume QT isn't even supported
+			qtsupported=0
+			qtinstalled=1
+			return
+			;;
+		openSUSE|SLED|SLES)
+			qt3cmd="$zypperpath $zypperKeys -n install qt3"
+			# do the default check
+			;;
+		Fedora|RedHat|CentOS|NeoKylin)
+			qt3cmd="$yumpath -y -d1 install qt3"
+			# do the default check
+			;;
+		*)
+			echo_silent ""
+			echo_silent "Distro check missing from check_qt_installed() for $strdistro"
+			echo_silent ""
+			exit_and_pause 99
+			return
+			;;
+	esac
+
+	# QT is supported and we will install ScanTWAIN
+
+	# set flag that QT is supported
+	qtsupported=1
+
+	# see if it is installed. We don't use the package manager because
+	# we don't know for sure which distro we're running on
+	qtinstalled=0
+	qtmt=`find /usr/lib -name libqt-mt.so.3 -print 2>> /dev/null`
+	if [ "$qtmt" != "" ]; then
+		qtinstalled=1
+	fi
+}
+
+# check to see if mono and mono-winforms are installed
+#
+# on exit:
+#	needmono	0  a valid version is already installed
+#			-1 we do not know which mono is needed
+#			-2 an old v2.x mono is installed, so it needs to be upgraded
+#			-4 a v3.x mono is installed, so it needs to be upgraded
+#			2  need to install v2.4+
+#			4  need to install v4.x
+#	needwinforms	0  a valid version is already installed
+#			-1 we do not know which mono-winforms is needed
+#			2  need to install v2.x
+#			4  need to install v4.x
+#	monover		blank if no mono installed
+#			otherwise, version of mono that is installed
+#	monorepocmdA	non-blank if 1st repo command to run
+#	monorepocmdB	non-blank if 2nd repo command to run
+#	monorepocmdC	non-blank if 3rd repo command to run
+#	monorepocmdD	non-blank if 4th repo command to run
+#	monoruntimeA	mono main install command
+#	monowinformA	mono-winform install command
+check_mono_installed()
+{
+	# fill in defaults (i.e. mono v2.x and no install or upgrade commands)
+	needmono=-1		# assume we do not know anything
+	needwinforms=-1		# assume we do not know anything
+	monorepocmdA=""		# install commands
+	monorepocmdB=""
+	monorepocmdC=""
+	monorepocmdD=""
+	monoruntimeA=""
+	monowinformA=""
+	mono2to2repocmdA=""	# old v2.x to v2.4+ upgrade commands
+	mono2to2repocmdB=""
+	mono2to2repocmdC=""
+	mono2to2repocmdD=""
+	mono2to2runtimeA=""
+	mono2to2winformA=""
+	mono3to4repocmdA=""	# v3.x to v4.x upgrade commands
+	mono3to4repocmdB=""
+	mono3to4repocmdC=""
+	mono3to4repocmdD=""
+	mono3to4runtimeA=""
+	mono3to4winformA=""
+
+	# get our info that we need per distro
+	# NOTE: while we set monoinstallver to -1, to indicate that it is
+	#       is a distro we do not know about, if the user does have a
+	#       valid mono installed we will let that work.
+	case "$strdistro" in
+		Ubuntu)
+			# starting with Ubuntu 14.04, mono v3.x is what is available from
+			# main repo. we need v4.x and we need to force a different repo
+			if [ ${verdistroparts[0]} -lt 14 ]; then
+				monoinstallver=2
+
+				# NOTE: no repo changes needed
+				monoruntimeA="$aptgetpath install -y -qq libmono-system-runtime2.0-cil"
+				monowinformA="$aptgetpath install -y -qq libmono-winforms2.0-cil"
+			else
+				monoinstallver=4
+
+				# command to install if not there
+				monorepocmdA="wget 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF' -O $instdir/out && apt-key add $instdir/out && rm  $instdir/out"
+				monorepocmdB="echo 'deb http://download.mono-project.com/repo/debian wheezy main' | tee /etc/apt/sources.list.d/mono-xamarin.list"
+				monorepocmdC="$aptgetpath update"
+				monoruntimeA="$aptgetpath install -y -qq mono-runtime"
+				monowinformA="$aptgetpath install -y -qq libmono-system-windows-forms4.0"
+
+				# upgrade from v3.x to v4.x is same as refresh install
+				mono3to4repocmdA=$monorepocmdA
+				mono3to4repocmdB=$monorepocmdB
+				mono3to4repocmdC=$monorepocmdC
+				mono3to4runtimeA=$monoruntimeA
+				mono3to4winformA=$monowinformA
+			fi
+			;;
+		Debian)
+			monoinstallver=2	# stick mono v2.x (we do not know any better yet)
+
+			# NOTE: no repo changes needed
+			monoruntimeA="$aptgetpath install -y -qq libmono-system-runtime2.0-cil"
+			monowinformA="$aptgetpath install -y -qq libmono-winforms2.0-cil"
+			;;
+		Pardus)
+			# caannot check version because the verion for only one we had was: testing/unstable
+			# with that version, the main repo pulled in v3.x, but we want v4.x so we need to
+			# force to a different repo, and since it is Debian based, we steal the code from Ubuntu.
+			monoinstallver=4
+
+			# command to install if not there
+			# NOTE: libgdiplus repo needed for Debian 8.0 and later, but NOT Ubuntu
+			#       see: http://www.mono-project.com/docs/getting-started/install/linux/#debian-ubuntu-and-derivatives
+			monorepocmdA="wget 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF' -O $instdir/out && apt-key add $instdir/out && rm  $instdir/out"
+			monorepocmdB="echo 'deb http://download.mono-project.com/repo/debian wheezy main' | tee /etc/apt/sources.list.d/mono-xamarin.list"
+			monorepocmdC="echo 'deb http://download.mono-project.com/repo/debian wheezy-libjpeg62-compat main' | tee -a /etc/apt/sources.list.d/mono-xamarin.list"
+			monorepocmdD="$aptgetpath update"
+			monoruntimeA="$aptgetpath install -y -qq mono-runtime"
+			monowinformA="$aptgetpath install -y -qq libmono-system-windows-forms4.0"
+
+			# upgrade from v3.x to v4.x is same as refresh install
+			mono3to4repocmdA=$monorepocmdA
+			mono3to4repocmdB=$monorepocmdB
+			mono3to4repocmdC=$monorepocmdC
+			mono3to4repocmdD=$monorepocmdD
+			mono3to4runtimeA=$monoruntimeA
+			mono3to4winformA=$monowinformA
+			;;
+		openSUSE)
+			# these are all v2.x (but maybe not from 13.2 on)
+			# 0.x-10.x and 11.0 are not supported
+			# 11.1-11.4 need an upgrade
+			# 12.x needs an update
+			# 13.1 needs an update
+			# 13.2 (and probably beyond) will get v4.x
+			if [ ${verdistroparts[0]} -lt 11 ]; then
+				monoinstallver=-1	# distro not supported
+			elif [ ${verdistroparts[0]} == 11 ] && [ ${verdistroparts[1]} -lt 1 ]; then
+				monoinstallver=-1	# distro not supported
+			elif [ ${verdistroparts[0]} == 11 ]; then
+				monoinstallver=2	# mono v2.x
+
+				# older kernel, use mono-stable repo
+				monorepocmdA="$zypperpath addrepo -f http://download.mono-project.com/download-stable/openSUSE_11.1 mono-stable"
+				monorepocmdB="$zypperpath $zypperKeys refresh"
+				monoruntimeA="$zypperpath $zypperKeys -n install mono-stable:mono-core mono-stable:mono-data"
+				monowinformA="$zypperpath $zypperKeys -n install mono-stable:mono-winforms"
+
+				# upgrade from old v2.x to v2.4+ is same repo stuff, but different command
+				mono2to2repocmdA=$monorepocmdA
+				mono2to2repocmdB=$monorepocmdB
+				mono2to2runtimeA="$zypperpath $zypperKeys --non-interactive dist-upgrade --repo mono-stable"
+				mono2to2winformA="$zypperpath $zypperKeys -n install mono-stable:mono-winforms"
+			elif [ ${verdistroparts[0]} == 12 ]; then
+				monoinstallver=2	# mono v2.x
+
+				# New kernel (v3.0 or newer), can use default repos
+				# NOTE: no repo changes needed
+				monoruntimeA="$zypperpath $zypperKeys -n install mono-core mono-data"
+				monowinformA="$zypperpath $zypperKeys -n install mono-winforms"
+
+				# upgrade from old v2.x to v2.4+ is same repo stuff, but different command
+				# NOTE: no repo changes needed
+				mono2to2runtimeA="$zypperpath $zypperKeys -n update mono-core mono-data"
+				mono2to2winformA="$zypperpath $zypperKeys -n install mono-winforms"
+			elif [ ${verdistroparts[0]} == 13 ] && [ ${verdistroparts[1]} -le 1 ]; then
+				# main repo has v3.x, so need to handle upgrade
+				monoinstallver=4
+
+				monorepocmdA="$zypperpath addrepo -f http://download.opensuse.org/repositories/Mono:Factory/openSUSE_13.1/Mono:Factory.repo"
+				monorepocmdB="$zypperpath $zypperKeys refresh"
+				monoruntimeA="$zypperpath $zypperKeys -n install Mono_Factory:mono-core Mono_Factory:mono-data"
+				monowinformA="$zypperpath $zypperKeys -n install Mono_Factory:libmono-system-windows-forms4.0"
+
+				# upgrade from v3.x to v4.x is same as refresh install
+				mono3to4repocmdA=$monorepocmdA
+				mono3to4repocmdB=$monorepocmdB
+				mono3to4runtimeA="$zypperpath $zypperKeys -n install --force-resolution Mono_Factory:mono-core Mono_Factory:mono-data"
+				mono3to4winformA="$zypperpath $zypperKeys -n install --force-resolution Mono_Factory:libmono-system-windows-forms4.0"
+			else
+				# is only v4.x, no upgrades allowed
+				monoinstallver=4
+
+				monorepocmdA="$zypperpath addrepo -f http://download.opensuse.org/repositories/Mono:Factory/openSUSE_13.2/Mono:Factory.repo"
+				monorepocmdB="$zypperpath $zypperKeys refresh"
+				monoruntimeA="$zypperpath $zypperKeys -n install Mono_Factory:mono-core Mono_Factory:mono-data"
+				monowinformA="$zypperpath $zypperKeys -n install Mono_Factory:libmono-system-windows-forms4.0"
+
+				# upgrade from v3.x to v4.x is same as refresh install
+				mono3to4repocmdA=$monorepocmdA
+				mono3to4repocmdB=$monorepocmdB
+				mono3to4runtimeA="$zypperpath $zypperKeys -n install --force-resolution Mono_Factory:mono-core Mono_Factory:mono-data"
+				mono3to4winformA="$zypperpath $zypperKeys -n install --force-resolution Mono_Factory:libmono-system-windows-forms4.0"
+			fi
+			;;
+		SLED|SLES)
+			if [ ${verdistroparts[0]} -lt 11 ]; then
+				monoinstallver=-1	# distro not supported
+			elif [ ${verdistroparts[0]} == 11 ]; then
+				# is v2.x, but might need an upgrade
+				monoinstallver=2
+
+				monorepocmdA="$zypperpath addrepo -f http://origin-download.mono-project.com/download-stable/SLE_11 mono-stable"
+				monorepocmdB="$zypperpath $zypperKeys refresh"
+				monoruntimeA="$zypperpath $zypperKeys -n install mono-stable:mono-core mono-stable:mono-data"
+				monowinformA="$zypperpath $zypperKeys -n install mono-stable:mono-winforms"
+
+				# upgrade from old v2.x to v2.4+ is same repo stuff, but different command
+				mono2to2repocmdA=$monorepocmdA
+				mono2to2repocmdB=$monorepocmdB
+				mono2to2runtimeA="$zypperpath $zypperKeys -n update --force-resolution -r mono-stable mono-core mono-data"
+				mono2to2winformA="$zypperpath $zypperKeys -n install --force-resolution -r mono-stable mono-winforms"
+			elif [ ${verdistroparts[0]} == 12 ]; then
+				# is only v4.x, no upgrades allowed
+				monoinstallver=4
+
+				monorepocmdA="$zypperpath addrepo -f http://download.opensuse.org/repositories/Mono:Factory/SLE_12/Mono:Factory.repo"
+				monorepocmdB="$zypperpath $zypperKeys refresh"
+				monoruntimeA="$zypperpath $zypperKeys -n install mono-core mono-data"
+				monowinformA="$zypperpath $zypperKeys -n install libmono-system-windows-forms4.0"
+			else
+				# 13 and up, which we know nothing about
+				monoinstallver=-1
+			fi
+			;;
+		Fedora|RedHat)
+			monoinstallver=2	# stick mono v2.x (we do not know any better yet)
+
+			# NOTE: no repo changes needed
+			monoruntimeA="$yumpath -y -d1 install mono-core mono-data"
+			monowinformA="$yumpath -y -d1 install mono-winforms"
+			;;
+		CentOS)
+			monoinstallver=2	# stick mono v2.x (we do not know any better yet)
+
+			# CentOS doesn't have mono by default. need to 'get' repo that
+			# has it (see website: fedoraproject.org/wiki/EPEL)
+			monorepocmdA="$yumpath -y -d1 install epel-release"
+			monoruntimeA="$yumpath -y -d1 install mono-core mono-data"
+			monowinformA="$yumpath -y -d1 install mono-winforms"
+			;;
+		NeoKylin)
+			monoinstallver=2	# stick mono v2.x (that is what is has)
+
+			# This has mono by default, but not winforms. need to 'get' repo that
+			# has it (see website: fedoraproject.org/wiki/EPEL).
+			# NOTE: this is seems to be RedHat 7 based
+			monorepocmdA="$yumpath-config-manager --add-repo=https://dl.fedoraproject.org/pub/epel/7/x86_64"
+			monorepocmdB="rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+			monorepocmdC="$yumpath -y -d1 install epel-release"
+			monoruntimeA="$yumpath -y -d1 install mono-core mono-data"
+			monowinformA="$yumpath -y -d1 install mono-winforms"
+			;;
+		*)
+			echo_silent ""
+			echo_silent "Distro check missing from check_mono_installed ($strdistro)"
+			echo_silent ""
+			exit_and_pause 99
+			return
+			;;
+	esac
+
+	# see if mono is even installed
+	monojit=`which mono 2>> /dev/null`
+	if [ -z "$monojit" ]; then
+		needmono=$monoinstallver
+		needwinforms=$monoinstallver
+		monover=""
+
+		# use install commands as is
+		return
+	fi
+
+	# we have mono, so get the version
+	monover=`$monojit -V | sed -n 1p | sed 's/^.*version //' | sed ' s/ .*$//' 2>> /dev/null`
+
+	# see if v1.x
+	if [ "`echo $monover | grep '^1\.[0-9]' 2>> /dev/null`" != "" ]; then
+		# mono not supported
+		return
+	fi
+
+	# see if it is v2.4+
+	# we do this before checking for v2.0-2.3 because we do not want something
+	# like v2.10 to look like v2.1
+	if [ "`echo $monover | grep '^2\.[4-9]' 2>> /dev/null`" != "" ] || [ "`echo $monover | grep '^2\.[1-3][0-9]' 2>> /dev/null`" != "" ]; then
+		# we have mono v2.4+, so check for v2.x winforms
+		monowinforms=`find /usr/lib -name System.Windows.Forms.dll -print | grep '2\.[0-9]' 2>> /dev/null`
+
+		# if we know the distro needs v2.4+, then set flags.
+		# otherwise, if a distro we have no clue about BUT we have winforms,
+		# then all needed mono stuff is installed, so let install continue.
+		if [ $monoinstallver == 2 ]; then
+			needmono=0			# valid v2.4+
+			if [ -n "$monowinforms" ]; then
+				needwinforms=0		# have winforms v2.x
+			else
+				needwinforms=2		# need winforms v2.x
+			fi
+		elif [ $monoinstallver == -1 ] && [ -n "$monowinforms" ]; then
+			needmono=0			# consider valid v2.4+
+			needwinforms=0			# have winforms v2.x
+		fi
+		return
+	fi
+
+	# see if it is old v2.x
+	if [ "`echo $monover | grep '^2\.[0-3]' 2>> /dev/null`" != "" ]; then
+		# is old v2.x, but so only valid we if know how to upgrade to v2.4+
+		if [ $monoinstallver == 2 ] && [ "$mono2to2runtimeA" != "" ]; then
+			needmono=-2			# upgrade from old v2.x to v2.4+
+			needwinforms=2			# install v2.x
+			monorepocmdA=$mono2to2repocmdA	# use upgrade commands
+			monorepocmdB=$mono2to2repocmdB
+			monorepocmdC=$mono2to2repocmdC
+			monorepocmdD=$mono2to2repocmdD
+			monoruntimeA=$mono2to2runtimeA
+			monowinformA=$mono2to2winformA
+		fi
+		return
+	fi
+
+	# see if it is v3.x
+	if [ "`echo $monover | grep '^3\.[0-9]' 2>> /dev/null`" != "" ]; then
+		# we have mono v3.x+, so check for v4.x winforms in case monoinstallerver is -1
+		monowinforms=`find /usr/lib -name System.Windows.Forms.dll -print | grep '4\.[0-9]' 2>> /dev/null`
+
+		# is v3.x, but that is only valid we know how to upgrade to v4.x
+		if [ $monoinstallver == 4 ] && [ "$mono3to4runtimeA" != "" ]; then
+			needmono=-4			# upgrade from v3.x to v4.x
+			needwinforms=4			# install v4.x
+			monorepocmdA=$mono3to4repocmdA	# use upgrade commands
+			monorepocmdB=$mono3to4repocmdB
+			monorepocmdC=$mono3to4repocmdC
+			monorepocmdD=$mono3to4repocmdD
+			monoruntimeA=$mono3to4runtimeA
+			monowinformA=$mono3to4winformA
+		elif [ $monoinstallver == -1 ] && [ -n "$monowinforms" ]; then
+			needmono=0			# consider valid v4.x
+			needwinforms=0			# have winforms v4.x
+		fi
+		return
+	fi
+
+	# see if it is v4.x
+	if [ "`echo $monover | grep '^4\.[0-9]' 2>> /dev/null`" != "" ]; then
+		# we have mono v4.x+, so check for v4.x winforms
+		monowinforms=`find /usr/lib -name System.Windows.Forms.dll -print | grep '4\.[0-9]' 2>> /dev/null`
+
+		# if we know the distro needs v4.x, then set flags.
+		# otherwise, if a distro we have no clue about BUT we have winforms,
+		# then all needed mono stuff is installed, so let install continue.
+		if [ $monoinstallver == 4 ]; then
+			needmono=0			# valid v4.x
+			if [ -n "$monowinforms" ]; then
+				needwinforms=0		# have winforms v4.x
+			else
+				needwinforms=4		# need winforms v4.x
+			fi
+		elif [ $monoinstallver == -1 ] && [ -n "$monowinforms" ]; then
+			needmono=0			# consider valid v4.x
+			needwinforms=0			# have winforms v4.x
+		fi
+		return
+	fi
+
+	# if here, then it is v5.x or higher; which we do not support
+}
+
+# This function checks if sane is installed
+check_sane_installed()
+{
+	# Check for folder '/etc/sane.d'
+	saneInstalled=0
+	if [ -f "/etc/sane.d/dll.conf" ]; then
+		saneInstalled=1
+	fi
+}
+
+# This function checks if XSANE is installed
+check_xsane_installed()
+{
+	# get the path to XSANE
+	xsaneapp=`which xsane 2>> /dev/null`
+	if [ -n "$xsaneapp" ]; then
+		xsaneInstalled=1	# a XSANE is installed
+	else
+		xsaneInstalled=0
+	fi
+}
+
+# This function figures out if 'hal' is installed
+check_hal_installed()
+{
+	# What distro are we running on?
+	if [ "$strdistropkg" == ".deb" ]; then
+		# use dpkg to check for install status.
+		# Assume 'hal' is not installed.
+		halInstalled=0
+		needlibudev=1
+		# If 'hal' has never been installed, we will get an empty string.
+		tmpString1=`$dpkgpath -s hal 2>> /dev/null`
+		if [ -n "$tmpString1" ]; then
+			# 'hal' is installed, or has been removed from the system.
+			# Check if it is currently installed.
+			tmpString2=`$dpkgpath -s hal | grep -i 'Status: install' 2>> /dev/null`
+			if [ -n "$tmpString2" ]; then
+				# Found the string we were looking for. 'hal' is installed.
+				halInstalled=1
+				needlibudev=0
+			fi
+		fi
+	else
+		# For all other distros, use 'rpm -qa'
+		tmpString=`rpm -qa | grep 'hal-[0-9]' 2>> /dev/null`
+		halInstalled=0
+		needlibudev=1
+		if [ -n "$tmpString" ]; then
+			halInstalled=1
+			needlibudev=0
+		fi
+	fi
+}
+
+# This function figures out if 'libudev' is installed
+#
+# on exit:
+#	libudevcmd	command to install libudev0 from this package
+check_libudev_installed()
+{
+	# handle distro differences
+	case "$strdistro" in
+		Ubuntu|Debian|Pardus)
+			libudevcmd="$dpkgpath -i libudev0*.deb"
+			;;
+		Fedora|openSUSE|SLED|SLES|RedHat|NeoKylin)
+			libudevcmd="rpm -Uvh --replacepkgs libudev0*.rpm"
+			;;
+		CentOS)
+			# CentOS will say libc is missing, but we don't care; just force the install
+			libudevcmd="rpm -i -v --hash --force --nodeps libudev0*.rpm"
+			;;
+		*)
+			echo_silent ""
+			echo_silent "Distro check missing from check_libudev_installed() for $strdistro"
+			echo_silent ""
+			exit_and_pause 99
+			return
+			;;
+	esac
+
+	# What distro are we running on?
+	if [ "$strdistropkg" == ".deb" ]; then
+		# use dpkg to check for install status.
+		# Assume 'libudev0' is not installed.
+		libudevInstalled=0
+		# If 'libudev0' has never been installed, we will get an empty string.
+		tmpString1=`$dpkgpath -s libudev0 2>> /dev/null`
+		if [ -n "$tmpString1" ]; then
+			# 'libudev0' is installed, or has been removed from the system.
+			# Check if it is currently installed.
+			tmpString2=`$dpkgpath -s libudev0 | grep -i 'Status: install' 2>> /dev/null`
+			if [ -n "$tmpString2" ]; then
+				# Found the string we were looking for. 'libudev0' is installed.
+				libudevInstalled=1
+			fi
+		fi
+
+		# if no 'libudev0', it might be a new distro that has 'libudev1'. if that
+		# is the case AND we have a libudev0 package as part of this driver, then
+		# we will want to install the libudev0 that we have.
+		tmpString=`ls libudev0*.deb 2>> /dev/null`
+		if [ $libudevInstalled == 0 ] && [ -n "$tmpString" ]; then
+			# see if 'libudev1' is installed (which is true for distros like
+			# like Ubuntu 13.04). if it is there, then we know the distro
+			# supports libudev, but we need to have version 0
+			tmpString1=`$dpkgpath -s libudev1 2>> /dev/null`
+			tmpString2=`$dpkgpath -s libudev1 | grep -i 'Status: install' 2>> /dev/null`
+			if [ -n "$tmpString1" ] && [ -n "$tmpString2" ]; then
+				# 'libudev1' was installed at some point AND is currently installed
+				# so we can go ahead and install our supplied 'libudev0'
+				installlibudev0=1
+			fi
+		fi
+	else
+		# For all other distros, use 'rpm -qa'
+		tmpString=`rpm -qa | grep 'libudev0' 2>> /dev/null`
+		libudevInstalled=0
+		if [ -n "$tmpString" ]; then
+			libudevInstalled=1
+		fi
+
+		# if no 'libudev0', it might be a new distro that has 'libudev1'. if that
+		# is the case AND we have a libudev0 package as part of this driver, then
+		# we will want to install the libudev0 that we have.
+		tmpString=`ls libudev0*.rpm 2>> /dev/null`
+		if [ $libudevInstalled == 0 ] && [ -n "$tmpString" ]; then
+			# see if 'libudev1' is installed (which is true for distros like
+			# openSUSE 13.1) or if 'libgudev1' is installed (which is true
+			# for distros like Fedora 20). If it is there, then we know the
+			# distro supports libudev, but we need to have version 0.
+			tmpString1=`rpm -qa | grep 'libudev1' 2>> /dev/null`
+			tmpString2=`rpm -qa | grep 'libgudev1' 2>> /dev/null`
+			if [ -n "$tmpString1" ] || [ -n "$tmpString2" ]; then
+				# 'libudev1' is currently installed
+				# so we can go ahead and install our supplied 'libudev0'
+				installlibudev0=1
+			fi
+		fi
+	fi
+}
+
+
+################################################################################
+# Installer Main Body
+################################################################################
+
+
+# Before we do ANYTHING, make sure they are running as root
+if [ `id -u` != "0" ]; then
+	echo ""
+	echo ""
+	echo "******************************"
+	echo "You must be logged into the root account (i.e. super user) in order"
+	echo "to install this scanner."
+	echo ""
+	exit 2
+fi
+
+
+# setup install log; this MUST be called before anything else (besides root check)
+install_init
+
+# check command line
+check_commandline $*
+
+
+################################################################################
+# Introduction
+################################################################################
+echo_silent
+echo_silent "KODAK SCANMATE i1100 Scanners Installation"
+echo_silent
+print_license_agreement
+echo_status
+echo_status "This scanner uses OpenUSB and TWAIN Data Source Manager open source"
+echo_status "software, which are already included in this package."
+echo_status
+echo_status "Source code can be downloaded from:"
+echo_status "- OpenUSB: http://openusb.wiki.sourceforge.net"
+echo_status "- TWAIN Data Source Manager: http://sourceforge.net/projects/twain-dsm"
+
+# If there is a custom pre install, call it now
+if [ -f "custompre.sh" ]; then
+	./custompre.sh
+fi
+
+
+################################################################################
+# Verify Distribution
+################################################################################
+
+# What distro are we running on?
+strdistro=""
+verdistro=""
+strdistropkg=""
+strdistrodesc=""
+strdistrodist=""
+lsbrelease=`which lsb_release 2>> /dev/null`
+if [ "$lsbrelease" != "" ]; then
+	# get the distro's full description and version
+	strdistrodesc=`lsb_release -d | sed 's/Description: *	*//gI'`
+	verdistro=`lsb_release -r | sed 's/Release: *	*//gI'`
+
+	# get the distro's distribution
+	strdistrodist=`lsb_release -i | sed 's/Distributor ID: *	* *//gI'`
+	if [ "`echo $strdistrodist | grep -i Ubuntu`" != "" ]; then
+		strdistro="Ubuntu"
+		strdistropkg=".deb"
+	elif [ "`echo $strdistrodist | grep -i Debian`" != "" ]; then
+		strdistro="Debian"
+		strdistropkg=".deb"
+	elif [ "`echo $strdistrodist | grep -i Pardus`" != "" ]; then
+		strdistro="Pardus"
+		strdistropkg=".deb"
+	elif [ "`echo $strdistrodist | grep -i Fedora`" != "" ]; then
+		strdistro="Fedora"
+		strdistropkg=".rpm"
+		seLinuxCheck=1
+	elif [ "`echo $strdistrodist | grep -i openSUSE`" != "" ]; then
+		strdistro="openSUSE"
+		strdistropkg=".rpm"
+	elif [ "`echo $strdistrodist | grep -i SUSE`" != "" ]; then
+		# this MUST be after the check for openSUSE
+		# see if it is Desktop or Server
+		if [ "`echo $strdistrodesc | grep -i Desktop`" != "" ]; then
+			strdistro="SLED"
+		else
+			strdistro="SLES"
+		fi
+		strdistropkg=".rpm"
+	elif [ "`echo $strdistrodist | grep -i RedHat`" != "" ]; then
+		strdistro="RedHat"
+		strdistropkg=".rpm"
+		seLinuxCheck=1
+	elif [ "`echo $strdistrodist | grep -i CentOS`" != "" ]; then
+		strdistro="CentOS"
+		strdistropkg=".rpm"
+		seLinuxCheck=1
+	elif [ "`echo $strdistrodist | grep -i NeoKylin`" != "" ]; then
+		strdistro="NeoKylin"
+		strdistropkg=".rpm"
+		seLinuxCheck=1
+	fi
+elif [ -f "/etc/SuSE-release" ]; then
+	# SuSE without lsb_release, so see if openSUSE or Enterprise Desktop/Server
+	strdistrodesc=`sed -n 1p /etc/SuSE-release`
+	verdistro=`echo $strdistrodesc | sed 's/^.*Server //I' | sed 's/^.*Desktop //I' | sed 's/^.*SUSE //I' | sed 's/ .*$//'`
+	if [ "`echo $strdistrodesc | grep -i openSUSE`" != "" ]; then
+		# it is SuSE, so get version info
+		strdistro="openSUSE"
+	elif [ "`echo $strdistrodesc | grep -i SUSE`" != "" ]; then
+		# it is SuSE Enterprise Desktop or Server, so get version info
+		if [ "`echo $strdistrodesc | grep -i Desktop`" != "" ]; then
+			strdistro="SLED"
+		else
+			strdistro="SLES"
+		fi
+	fi
+	strdistropkg=".rpm"
+elif [ -f "/etc/fedora-release" ]; then
+	# Fedora without lsb_release, so make sure
+	strdistrodesc=`sed -n 1p /etc/fedora-release`
+	verdistro=`echo $strdistrodesc | sed 's/^.*release //I' | sed 's/ .*$//'`
+	if [ "`echo $strdistrodesc | grep -i fedora`" != "" ]; then
+		# it is Fedora, so get version info
+		strdistro="Fedora"
+	fi
+	strdistropkg=".rpm"
+	seLinuxCheck=1
+elif [ -f "/etc/redhat-release" ]; then
+	# RedHat without lsb_release, so make sure
+	strdistrodesc=`sed -n 1p /etc/redhat-release`
+	verdistro=`echo $strdistrodesc | sed 's/^.*release //I' | sed 's/ .*$//'`
+	if [ "`echo $strdistrodesc | grep -i 'red hat'`" != "" ] || [ "`echo $strdistrodesc | grep -i 'redhat'`" != "" ]; then
+		# it is RedHat, so get version info
+		strdistro="RedHat"
+	fi
+	strdistropkg=".rpm"
+	seLinuxCheck=1
+fi
+
+# If we didn't find a valid Linux distribution name, leave now.
+if [ -z "$strdistro" ]; then
+	# Illegal distro
+	strdistrobit=`uname -m`
+	echo_silent ""
+	echo_silent ""
+	echo_silent "******************************"
+	echo_silent "Your operating system is not supported."
+	echo_silent "   Detected: $strdistrodesc"
+	echo_silent "             ('$strdistrodist' $verdistro - $strdistro $strdistrobit $strdistropkg)"
+	exit_and_pause 4
+fi
+
+# see if it is a 64-bit distro
+# should be getting 'x86_64' or 'i686'
+strdistrobit=`uname -m`
+strdistrodir=""
+if [ "$strdistrobit" == "x86_64" ] || [ "$strdistrobit" == "amd64" ]; then
+	distro64bit=1
+	strdistrodir="x86_64"
+elif [ "$strdistrobit" == "i386" ] || [ "$strdistrobit" == "i586" ] || [ "$strdistrobit" == "i686" ]; then
+	distro64bit=0
+	strdistrodir="i586"
+else
+	# unsupported processor
+	echo_silent ""
+	echo_silent ""
+	echo_silent "******************************"
+	echo_silent "Your machine/processor is not supported."
+	echo_silent "   Detected: $strdistrodesc"
+	echo_silent "             ('$strdistrodist' $verdistro - $strdistro $strdistrobit $strdistropkg)"
+	exit_and_pause 4
+fi
+
+# see if we have a 64-bit or 32-bit package
+pkgfile64=`ls kodak_i11xx*.x86_64$strdistropkg 2>> /dev/null`
+if [ "$pkgfile64" == "" ]; then
+	pkgfile64=`ls kodak_i11xx*.amd64$strdistropkg 2>> /dev/null`
+fi
+pkgfile32=`ls kodak_i11xx*.i386$strdistropkg 2>> /dev/null`
+if [ "$pkgfile32" == "" ]; then
+	pkgfile32=`ls kodak_i11xx*.i586$strdistropkg 2>> /dev/null`
+fi
+if [ "$pkgfile32" == "" ]; then
+	pkgfile32=`ls kodak_i11xx*.i686$strdistropkg 2>> /dev/null`
+fi
+if [ "$pkgfile64" != "" ] && [ "$pkgfile32" != "" ]; then
+	# we should not have both. either the programmer screwed up or the user did
+	echo_silent ""
+	echo_silent ""
+	echo_silent "******************************"
+	echo_silent "This installation is invalid. Both 32-bit and 64-bit packages are not allowed."
+	echo_silent "   Detected: $strdistrodesc"
+	echo_silent "             ('$strdistrodist' $verdistro - $strdistro $strdistrobit $strdistropkg)"
+	exit_and_pause 4
+fi
+
+# find the ADF package with the extension that we need for this distro
+if [ "$strdistrodir" == "x86_64" ]; then
+	if [ "$pkgfile64" == "" ]; then
+		echo_silent ""
+		echo_silent ""
+		echo_silent "******************************"
+		echo_silent "This installation is not compatible with your operating system."
+		if [ "$pkgfile32" != "" ]; then
+			echo_silent "This is a 32-bit installation, but you have a 64-bit operating system."
+		else
+			echo_silent "Your operating system requires a $strdistropkg installation package."
+		fi
+		echo_silent "   Detected: $strdistrodesc"
+		echo_silent "             ('$strdistrodist' $verdistro - $strdistro $strdistrobit $strdistropkg)"
+		exit_and_pause 4
+	fi
+elif [ "$strdistrodir" == "i586" ]; then
+	if [ "$pkgfile32" == "" ]; then
+		echo_silent ""
+		echo_silent ""
+		echo_silent "******************************"
+		echo_silent "This installation is not compatible with your operating system."
+		if [ "$pkgfile64" != "" ]; then
+			echo_silent "This is a 64-bit installation, but you have a 32-bit operating system."
+		else
+			echo_silent "Your operating system requires a $strdistropkg installation package."
+		fi
+		echo_silent "   Detected: $strdistrodesc"
+		echo_silent "             ('$strdistrodist' $verdistro - $strdistro $strdistrobit $strdistropkg)"
+		exit_and_pause 4
+	fi
+else
+	# package processor is not supported (if here, then programmer error)
+	echo_silent ""
+	echo_silent ""
+	echo_silent "******************************"
+	echo_silent "This installation is not compatible with your operating system."
+	echo_silent "   Detected: $strdistrodesc"
+	echo_silent "             ('$strdistrodist' $verdistro - $strdistro $strdistrobit $strdistropkg)"
+	exit_and_pause 4
+fi
+
+# split up the distro version for use throughout the script
+IFSprev=$IFS
+IFS="."
+verdistroparts=( $verdistro )
+IFS=$IFSprev			# put back the old value
+
+# Get package/install paths
+if [ "$strdistropkg" == ".deb" ]; then
+	dpkgpath=`which dpkg 2>> /dev/null`
+	aptgetpath=`which apt-get 2>> /dev/null`
+elif [ "$strdistropkg" == ".rpm" ]; then
+	# First check if 'zypper' is installed
+	zypperpath=`which zypper 2>> /dev/null`
+	if [ -n "$zypperpath" ]; then
+		zypperInstalled=1
+		zypperKeys=`$zypperpath help | grep 'gpg-auto-import-keys' 2>> /dev/null`
+		if [ -n "$zypperKeys" ]; then
+			zypperKeys="--gpg-auto-import-keys"
+		fi
+	else
+		# No 'zypper', so check if 'yum' is installed
+		yumpath=`which yum 2>> /dev/null`
+		if [ -n "$yumpath" ]; then
+			yumInstalled=1
+		fi
+	fi
+fi
+
+
+################################################################################
+# Check versions
+################################################################################
+
+echo_status
+echo_status "Checking software versions, please wait..."
+echo_status    "   Description:         $strdistrodesc"
+echo_status    "                        ('$strdistrodist' $verdistro - $strdistro $strdistrobit $strdistropkg)"
+echo_status -n "   Kernel:              "
+
+#
+# Get the 'full' kernel release number
+#
+strfullkernel=$(uname -r)
+
+# Extract the short kernel version (e.g. "2.6.30"):
+#	- Starting at the left, look for the first character that
+#	  isn't a numeric character or a "." character.
+#	- Once we have that, take the substring leading up to that.
+i=0
+while (( i <= ${#strfullkernel} ))
+do
+	chartemp=${strfullkernel:$i:1}
+	# Look for numeric character
+	chartemp1=`expr match "$chartemp" '\([0-9]\)'`
+	# Look for decimal point
+	chartemp2=`expr match "$chartemp" '\([.]\)'`
+	if [ -z "$chartemp1" ] && [ -z "$chartemp2" ]; then
+		# Found a non-numeric character. Pull out the substring.
+		strkernel=${strfullkernel:0:$i}
+		break
+	fi
+	((i=i+1))
+done
+
+# Status Message
+echo_status "v$strkernel"
+
+
+# Split the kernel version into its sections
+IFSprev=$IFS
+IFS="."
+kernelparts=( $strkernel )
+IFS=$IFSprev	# put back the old value
+
+# Check if SELinux is installed
+seLinuxInstalled=0
+if [ $seLinuxCheck == 1 ]; then
+	chconpath=`which chcon 2>> /dev/null`
+	if [ -n "$chconpath" ]; then
+		seLinuxInstalled=1
+		# Status Message
+		echo_status "   SELinux:             installed"
+	fi
+fi
+
+
+# Check if we are running with an 'old' kernel (pre 2.6.30), or 'new' kernel.
+newKernel=0
+if [ ${kernelparts[0]} -gt 2 ]; then
+	# new kernel (v3.x or greater)
+	newKernel=1
+else
+	if [ ${kernelparts[0]} == 2 ] && [ ${kernelparts[1]} -gt 6 ]; then
+		# new kernel (v2.7 or greater)
+		newKernel=1
+	else
+		if [ ${kernelparts[0]} == 2 ] && [ ${kernelparts[1]} == 6 ] && [ ${kernelparts[2]} -gt 29 ]; then
+			# new kernel (v2.6.30 or greater)
+			newKernel=1
+		fi
+	fi
+fi
+
+# see if QT v3.x is already installed
+echo_status -n "   QT v3.x:             "
+check_qt_installed
+if [ $qtsupported == 0 ]; then
+	echo_status "not supported (ScanTWAIN will not be installed)"
+elif [ $qtsupported == -1 ]; then
+	echo_status "not needed (ScanTWAIN not supported on 64-bit)"
+elif [ $qtinstalled == 1 ]; then
+	echo_status "installed"
+else
+	echo_status "not installed"
+fi
+
+
+# see if mono and mono-winforms are already installed
+echo_status -n "   mono:                "
+check_mono_installed
+case $needmono in
+	0)
+		echo_status "v$monover installed"
+		;;
+	-1)
+		echo_status "not supported (v$monover)"
+		;;
+	-2)
+		echo_status "needs upgrade to v2.4+ (has v$monover)"
+		;;
+	-4)
+		echo_status "needs upgrade to v4.x (has v$monover)"
+		;;
+	2)
+		echo_status "not installed (need v2.4+)"
+		;;
+	4)
+		echo_status "not installed (need v4.x)"
+		;;
+	*)
+		echo_silent ""
+		echo_silent "needmono check missing ($needmono)"
+		echo_silent ""
+		exit_and_pause 99
+		return
+		;;
+esac
+echo_status -n "   mono-winforms:       "
+case $needwinforms in
+	0)
+		echo_status "installed"
+		;;
+	-1)
+		echo_status "not supported"
+		;;
+	2)
+		echo_status "not installed (need v2.x)"
+		;;
+	4)
+		echo_status "not installed (need v4.x)"
+		;;
+	*)
+		echo_silent ""
+		echo_silent "needwinforms check missing ($needwinforms)"
+		echo_silent ""
+		exit_and_pause 99
+		return
+		;;
+esac
+
+# Check if 'sane' is installed
+echo_status -n "   SANE:                "
+check_sane_installed
+if [ $saneInstalled == 1 ]; then
+	echo_status "installed"
+else
+	echo_status "not installed"
+fi
+
+# Check if 'XSANE' is installed
+echo_status -n "   XSANE:               "
+check_xsane_installed
+if [ $xsaneInstalled == 1 ]; then
+	echo_status "installed"
+else
+	echo_status "not installed (not required)"
+fi
+
+#
+# Check if 'hal' is installed
+# (NOTE: If no 'hal' on an old distro (kernel < 2.6.30), then error)
+#
+check_hal_installed
+echo_status -n "   hal:                 "
+if [ $halInstalled == 1 ]; then
+	echo_status "installed"
+else
+	# No "hal" installed. If old kernel (kernel < 2.6.30), then error...
+	if [ $newKernel == 0 ]; then
+		echo_status "not installed"
+		echo_silent ""
+		echo_silent ""
+		echo_silent "******************************"
+		echo_silent "We require 'hal' to be installed for this version of the kernel."
+		echo_silent "NOTE: you will need to exit this installer and install the above"
+		echo_silent "package yourself."
+		exit_and_pause 5
+	else
+		echo_status "not installed (using libudev0)"
+	fi
+fi
+
+#
+# Check if 'libudev0' is installed.
+#
+echo_status -n "   libudev0:            "
+check_libudev_installed
+if [ $libudevInstalled == 1 ]; then
+	echo_status "installed"
+else
+	# are we going to install our 'libudev0'?
+	if [ $installlibudev0 == 1 ]; then
+		echo_status "not installed (using supplied libudev0)"
+	else
+		echo_status "not installed"
+	fi
+fi
+
+#
+# If we are using a newer kernel (kernel >= 2.6.30):
+#    - if "udev" is installed (or about to be installed), use the newer version of OpenUSB.
+#    - if no "udev", but "hal" is installed, use the older version of OpenUSB.
+#    - else set the flag to try and install udev later.
+#
+needNewOpenUSB=0
+if [ $newKernel == 1 ]; then
+	if [ $libudevInstalled == 1 ] || [ $installlibudev0 == 1 ]; then
+		# Newer kernal with "udev" installed. We need the new OpenUSB.
+		needNewOpenUSB=1
+	else
+		# Newer kernel with no "udev" installed. Is "hal" installed?
+		if [ $halInstalled == 0 ]; then
+			# Newer kernel - no "hal" or "udev" installed:
+			#   - set flag so we try to install udev later
+			needNewOpenUSB=1
+			# 7/23/15 - we should only get here if we did't include libudev0.
+			# That should only happen if we built the pacakge incorrectly.
+			# So we really never get here, but in case we do.
+			echo_silent ""
+			echo_silent "Required libudev is not installed and was not included in this installation."
+			echo_silent "Please install 'libudev0' manually and re-run this installer."
+			print_not_completed_message 21
+		fi
+	fi
+fi
+
+#
+# Determine if OpenUSB is already installed and if it's the correct version.
+# For older distros with 'hal' installed, we need OpenUSB version 1.1.0.
+# For newer distros using 'libudev0', we need OpenUSB version 1.1.13.
+# If it is installed, but it's not the correct version, then remove it before
+# installing.
+echo_status -n "   OpenUSB:             "
+installOpenusb=0
+removeOpenusb=0
+openusbFound=`find /usr -name libopenusb.so -print`
+if [ -z "$openusbFound" ]; then
+	# Didn't find any OpenUSB installations. Let's plan to install it.
+	installOpenusb=1
+else
+	# We found an OpenUSB. Check if we need to remove it ("upgrade").
+	if [ $needNewOpenUSB == 0 ]; then
+		# We need the older version of OpenUSB ('hal'):
+		#   We found an OpenUSB. However, due to inconsistent versioning, we can't
+		#   tell if its old or new. So, mark for "upgrade" to version 1.1.0.
+		removeOpenusb=1
+		installOpenusb=1
+	else
+		# This machine requires the newer version of OpenUSB. Check the installed
+		# version to see if it needs to be upgraded.
+		openusbFoundA=`find /usr -name 'libopenusb.so\.[0-9]\.[0-9]\.[1-9][3-9]' -print`
+		openusbFoundB=`find /usr -name 'libopenusb.so\.[1-9]\.*\.*' -print`
+		if [ -z "$openusbFoundA" ] && [ -z "$openusbFoundB" ]; then
+			removeOpenusb=1
+			installOpenusb=1
+		fi
+	fi
+fi
+
+# Status Message
+if [ $removeOpenusb == 1 ]; then
+	echo_status "needs upgrade"
+else
+	if [ $installOpenusb == 1 ]; then
+		echo_status "not installed"
+	else
+		echo_status "installed"
+	fi
+fi
+
+
+# Determine if the TWAIN DSM is already installed and if it's version 2.3.1 or
+# higher. If it is installed, but it's not version 2.3.1 or higher remove it
+# before installing
+echo_status -n "   TWAIN DSM:           "
+installTwainDsm=0
+removeTwainDsm=0
+twainDsmFound=`find /usr -name libtwaindsm.so -print`
+if [ -z "$twainDsmFound" ]; then
+	installTwainDsm=1
+else
+	twainDsmFoundA=`find /usr -name 'libtwaindsm.so\.[2-9]\.[3-9]\.[1-9]' -print`
+	twainDsmFoundB=`find /usr -name 'libtwaindsm.so\.[3-9]\.[0-9]\.[0-9]' -print`
+	if [ -z "$twainDsmFoundA" ] && [ -z "$twainDsmFoundB" ]; then
+		removeTwainDsm=1
+		installTwainDsm=1
+	fi
+fi
+
+# Status Message
+if [ $removeTwainDsm == 1 ]; then
+	echo_status "needs upgrade"
+else
+	if [ $installTwainDsm == 1 ]; then
+		echo_status "not installed"
+	else
+		echo_status "installed"
+	fi
+fi
+
+
+################################################################################
+# Display the Upgrade Message, if appropriate
+################################################################################
+if [ $removeOpenusb == 1 ] || [ $removeTwainDsm == 1 ]; then
+	# Prompt the user
+	echo_default ""
+	echo_default ""
+	echo_default "******************************"
+	echo_default "There are package(s) that are already on your computer that must be"
+	echo_default "upgraded in order for this scanner to work. The following is a list"
+	echo_default "of the package(s) and the version they will be upgraded to:"
+	if [ $removeOpenusb == 1 ]; then
+		# Which version to upgrade to? Depends on whether 'hal' is installed.
+		if [ $needNewOpenUSB == 0 ]; then
+			# 'hal': Install OpenUSB version 1.1.0 (older version)
+			echo_default "- OpenUSB v1.1.0"
+		else
+			# No 'hal, using 'libudev'. Install OpenUSB version 1.1.13
+			echo_default "- OpenUSB v1.1.13"
+		fi
+	fi
+	if [ $removeTwainDsm == 1 ]; then
+		echo_default "- TWAIN Data Source Manager v2.3.1"
+	fi
+	echo_default    ""
+	echo_default -n "Do you want to upgrade the above package(s)? (Y/n) "
+	read_default installOption Y
+	if [ "$installOption" == "N" ]; then
+		# User wants to skip the upgrade. Cancel the install.
+		print_cancelled_message 11 "do not upgrade packages"
+	fi
+	# User wants to upgrade or use default which is upgrade
+fi
+
+
+################################################################################
+# Display the Mono Message(s)
+################################################################################
+skipUI=0
+
+#
+# Check if mono or mono-winforms needs to installed or upgraded)
+#
+if [ $needmono != 0 ] || [ $needwinforms != 0 ]; then
+	check_for_internet
+
+	# let user decide whether to install/upgrade Mono or not.
+	echo_default    ""
+	echo_default    ""
+	echo_default    "******************************"
+	case $needmono in
+		0)
+			# mono is ok, so we will prompt about winforms
+			# NOTE: any winforms upgrade would occur if mono needed an
+			#       upgrade, so we do not have to worry about upgrade paths
+			case $needwinforms in
+				2)
+					# no mono-winforms installed and distro gets Mono v2.4+
+					echo_default    "The mono-winforms v2.x+ package is not installed on your computer."
+					prompttmp="Do you want to install mono-winforms v2.x? (Y/n) "
+					;;
+				4)
+					# no mono-winforms installed and distro gets Mono v4.x+
+					echo_default    "The mono-winforms v4.x+ package is not installed on your computer."
+					prompttmp="Do you want to install mono-winforms v4.x? (Y/n) "
+					;;
+				*)
+					echo_silent ""
+					echo_silent "mono-winforms check missing: $needwinforms"
+					echo_silent ""
+					exit_and_pause 99
+					return
+					;;
+			esac
+			;;
+		-1)
+			echo_default    "The installer cannot determine which mono package to install"
+			echo_default    "on your computer or you have an incompatible version."
+			echo_default    "The installer typically needs v2.4+ or v4.x."
+			prompttmp=""	# force non-netowrk path since we cannot install
+			;;
+		-2)
+			# old v2.x mono installed, need to upgrade to v2.4+
+			echo_default    "The mono package on your computer is older than v2.4."
+			echo_default    "You need to upgrade to v2.x that is v2.4 or higher."
+			prompttmp="Do you want to upgrade to mono v2.4+? (Y/n) "
+			;;
+		-4)
+			# v3.x mono installed, need to upgrade to v4.x
+			echo_default    "Version 3.x of the mono package is installed on your computer."
+			echo_default    "It needs to be upgraded to version 4.x."
+			prompttmp="Do you want to upgrade to mono v4.x? (Y/n) "
+			;;
+		2)
+			# no mono installed and distro gets Mono v2.4+
+			echo_default    "The mono v2.4+ package is not installed on your computer."
+			prompttmp="Do you want to install mono v2.4+? (Y/n) "
+			;;
+		4)
+			# no mono installed and distro gets Mono v4.x+
+			echo_default    "The mono v4.x package is not installed on your computer."
+			prompttmp="Do you want to install mono v4.x? (Y/n) "
+			;;
+		*)
+			echo_silent ""
+			echo_silent "mono check missing: $needmono"
+			echo_silent ""
+			exit_and_pause 99
+			return
+			;;
+	esac
+	echo_default    "This package is required by the TWAIN driver's user"
+	echo_default    "interface (i.e. UI). However, the UI is not required"
+	echo_default    "in order to scan."
+	if [ "$prompttmp" != "" ] && [ $useInternet == 1 ]; then
+		echo_default    "This means you can skip this step if your scanning"
+		echo_default    "application does not need the UI or you do not want"
+		echo_default    "this package. If you skip this step, the UI will be"
+		echo_default    "disabled and you will need to re-run this installer"
+		echo_default    "in order to enable the UI."
+		echo_default    ""
+		echo_default    "NOTE: this installer will get the package from the,"
+		echo_default    "      internet so you must be connected to the"
+		echo_default    "      internet or the installation will fail."
+		echo_default    ""
+		echo_default -n $prompttmp
+		read_default installOption Y
+		if [ "$installOption" == "N" ] || [ $nomonook == 1 ]; then
+			# User wants to skip the mono install.
+			skipUI=1
+		fi
+	else
+		echo_default    "This means you can continue without this package if your"
+		echo_default    "scanning application does not need the UI. If you"
+		echo_default    "continue, the UI will be disabled and you will need to"
+		echo_default    "re-run this installer in order to enable the UI."
+		echo_default    ""
+		echo_default    "NOTE: To get the proper package, you will need to exit"
+		echo_default    "      this installer and install the package yourself."
+		echo_default    ""
+		echo_default -n "Do you want to continue this installation, without the UI? (y/N) "
+		read_default installOption N
+		if [ "$installOption" == "N" ] && [ $nomonook != 1 ]; then
+			# User wants to cancel out of the install.
+			print_cancelled_message 12 "mono not installed"
+		fi
+
+		# User wants to continue without the UI.
+		skipUI=1
+	fi
+fi
+
+
+################################################################################
+# Display the Sane Message(s)
+################################################################################
+# Check if 'sane' is installed
+check_sane_installed
+if [ $saneInstalled == 0 ]; then
+	# If the current distro has no 'sane' installed, ask the user if they
+	# want to continue without it. If so, they can't scan using xsane.
+	echo_default    ""
+	echo_default    ""
+	echo_default    "******************************"
+	echo_default    "The SANE package is not installed on your computer. This package is"
+	echo_default    "required by the scanner's SANE driver. However, you can scan using"
+	echo_default    "the scanner's TWAIN driver. This means you can continue this"
+	echo_default    "installation, but you will not have a SANE driver."
+	echo_default    ""
+	echo_default	"NOTE: if you install SANE later, you will need to re-run this"
+	echo_default    "installer to get the SANE driver."
+	echo_default    ""
+	echo_default -n "Do you want to continue this installation, without the SANE driver? (y/N) "
+	read_default installOption N
+	if [ "$installOption" == "N" ] && [ $nosaneok != 1 ]; then
+		# User wants to cancel the install.
+		print_cancelled_message 14 "SANE not installed"
+	fi
+
+	# User wants to continue without sane. Proceed to the next step.
+fi
+
+
+################################################################################
+# Display the Prerequisites Message
+################################################################################
+
+
+#
+# Ask the user what to install
+#
+if [ $qtinstalled == 0 ]; then
+	check_for_internet
+	if [ $useInternet == 1 ]; then
+		# We are missing at least one required package. Are we on a distro where we can
+		# install packages? If so, ask the user if they want to install them.
+		echo_default    ""
+		echo_default    ""
+		echo_default    "******************************"
+		echo_default    "The following package(s) are not installed on your computer and must"
+		echo_default    "be installed in order for this scanner to work:"
+		echo_default    "- QT v3.x"
+		echo_default    ""
+		echo_default    "NOTE: this installer will get the package(s) from the internet, so"
+		echo_default    "you must be connected to the internet or the installation will fail."
+		echo_default    ""
+		echo_default -n "Do you want to install the above packages? (Y/n) "
+		read_default installOption Y
+		if [ "$installOption" == "N" ]; then
+			# User wants to cancel out of the install.
+			print_cancelled_message 15 "do not get QT packages from internet"
+		fi
+
+		# User wants to install the required packages.
+	else
+		# If we cannot install packages on this distro, then tell the user to install them first
+		# and re-run the installer.
+		echo_silent    ""
+		echo_silent    ""
+		echo_silent    "******************************"
+		echo_silent    "The following package(s) are not installed on your computer and must"
+		echo_silent    "be installed in order to for this scanner to work:"
+		echo_silent    "- QT v3.x"
+		echo_silent    ""
+		echo_silent    "NOTE: you will need to exit this installer and install the above"
+		echo_silent    "package(s) yourself."
+		exit_and_pause 30
+	fi
+fi
+
+
+################################################################################
+# Prompt for Install
+################################################################################
+
+
+# see if the scanner is not connected
+# first check lsusb, then check lshal
+scannerlist="forceonepassinwhileloop"
+while [ "$scannerlist" != "" ]; do
+	scannerlist=`lsusb 2>> /dev/null | grep ': ID 040a' 2>> /dev/null`
+	if [ "$scannerlist" == "" ]; then
+		scannerlist=`lshal 2>> /dev/null | grep '_40a_' 2>> /dev/null`
+		if [ "$scannerlist" == "" ]; then
+			scannerlist=`lsusb 2>> /dev/null | grep ': ID 29cc' 2>> /dev/null`
+			if [ "$scannerlist" == "" ]; then
+				scannerlist=`lshal 2>> /dev/null | grep '_29cc_' 2>> /dev/null`
+			fi
+		fi
+	fi
+
+	if [ "$scannerlist" != "" ]; then
+		echo_default    ""
+		echo_default    ""
+		echo_default    "******************************"
+		echo_default    "Cannot install because a scanner is connected to the PC."
+		echo_default    "Please unplug or turn off the scanner."
+		echo_default    ""
+		echo_default -n "Do you want to retry and then continue with the installation? (Y/n) "
+		read_default installOption Y N		# abort if silent
+		if [ "$installOption" == "N" ]; then
+			# User wants to cancel out of the install.
+			print_cancelled_message 6 "scanner connected"
+		fi
+
+		# User wants to retry.
+	fi
+done
+
+# Display a confirmation message before installing/upgrading any software.
+echo_default    ""
+echo_default    ""
+echo_default    "******************************"
+echo_default    "The installation is ready to begin (no software was been installed yet)."
+echo_default    ""
+echo_default    "NOTE: scanner must remain unplugged or off during install"
+echo_default    ""
+echo_default -n "Do you want to continue with the installation? (y/N) "
+read_default installOption N Y
+if [ "$installOption" == "N" ]; then
+	# User wants to cancel out of the install.
+	print_cancelled_message 16
+fi
+# User wants to continue with the installation.
+
+
+################################################################################
+# Install QT
+################################################################################
+if [ $qtinstalled == 0 ]; then
+	echo_status ""
+	echo_status "Installing QT v3.x, please wait..."
+	echo_status ""
+	eval "$qt3cmd"
+	sleep 1
+	
+	# Check if the QT install succeeded
+	check_qt_installed
+	if [ $qtinstalled == 1 ]; then
+		echo_status ""
+		echo_status " QT v3.x installed successfully"
+		echo_status ""
+	else
+		# allow them to continue with ScanTWAIN if they like
+		echo_default ""
+		echo_default ""
+		echo_default "******************************"
+		echo_default "QT v3.x installation FAILED"
+		echo_default ""
+		echo_default "The problem could be with your internet connection"
+		echo_default "or your PC's ability to install the package."
+		echo_default ""
+		echo_default ""
+		echo_default "QT v3.x is required by the ScanTWAIN application. This means"
+		echo_default "you can continue this installation if you will not use ScanTWAIN."
+		echo_default ""
+		echo_default -n "Do you want to continue this installation, without QT v3.x? (y/N) "
+		read_default installOption N
+		if [ "$installOption" == "N" ]; then
+			# User wants to cancel the install.
+			exit_and_pause 41
+		fi
+		# User wants to continue without the ScanTWAIN. Proceed to the next step.
+	fi
+fi
+
+################################################################################
+# Install mono and/or mono-winforms
+################################################################################
+installmono=0
+installwinforms=0
+if [ $needmono != 0 ] && [ $needmono != -1 ] && [ $skipUI == 0 ]; then
+	installmono=1
+fi
+if [ $needwinforms != 0 ] && [ $needwinforms != -1 ] && [ $skipUI == 0 ]; then
+	installwinforms=1
+fi
+if [ $installmono != 0 ] || [ $installwinforms != 0 ]; then
+	echo_status ""
+	if [ $needmono -lt 0 ] || [ $needwinforms -lt 0 ]; then
+		echo_status "Upgrading mono, please wait..."
+	elif [ $needmono != 0 ] && [ $needwinforms != 0 ]; then
+		echo_status "Installing mono and mono-winforms, please wait..."
+	elif [ $needwinforms != 0 ]; then
+		echo_status "Installing mono-winforms, please wait..."
+	else
+		echo_status "Installing mono, please wait..."
+	fi
+	echo_status ""
+
+	# make sure the repo is setup (if we have any)
+	if [ "$monorepocmdA" != "" ]; then
+		eval "$monorepocmdA"
+	fi
+	if [ "$monorepocmdB" != "" ]; then
+		eval "$monorepocmdB"
+	fi
+	if [ "$monorepocmdC" != "" ]; then
+		eval "$monorepocmdC"
+	fi
+	if [ "$monorepocmdD" != "" ]; then
+		eval "$monorepocmdD"
+	fi
+
+	# install mono package?
+	if [ $installmono != 0 ]; then
+		eval "$monoruntimeA"
+		sleep 1
+	
+		# Check if the mono package installation succeeded
+		check_mono_installed
+		if [ $needmono == 0 ]; then
+			echo_status ""
+			echo_status "mono installed successfully"
+			echo_status ""
+		else
+			echo_silent ""
+			echo_silent "mono installation FAILED"
+			echo_silent ""
+			echo_silent "The proper version of mono is not on your computer."
+			echo_silent "Please install mono manually and re-run this installation."
+			echo_silent ""
+			echo_silent "The problem could be with your internet connection"
+			echo_silent "or your PC's ability to install the package."
+			exit_and_pause 43
+		fi
+	fi
+
+	# install mono-winforms package?
+	if [ $installwinforms != 0 ]; then
+		# if we stil do not have mono-winforms after installing
+		# mono, then do it now (winforms can come as part of upgrades)
+		if [ $needwinforms != 0 ]; then
+			# install mono-winforms package
+			eval "$monowinformA"
+			sleep 1
+
+			# Check if the mono-winforms install succeeded
+			check_mono_installed
+		fi
+
+		if [ $needwinforms == 0 ]; then
+			echo_status ""
+			echo_status "mono-winforms installed successfully"
+			echo_status ""
+		else
+			echo_silent ""
+			echo_silent "mono-winforms installation FAILED"
+			echo_silent ""
+			echo_silent "The proper version of mono-winforms is not on your computer."
+			echo_silent "Please install mono-winforms manually and re-run this installation."
+			echo_silent ""
+			echo_silent "The problem could be with your internet connection"
+			echo_silent "or your PC's ability to install the package."
+			exit_and_pause 43
+		fi
+	fi
+fi
+
+# We need to make sure the /usr/local/lib is in the ld.so.conf
+if ! grep "/usr/local/lib" /etc/ld.so.conf > /dev/null; then
+	echo "/usr/local/lib" >> /etc/ld.so.conf
+fi
+
+################################################################################
+# Copy RPM Packages
+################################################################################
+
+# Print message
+echo_status    ""
+echo_status    ""
+echo_status    "******************************"
+echo_status    "Copying installation packages to temporary directory: $instdir"
+echo_status    "Please wait..."
+echo_status    ""
+
+# Copy the packages and any scripts to the temp directory
+cp *.rpm "$instdir" 2>> /dev/null
+cp *.deb "$instdir" 2>> /dev/null
+cp *.sh "$instdir" 2>> /dev/null
+
+currentdir=`pwd`
+cd "$instdir"
+
+# if QT not supported OR not installed, then don't install
+# ScanTWAIN because it requires QT
+if [ $qtsupported != 1 ] || [ $qtinstalled != 1 ]; then
+	rm -f scantwain.*
+fi
+
+################################################################################
+# Install libudev0 provided with this installer
+################################################################################
+if [ $installlibudev0 == 1 ]; then
+	echo_status ""
+	echo_status ""
+	echo_status "******************************"
+	echo_status "Installing libudev0, please wait..."
+	echo_status ""
+	eval "$libudevcmd"
+	if [ $? -ne 0 ]; then
+		echo_silent ""
+		echo_silent "libudev0 installation FAILED"
+		echo_silent ""
+		exit_and_pause 45
+	fi
+	sleep 1
+
+	# Check if the 'libudev0' install succeeded
+	check_libudev_installed
+	if [ $libudevInstalled == 1 ]; then
+		echo_status ""
+		echo_status "libudev0 installed successfully"
+		echo_status ""
+	else
+		echo_silent ""
+		echo_silent "libudev0 installation FAILED"
+		echo_silent ""
+		echo_silent "The problem could be with your PC's"
+		echo_silent "ability to install the package."
+		exit_and_pause 42
+	fi
+fi
+
+# Clean up: we do not want this being installed on older distros
+rm -f libudev0*.* 2>> /dev/null
+
+################################################################################
+# Install OpenUSB
+################################################################################
+# If we need to remove OpenUSB do it now
+if [ $removeOpenusb == 1 ]; then
+	# Print message
+	echo_status    ""
+	echo_status    ""
+	echo_status    "******************************"
+	echo_status    "Removing OpenUSB in order to perform the upgrade, please wait..."
+	echo_status    ""
+
+	# Note: ignore errors if we don't find the really old 'openusb'
+	if [ "$strdistropkg" == ".deb" ]; then
+		$dpkgpath --force-all --purge openusb 2>> /dev/null
+		$dpkgpath --force-all --purge libopenusb
+	else
+		rpm -e --nodeps openusb 2>> /dev/null
+		rpm -e --nodeps libopenusb
+	fi
+fi
+
+# Install OpenUSB, if necessary
+if [ $installOpenusb == 1 ]; then
+	# Print message
+	echo_status    ""
+	echo_status    ""
+	echo_status    "******************************"
+	echo_status    "Installing OpenUSB, please wait..."
+	echo_status    ""
+	if [ "$strdistropkg" == ".deb" ]; then
+		# Which version to install? Depends on if 'hal' is installed.
+		if [ $needNewOpenUSB == 0 ]; then
+			# 'hal' is installed: Install OpenUSB version 1.1.0
+			$dpkgpath -i libopenusb*1.1.0*.deb
+			if [ $? -ne 0 ]; then
+				echo_silent ""
+				echo_silent "OpenUSB installation FAILED"
+				echo_silent ""
+				exit_and_pause 44
+			fi
+		else
+			# No 'hal'. Install OpenUSB version 1.1.13
+			$dpkgpath -i libopenusb*1.1.13*.deb
+			if [ $? -ne 0 ]; then
+				echo_silent ""
+				echo_silent "OpenUSB installation FAILED"
+				echo_silent ""
+				exit_and_pause 44
+			fi
+		fi
+	else
+		# Which version to install? Depends on if 'hal' is installed.
+		# Other distros use rpm to install OpenUSB.
+		# Note that we only have to worry about installing the package, since
+		# in the upgrade path we have already uninstalled the package above.
+		if [ $needNewOpenUSB == 0 ]; then
+			# 'hal' is installed: Install OpenUSB version 1.1.0
+			rpm -i -v --hash --force --nodeps libopenusb-1.1.0*.rpm
+			if [ $? -ne 0 ]; then
+				echo_silent ""
+				echo_silent "OpenUSB installation FAILED"
+				echo_silent ""
+				exit_and_pause 44
+			fi
+		else
+			# No 'hal'. Install OpenUSB version 1.1.13
+			rpm -i -v --hash --force --nodeps libopenusb-1.1.13*.rpm
+			if [ $? -ne 0 ]; then
+				echo_silent ""
+				echo_silent "OpenUSB installation FAILED"
+				echo_silent ""
+				exit_and_pause 44
+			fi
+		fi
+	fi
+fi
+	
+# Clean up
+rm libopenusb*.*
+
+################################################################################
+# Install TWAIN DSM
+################################################################################
+# If we need to remove the TWAIN DSM do it now
+if [ $removeTwainDsm == 1 ]; then
+	# Print message
+	echo_status    ""
+	echo_status    ""
+	echo_status    "******************************"
+	echo_status    "Removing TWAIN Data Source Manager in order to perform the upgrade,"
+	echo_status    "please wait..."
+	echo_status    ""
+	if [ "$strdistropkg" == ".deb" ]; then
+		$dpkgpath --force-all --purge twaindsm
+	else
+		rpm -e --nodeps twaindsm
+	fi
+fi
+
+#Install the TWAIN DSM, if necessary
+if [ $installTwainDsm == 1 ]; then
+	# Print message
+	echo_status    ""
+	echo_status    ""
+	echo_status    "******************************"
+	echo_status    "Installing TWAIN Data Source Manager, please wait..."
+	echo_status    ""
+	if [ "$strdistropkg" == ".deb" ]; then
+		$dpkgpath -i twaindsm*.deb
+		if [ $? -ne 0 ]; then
+			echo_silent ""
+			echo_silent "TWAIN DSM installation FAILED"
+			echo_silent ""
+			exit_and_pause 46
+		fi
+	else
+		rpm -Uvh --replacepkgs twaindsm*.rpm
+		if [ $? -ne 0 ]; then
+			echo_silent ""
+			echo_silent "TWAIN DSM installation FAILED"
+			echo_silent ""
+			exit_and_pause 46
+		fi
+	fi
+fi
+
+# Clean up
+rm twaindsm*.*
+
+################################################################################
+# Install Scanner Packages
+################################################################################
+# Print message
+echo_status    ""
+echo_status    ""
+echo_status    "******************************"
+echo_status    "Installing scanner packages, please wait..."
+echo_status    ""
+if [ "$strdistropkg" == ".deb" ]; then
+	# Install the remaining DEB packages
+	$dpkgpath -i *.deb
+	if [ $? -ne 0 ]; then
+		echo_silent ""
+		echo_silent "Scanner Package installation FAILED"
+		echo_silent ""
+		exit_and_pause 47
+	fi
+else
+	# Install the remaining RPM packages
+	rpm -Uvh --replacepkgs *.rpm
+	if [ $? -ne 0 ]; then
+		echo_silent ""
+		echo_silent "Scanner Package installation FAILED"
+		echo_silent ""
+		exit_and_pause 47
+	fi
+fi
+
+# Everything is installed...
+
+# If running without the UI (i.e. no mono), then delete the driver's UI and execute file
+if [ $skipUI == 1 ]; then
+	rm -f '/opt/kodak/kds_i11xx/lib/twaingui.exe'
+	rm -f '/opt/kodak/kds_i11xx/lib/twaingui'
+fi
+
+# If we're running SELinux, then fix up Hippo to make SELinux happy.
+if [ $seLinuxInstalled == 1 ]; then
+	chcon -t textrel_shlib_t '/opt/kodak/kds_i11xx/lib/hippo.so' 2>> /dev/null
+fi
+
+# If there is a custom post install, call it now
+if [ -f "custompost.sh" ]; then
+	./custompost.sh
+fi
+
+# Remove the temporary directory
+cd "$currentdir"
+
+print_completed_message
+

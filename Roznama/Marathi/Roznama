@@ -1,0 +1,631 @@
+rem English Roznama Setting In Just a Single Click.
+REM  *****  BASIC  *****
+
+sub Roznama
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+
+rem ----------------------------------------------------------------------
+dim args1(18) as new com.sun.star.beans.PropertyValue
+args1(0).Name = "SearchItem.StyleFamily"
+args1(0).Value = 2
+args1(1).Name = "SearchItem.CellType"
+args1(1).Value = 0
+args1(2).Name = "SearchItem.RowDirection"
+args1(2).Value = true
+args1(3).Name = "SearchItem.AllTables"
+args1(3).Value = false
+args1(4).Name = "SearchItem.Backward"
+args1(4).Value = false
+args1(5).Name = "SearchItem.Pattern"
+args1(5).Value = false
+args1(6).Name = "SearchItem.Content"
+args1(6).Value = false
+args1(7).Name = "SearchItem.AsianOptions"
+args1(7).Value = false
+args1(8).Name = "SearchItem.AlgorithmType"
+args1(8).Value = 1
+args1(9).Name = "SearchItem.SearchFlags"
+args1(9).Value = 65536
+args1(10).Name = "SearchItem.SearchString"
+args1(10).Value = ".* यांचे न्यायालयात \n"
+args1(11).Name = "SearchItem.ReplaceString"
+args1(11).Value = ""
+args1(12).Name = "SearchItem.Locale"
+args1(12).Value = 255
+args1(13).Name = "SearchItem.ChangedChars"
+args1(13).Value = 2
+args1(14).Name = "SearchItem.DeletedChars"
+args1(14).Value = 2
+args1(15).Name = "SearchItem.InsertedChars"
+args1(15).Value = 2
+args1(16).Name = "SearchItem.TransliterateFlags"
+args1(16).Value = 1280
+args1(17).Name = "SearchItem.Command"
+args1(17).Value = 3
+args1(18).Name = "Quiet"
+args1(18).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args1())
+
+rem ----------------------------------------------------------------------
+dim args2(18) as new com.sun.star.beans.PropertyValue
+args2(0).Name = "SearchItem.StyleFamily"
+args2(0).Value = 2
+args2(1).Name = "SearchItem.CellType"
+args2(1).Value = 0
+args2(2).Name = "SearchItem.RowDirection"
+args2(2).Value = true
+args2(3).Name = "SearchItem.AllTables"
+args2(3).Value = false
+args2(4).Name = "SearchItem.Backward"
+args2(4).Value = false
+args2(5).Name = "SearchItem.Pattern"
+args2(5).Value = false
+args2(6).Name = "SearchItem.Content"
+args2(6).Value = false
+args2(7).Name = "SearchItem.AsianOptions"
+args2(7).Value = false
+args2(8).Name = "SearchItem.AlgorithmType"
+args2(8).Value = 1
+args2(9).Name = "SearchItem.SearchFlags"
+args2(9).Value = 65536
+args2(10).Name = "SearchItem.SearchString"
+args2(10).Value = "\n\n"
+args2(11).Name = "SearchItem.ReplaceString"
+args2(11).Value = ""
+args2(12).Name = "SearchItem.Locale"
+args2(12).Value = 255
+args2(13).Name = "SearchItem.ChangedChars"
+args2(13).Value = 2
+args2(14).Name = "SearchItem.DeletedChars"
+args2(14).Value = 2
+args2(15).Name = "SearchItem.InsertedChars"
+args2(15).Value = 2
+args2(16).Name = "SearchItem.TransliterateFlags"
+args2(16).Value = 1280
+args2(17).Name = "SearchItem.Command"
+args2(17).Value = 3
+args2(18).Name = "Quiet"
+args2(18).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args2())
+
+rem ----------------------------------------------------------------------
+dim args3(18) as new com.sun.star.beans.PropertyValue
+args3(0).Name = "SearchItem.StyleFamily"
+args3(0).Value = 2
+args3(1).Name = "SearchItem.CellType"
+args3(1).Value = 0
+args3(2).Name = "SearchItem.RowDirection"
+args3(2).Value = true
+args3(3).Name = "SearchItem.AllTables"
+args3(3).Value = false
+args3(4).Name = "SearchItem.Backward"
+args3(4).Value = false
+args3(5).Name = "SearchItem.Pattern"
+args3(5).Value = false
+args3(6).Name = "SearchItem.Content"
+args3(6).Value = false
+args3(7).Name = "SearchItem.AsianOptions"
+args3(7).Value = false
+args3(8).Name = "SearchItem.AlgorithmType"
+args3(8).Value = 1
+args3(9).Name = "SearchItem.SearchFlags"
+args3(9).Value = 65536
+args3(10).Name = "SearchItem.SearchString"
+args3(10).Value = "^\n"
+args3(11).Name = "SearchItem.ReplaceString"
+args3(11).Value = ""
+args3(12).Name = "SearchItem.Locale"
+args3(12).Value = 255
+args3(13).Name = "SearchItem.ChangedChars"
+args3(13).Value = 2
+args3(14).Name = "SearchItem.DeletedChars"
+args3(14).Value = 2
+args3(15).Name = "SearchItem.InsertedChars"
+args3(15).Value = 2
+args3(16).Name = "SearchItem.TransliterateFlags"
+args3(16).Value = 1280
+args3(17).Name = "SearchItem.Command"
+args3(17).Value = 3
+args3(18).Name = "Quiet"
+args3(18).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args3())
+
+rem ----------------------------------------------------------------------
+dim args4(18) as new com.sun.star.beans.PropertyValue
+args4(0).Name = "SearchItem.StyleFamily"
+args4(0).Value = 2
+args4(1).Name = "SearchItem.CellType"
+args4(1).Value = 0
+args4(2).Name = "SearchItem.RowDirection"
+args4(2).Value = true
+args4(3).Name = "SearchItem.AllTables"
+args4(3).Value = false
+args4(4).Name = "SearchItem.Backward"
+args4(4).Value = false
+args4(5).Name = "SearchItem.Pattern"
+args4(5).Value = false
+args4(6).Name = "SearchItem.Content"
+args4(6).Value = false
+args4(7).Name = "SearchItem.AsianOptions"
+args4(7).Value = false
+args4(8).Name = "SearchItem.AlgorithmType"
+args4(8).Value = 1
+args4(9).Name = "SearchItem.SearchFlags"
+args4(9).Value = 65536
+args4(10).Name = "SearchItem.SearchString"
+args4(10).Value = "^$"
+args4(11).Name = "SearchItem.ReplaceString"
+args4(11).Value = ""
+args4(12).Name = "SearchItem.Locale"
+args4(12).Value = 255
+args4(13).Name = "SearchItem.ChangedChars"
+args4(13).Value = 2
+args4(14).Name = "SearchItem.DeletedChars"
+args4(14).Value = 2
+args4(15).Name = "SearchItem.InsertedChars"
+args4(15).Value = 2
+args4(16).Name = "SearchItem.TransliterateFlags"
+args4(16).Value = 1280
+args4(17).Name = "SearchItem.Command"
+args4(17).Value = 3
+args4(18).Name = "Quiet"
+args4(18).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args4())
+
+rem ----------------------------------------------------------------------
+dim args5(18) as new com.sun.star.beans.PropertyValue
+args5(0).Name = "SearchItem.StyleFamily"
+args5(0).Value = 2
+args5(1).Name = "SearchItem.CellType"
+args5(1).Value = 0
+args5(2).Name = "SearchItem.RowDirection"
+args5(2).Value = true
+args5(3).Name = "SearchItem.AllTables"
+args5(3).Value = false
+args5(4).Name = "SearchItem.Backward"
+args5(4).Value = false
+args5(5).Name = "SearchItem.Pattern"
+args5(5).Value = false
+args5(6).Name = "SearchItem.Content"
+args5(6).Value = false
+args5(7).Name = "SearchItem.AsianOptions"
+args5(7).Value = false
+args5(8).Name = "SearchItem.AlgorithmType"
+args5(8).Value = 1
+args5(9).Name = "SearchItem.SearchFlags"
+args5(9).Value = 65536
+args5(10).Name = "SearchItem.SearchString"
+args5(10).Value = "\n \n"
+args5(11).Name = "SearchItem.ReplaceString"
+args5(11).Value = "\n"
+args5(12).Name = "SearchItem.Locale"
+args5(12).Value = 255
+args5(13).Name = "SearchItem.ChangedChars"
+args5(13).Value = 2
+args5(14).Name = "SearchItem.DeletedChars"
+args5(14).Value = 2
+args5(15).Name = "SearchItem.InsertedChars"
+args5(15).Value = 2
+args5(16).Name = "SearchItem.TransliterateFlags"
+args5(16).Value = 1280
+args5(17).Name = "SearchItem.Command"
+args5(17).Value = 3
+args5(18).Name = "Quiet"
+args5(18).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args5())
+
+rem ----------------------------------------------------------------------
+dim args6(18) as new com.sun.star.beans.PropertyValue
+args6(0).Name = "SearchItem.StyleFamily"
+args6(0).Value = 2
+args6(1).Name = "SearchItem.CellType"
+args6(1).Value = 0
+args6(2).Name = "SearchItem.RowDirection"
+args6(2).Value = true
+args6(3).Name = "SearchItem.AllTables"
+args6(3).Value = false
+args6(4).Name = "SearchItem.Backward"
+args6(4).Value = false
+args6(5).Name = "SearchItem.Pattern"
+args6(5).Value = false
+args6(6).Name = "SearchItem.Content"
+args6(6).Value = false
+args6(7).Name = "SearchItem.AsianOptions"
+args6(7).Value = false
+args6(8).Name = "SearchItem.AlgorithmType"
+args6(8).Value = 1
+args6(9).Name = "SearchItem.SearchFlags"
+args6(9).Value = 65536
+args6(10).Name = "SearchItem.SearchString"
+args6(10).Value = "^.$"
+args6(11).Name = "SearchItem.ReplaceString"
+args6(11).Value = ""
+args6(12).Name = "SearchItem.Locale"
+args6(12).Value = 255
+args6(13).Name = "SearchItem.ChangedChars"
+args6(13).Value = 2
+args6(14).Name = "SearchItem.DeletedChars"
+args6(14).Value = 2
+args6(15).Name = "SearchItem.InsertedChars"
+args6(15).Value = 2
+args6(16).Name = "SearchItem.TransliterateFlags"
+args6(16).Value = 1280
+args6(17).Name = "SearchItem.Command"
+args6(17).Value = 3
+args6(18).Name = "Quiet"
+args6(18).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args6())
+
+rem ----------------------------------------------------------------------
+dim args7(18) as new com.sun.star.beans.PropertyValue
+args7(0).Name = "SearchItem.StyleFamily"
+args7(0).Value = 2
+args7(1).Name = "SearchItem.CellType"
+args7(1).Value = 0
+args7(2).Name = "SearchItem.RowDirection"
+args7(2).Value = true
+args7(3).Name = "SearchItem.AllTables"
+args7(3).Value = false
+args7(4).Name = "SearchItem.Backward"
+args7(4).Value = false
+args7(5).Name = "SearchItem.Pattern"
+args7(5).Value = false
+args7(6).Name = "SearchItem.Content"
+args7(6).Value = false
+args7(7).Name = "SearchItem.AsianOptions"
+args7(7).Value = false
+args7(8).Name = "SearchItem.AlgorithmType"
+args7(8).Value = 1
+args7(9).Name = "SearchItem.SearchFlags"
+args7(9).Value = 65536
+args7(10).Name = "SearchItem.SearchString"
+args7(10).Value = "^$"
+args7(11).Name = "SearchItem.ReplaceString"
+args7(11).Value = ""
+args7(12).Name = "SearchItem.Locale"
+args7(12).Value = 255
+args7(13).Name = "SearchItem.ChangedChars"
+args7(13).Value = 2
+args7(14).Name = "SearchItem.DeletedChars"
+args7(14).Value = 2
+args7(15).Name = "SearchItem.InsertedChars"
+args7(15).Value = 2
+args7(16).Name = "SearchItem.TransliterateFlags"
+args7(16).Value = 1280
+args7(17).Name = "SearchItem.Command"
+args7(17).Value = 3
+args7(18).Name = "Quiet"
+args7(18).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args7())
+
+rem ----------------------------------------------------------------------
+dim args8(18) as new com.sun.star.beans.PropertyValue
+args8(0).Name = "SearchItem.StyleFamily"
+args8(0).Value = 2
+args8(1).Name = "SearchItem.CellType"
+args8(1).Value = 0
+args8(2).Name = "SearchItem.RowDirection"
+args8(2).Value = true
+args8(3).Name = "SearchItem.AllTables"
+args8(3).Value = false
+args8(4).Name = "SearchItem.Backward"
+args8(4).Value = false
+args8(5).Name = "SearchItem.Pattern"
+args8(5).Value = false
+args8(6).Name = "SearchItem.Content"
+args8(6).Value = false
+args8(7).Name = "SearchItem.AsianOptions"
+args8(7).Value = false
+args8(8).Name = "SearchItem.AlgorithmType"
+args8(8).Value = 1
+args8(9).Name = "SearchItem.SearchFlags"
+args8(9).Value = 65536
+args8(10).Name = "SearchItem.SearchString"
+args8(10).Value = "Judge$"
+args8(11).Name = "SearchItem.ReplaceString"
+args8(11).Value = "\nJudge"
+args8(12).Name = "SearchItem.Locale"
+args8(12).Value = 255
+args8(13).Name = "SearchItem.ChangedChars"
+args8(13).Value = 2
+args8(14).Name = "SearchItem.DeletedChars"
+args8(14).Value = 2
+args8(15).Name = "SearchItem.InsertedChars"
+args8(15).Value = 2
+args8(16).Name = "SearchItem.TransliterateFlags"
+args8(16).Value = 1280
+args8(17).Name = "SearchItem.Command"
+args8(17).Value = 3
+args8(18).Name = "Quiet"
+args8(18).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args8())
+rem ----------------------------------------------------------------------
+dispatcher.executeDispatch(document, ".uno:SelectAll", "", 0, Array())
+
+rem ----------------------------------------------------------------------
+dim args9(4) as new com.sun.star.beans.PropertyValue
+args9(0).Name = "CharFontName.StyleName"
+args9(0).Value = ""
+args9(1).Name = "CharFontName.Pitch"
+args9(1).Value = 2
+args9(2).Name = "CharFontName.CharSet"
+args9(2).Value = -1
+args9(3).Name = "CharFontName.Family"
+args9(3).Value = 3
+args9(4).Name = "CharFontName.FamilyName"
+args9(4).Value = "Liberation Serif"
+
+dispatcher.executeDispatch(document, ".uno:CharFontName", "", 0, args9())
+
+rem ----------------------------------------------------------------------
+dim args10(2) as new com.sun.star.beans.PropertyValue
+args10(0).Name = "FontHeight.Height"
+args10(0).Value = 12
+args10(1).Name = "FontHeight.Prop"
+args10(1).Value = 100
+args10(2).Name = "FontHeight.Diff"
+args10(2).Value = 0
+
+dispatcher.executeDispatch(document, ".uno:FontHeight", "", 0, args10())
+
+rem ----------------------------------------------------------------------
+dim args11(4) as new com.sun.star.beans.PropertyValue
+args11(0).Name = "TopBottomMargin.TopMargin"
+args11(0).Value = 0
+args11(1).Name = "TopBottomMargin.BottomMargin"
+args11(1).Value = 0
+args11(2).Name = "TopBottomMargin.ContextMargin"
+args11(2).Value = false
+args11(3).Name = "TopBottomMargin.TopRelMargin"
+args11(3).Value = 100
+args11(4).Name = "TopBottomMargin.BottomRelMargin"
+args11(4).Value = 100
+
+dispatcher.executeDispatch(document, ".uno:TopBottomMargin", "", 0, args11())
+
+rem ----------------------------------------------------------------------
+dim args12(0) as new com.sun.star.beans.PropertyValue
+args12(0).Name = "NumberingStart"
+args12(0).Value = false
+
+dispatcher.executeDispatch(document, ".uno:NumberingStart", "", 0, args12())
+
+rem ----------------------------------------------------------------------
+dim args13(0) as new com.sun.star.beans.PropertyValue
+args13(0).Name = "NumNewStartAt"
+args13(0).Value = 65535
+
+dispatcher.executeDispatch(document, ".uno:NumNewStartAt", "", 0, args13())
+rem ----------------------------------------------------------------------
+dim args14(21) as new com.sun.star.beans.PropertyValue
+args14(0).Name = "SearchItem.StyleFamily"
+args14(0).Value = 2
+args14(1).Name = "SearchItem.CellType"
+args14(1).Value = 0
+args14(2).Name = "SearchItem.RowDirection"
+args14(2).Value = true
+args14(3).Name = "SearchItem.AllTables"
+args14(3).Value = false
+args14(4).Name = "SearchItem.SearchFiltered"
+args14(4).Value = false
+args14(5).Name = "SearchItem.Backward"
+args14(5).Value = false
+args14(6).Name = "SearchItem.Pattern"
+args14(6).Value = false
+args14(7).Name = "SearchItem.Content"
+args14(7).Value = false
+args14(8).Name = "SearchItem.AsianOptions"
+args14(8).Value = false
+args14(9).Name = "SearchItem.AlgorithmType"
+args14(9).Value = 1
+args14(10).Name = "SearchItem.SearchFlags"
+args14(10).Value = 65536
+args14(11).Name = "SearchItem.SearchString"
+args14(11).Value = "\n $"
+args14(12).Name = "SearchItem.ReplaceString"
+args14(12).Value = ""
+args14(13).Name = "SearchItem.Locale"
+args14(13).Value = 255
+args14(14).Name = "SearchItem.ChangedChars"
+args14(14).Value = 2
+args14(15).Name = "SearchItem.DeletedChars"
+args14(15).Value = 2
+args14(16).Name = "SearchItem.InsertedChars"
+args14(16).Value = 2
+args14(17).Name = "SearchItem.TransliterateFlags"
+args14(17).Value = 1073745152
+args14(18).Name = "SearchItem.Command"
+args14(18).Value = 3
+args14(19).Name = "SearchItem.SearchFormatted"
+args14(19).Value = false
+args14(20).Name = "SearchItem.AlgorithmType2"
+args14(20).Value = 2
+args14(21).Name = "Quiet"
+args14(21).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args14())
+Dim oStyleFamilies, oFamilies, oPageStyles, oStyle
+  Dim oVCurs, oPageStyleName
+  Dim fromleft%, fromtop%, fromright%, frombottom%
+  Dim oDoc
+  oDoc = ThisComponent
+
+  REM You don't need the view cursor, you can use any TextCursor 
+  oVCurs = oDoc.CurrentController.getViewCursor() 
+  oPageStyleName = oVCurs.PageStyleName
+  oPageStyles = oDoc.StyleFamilies.getByName("PageStyles")
+  oStyle  = oPageStyles.getByName(oPageStyleName)
+  REM fromleft, fromtop, fromright, frombottom = whatever you want 
+  oStyle.LeftMargin = 3000
+  oStyle.TopMargin = 1000  
+  oStyle.RightMargin = 1000
+  oStyle.BottomMargin = 400
+  
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "Exh. [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 14
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "Exh. [:digit:]{1,4}, [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 14
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "Exh. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 14
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "Exh. [:digit:]{1,4} - [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 14
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "Exh. [:digit:]{1,4} to [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 14
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "Exh. [:digit:]{1,4} and [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 14
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "[:digit:]{2}-[:digit:]{2}-[:digit:]{4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 15
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = ": [:print:]{1,100} / "
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 13
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "/ [:digit:]{1,10} / [:digit:]{1,10}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 13
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "नि.[:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 13
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "नि.[:digit:]{1,4}, [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 13
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "नि.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 13
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "नि.[:digit:]{1,4} - [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 13
+   foundText.CharWeightComplex = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "नि.[:digit:]{1,4} ते [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 13
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "नि.[:digit:]{1,4} व [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 13
+   foundText.CharWeightComplex = 150
+next i
+
+end sub

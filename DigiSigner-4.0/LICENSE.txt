@@ -1,0 +1,25 @@
+License Agreement
+
+DigiSigner 4.0                             
+
+Copyright (c) 2013 Dmitry Lakhin - http://www.digisigner.com
+
+PLEASE READ THE FOLLOWING LICENSE AGREEMENT CAREFULLY. 
+
+You have a non-exclusive, non-transferable right to use the freeware version of DigiSigner. You may not distribute DigiSigner in any form without express written permission of Dmitry Lakhin.
+
+DigiSigner is not supported under any standard support program or service.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+You may not emulate, clone, rent, lease, sell, modify, decompile, disassemble, otherwise reverse engineer DigiSigner or any its part, except as provided for in this agreement. Any such unauthorized use shall result in immediate and automatic termination of this license.
+
+Installing and using DigiSigner signifies acceptance of these terms and conditions of the license.
+
+If you do not agree with the terms of this license you must remove DigiSigner from your disc and cease to use the product.
+
+PROPERTY: 
+
+This software, including its code, documentation, structure and organization is an exclusive product of Dmitry Lakhin, that retains the property rights to the software, its copies, modifications, or merged parts. All rights not expressly granted here also are reserved by Dmitry Lakhin.
+
+17 October 2013

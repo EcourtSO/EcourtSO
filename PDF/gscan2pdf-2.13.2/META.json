@@ -1,0 +1,59 @@
+{
+   "abstract" : "A GUI to produce PDFs or DjVus from scanned documents",
+   "author" : [
+      "Jeffrey Ratcliffe <jffry@posteo.net>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "ExtUtils::MakeMaker version 7.64, CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "unknown"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "gscan2pdf",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "inc"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "IPC::System::Simple" : "0",
+            "Sub::Override" : "0",
+            "Test::More" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Config::General" : "2.4",
+            "Date::Calc" : "0",
+            "Filesys::Df" : "0",
+            "Glib" : "1.21",
+            "GooCanvas2" : "0",
+            "Gtk3" : "0",
+            "Gtk3::SimpleList" : "0",
+            "Image::Magick" : "0",
+            "Image::Sane" : "0",
+            "List::MoreUtils" : "0",
+            "Locale::gettext" : "1.05",
+            "Log::Log4perl" : "0",
+            "PDF::Builder" : "3.022",
+            "Readonly" : "0",
+            "Set::IntSpan" : "1.1",
+            "Try::Tiny" : "0"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "version" : "v2.13.2",
+   "x_serialization_backend" : "JSON::PP version 4.07"
+}

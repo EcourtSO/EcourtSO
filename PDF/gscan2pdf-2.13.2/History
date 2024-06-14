@@ -1,0 +1,2458 @@
+2.13.2 (16.01.2023):
+
+* Filter out temporary filenames from tool warnings.
+  Closes Debian bug #1026205: Unpaper errors for every scanned page
+* Don't forget to destroy file chooser when creating multiple images.
+  Closes bug #409 (V2.13.0: Save Dialog Box cannot be closed anymore)
+* Catch missing dependencies in pdftk.
+* Catch invalid dates rather than crashing.
+  Closes bug #407 (2.12.8-1.fc36 crashes (exits) when entering an invalid date)
+  Thanks to Petr Písař for the patch.
+* Update to Hungarian translation (thanks to csola)
+* Update to French translation (thanks to papoteur)
+
+
+2.13.1 (16.12.2022):
+
+* Fixed opening soft link to TIFF
+  Closes bug #406 (Cannot read linked files)
+* Removed unnecessary dependency on autopkgtest
+  (thanks to Paul Gevers for the heads up).
+* Update to Hungarian translation (thanks to csola)
+
+
+2.13.0 (15.10.2022):
+
+* + Edit/Select/Invert menu item to invert selected pages.
+  Closes Debian bug #1008717 (Feature request: invert selection)
+
+
+2.12.8 (11.07.2022):
+
+* Fixed right-click pop-up behaviour with Wayland
+  (thanks to Chris Mayo for the patch).
+
+
+2.12.7 (29.05.2022):
+
+* Fixed bug restoring user-defined tool on scan dialog.
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.12.6 (03.04.2022):
+
+* Fixed crash saving document with date before 1970.
+  Closes Debian bug #1008724
+  (date out of range after changing date before saving)
+* Update to French translation (thanks to Alexandre NICOLADIE)
+
+
+2.12.5 (15.02.2022):
+
+* Fixed "Wide character in print" warnings in log file.
+* Fixed parsing version from sane-backends v1.1.1.
+  Closes bug #399 (Parsing scanimage version is broken for sane-backends-1.1.1)
+  Thanks to Petr Písař for the patch.
+* Update to Russian translation (thanks to Aleksandr Proklov)
+* Update to Italian translation (thanks to Silvio Brera)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+* Update to German translation (thanks to Martin Butter)
+* Update to Slovak translation (thanks to Dušan Kazik)
+
+
+2.12.4 (20.11.2021):
+
+* Fixed writing text layer to DjVu where tesseract used text type "header".
+* Dropped support for ocropus.
+* Update to French translation (thanks to Alexandre NICOLADIE)
+
+
+2.12.3 (17.09.2021):
+
+* Fixed pan/pan & select mismatch in defaults for toolbar icon and image
+  control. Now both default to pan & select tool.
+* Remember selected image control tool between sessions.
+* Ensure that all intermediate TIFFs are written with only one strip to avoid
+  triggering bug in PDF::Builder creating corrupt PDF
+* Update debian/control to depend on libpdf-builder-perl >= 3.022.
+  Closes bug #392. Thanks to Fab Stz for the report
+* Update to Occitan (post 1500) translation (thanks to Quentin PAGÈS)
+
+
+2.12.2 (01.07.2021):
+
+* + support for opencl-enabled tesseract. Closes bug #386
+  (gscan2pdf needs help parsing output from opencl-enabled tesseract).
+  Thanks to Sean Dreilinger for the patch.
+* Fixed page numbering when reordering pages. Closes bug #379
+  (Inconsistent handling of page numbers when reordering PDF pages)
+* Update to Hungarian translation (thanks to csola)
+* Update to Spanish translation (thanks to rodroes)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.12.1 (22.04.2021):
+
+* Remove 'use lib' line with local, user-based path.
+  Closes bug #384. Thanks to Petr Písař for the report.
+* Move postprocessing options to separate tab. Closes Debian bug #987211
+  (gscan2pdf: separate tab for Post-processing options in Scan dialog)
+  Thanks to Peter Marschall for the patch.
+* Refactor "Threshold before OCR" options into one line.
+  Closes Debian bug #987212 (gscan2pdf: visually align 'Threshold before OCR')
+  Thanks to Peter Marschall for the patches.
+* Update to Hungarian translation (thanks to csola)
+* Update to German translation (thanks to Matthias Sprau)
+
+
+2.12.0 (18.04.2021):
+
+* Enabled subject and keywords in filename template.
+* Switch from Perlmagick to imagemagick for threshold steps of OCR to improve
+  performance.
+* + annotation layer for DjVu and PDF.
+* POD and manpage improvements. Thanks to Peter Marschall for the patch.
+  Closes Debian bug #987059 (gscan2pdf: POD and manpage improvements)
+* Update to Hungarian translation (thanks to csola)
+
+
+2.11.2 (18.03.2021):
+
+* Recognise that the smfp backend returns "Device busy" if the scanner is turned
+  off and display the relevant dialog.
+  Closes #378 (gscan2pdf claims scanner is "busy" when not connected)
+* Update to Hungarian translation (thanks to csola)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.11.1 (17.02.2021):
+
+* Fix bug importing a DjVu or TIFF with depth > 1 and saving it as PDF with G3/4
+* Remove zip and packbits PDF compression options. Rename PNG->Flate.
+  Closes bug #366 (Rename PDF compression options)
+* Don't write blank metadata fields. Closes bug #375
+  (PDF saving with empty meta data. Don't write "NONE" to fields)
+* + Galician translation (thanks to dopais)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.11.0 (17.01.2021):
+
+* Run started callback before error callback
+* + option to navigate through OCR output by position
+* Fix hang trying to process page that has been deleted.
+* Quit with fatal error if module versions do not match executable version.
+  Closes #370 (gscan2pdf opens to white screen).
+* Take undo/redo snapshot when adding or correcting OCR text
+* Don't lose OCR output when running user-defined tool
+* Only update list of user-defined tools on pressing apply in preferences.
+* + vertically split screen view for image and OCR output.
+* Correct use of dpi option in v4.0.0-beta.1 tesseract call (i.e. Bionic).
+* Check that the core font cannot encode the glyphs before using TTF.
+* + option to put OCR output to the right of the image, rather than behind it.
+* Additionally make source "Normal" a synonym for "flatbed". Closes #371
+  (Improve option for auto-select #Pages upon switching ADF/Normal)
+* Fix bug estimating height of non-greyscale variable height scans.
+  Closes #372 (Scans ignore page size settings using libscan-image front end).
+* Update to Hungarian translation (thanks to csola)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.10.2 (17.12.2020):
+
+* Catch errors running default launcher
+* Check both stderr and stdout for libtiff-tools version
+  Closes Debian bug 977532 (gscan2pdf: save option not available)
+* Rename drag tool -> pan tool
+* Update to German translation (thanks to Matthias Sprau)
+* Update to Turkish translation (thanks to Buckethead)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.10.1 (03.12.2020):
+
+* Switch from Perlmagick to imagemagick for threshold tool to improve
+  performance. Closes Debian bug 968918 (Threshold function is extremely slow)
+* + missing crop icon
+* + View/Edit OCR toggle
+* Don't zoom in/out if plus/minus pressed whilst editing OCR
+* Allow cut/copy/paste whilst editing OCR
+* Fixed bug manually adding OCR that overlaps with existing words
+* + button to duplicate OCR text
+* Fixed bug adding OCR text '0'
+* Fixed bug processing deleted page
+* Don't sort OCR confidence list if not changed
+* Fixed bug decoding 3-octal UTF-8 characters in DjVu text layer
+* Update to Hungarian translation (thanks to csola)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.10.0 (31.10.2020):
+
+* Switch from PDF::API2 to PDF::Builder to improve TIFF handling and compression
+  options.
+  Closes Debian bugs 602486 (heavily distored scans) and
+  703768 (parts of the page translated to the right, black border)
+* Switch from internal image viewer to Gtk3::ImageView
+  (based on internal image viewer)
+* Update to German translation (thanks to Eugen Artus)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.9.1 (25.09.2020):
+
+* Work around imagemagick versions that create TIFFs that PDF::API2 doesn't like
+  when testing pdftk by using JPEG.
+  Closes #361 Hang on startup since commit #ab767c
+* Read locale from LC_MESSAGES, rather than LANGUAGE environmental variable, map
+  C locale to English. Thanks to Petr Písař and Chris Mayo for the patches.
+  Closes bug #360 and merge request #32.
+* Update to Hungarian translation (thanks to csola)
+* Update to German translation (thanks to Matthias Sprau)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.9.0 (19.09.2020):
+
+* + warning if tesseract OCR package for current locale not installed.
+* + split tool
+* If device-not-found mini-wizard is exited via cancel or by destroying it,
+  use ignore response.
+* Fix bug manually adding first OCR word to page.
+* Limit zoom to 15 to avoid errors like:
+  "pango_font_description_set_size: assertion 'size >= 0' failed"
+* Fix bug finding page by number
+* Update to Hungarian translation (thanks to csola)
+* Update to Turkish translation (thanks to Buckethead)
+
+
+2.8.2 (25.07.2020):
+
+* If previously used font no longer exists, automatically pick another one.
+* Delete temporary files that fall off the undo buffer. Closes #350
+  (When delete photos the files in /tmp are not deleted)
+* Fix reload-recursion-limit problems after device-not-found mini-wizard.
+  Closes Debian bug #965153 ("fails to open device" for Epson NX100)
+* Update to German translation (thanks to Matthias Sprau)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.8.1 (11.07.2020):
+
+* Pass resolution to tesseract to avoid messages like
+  "Warning! Invalid resolution 0 dpi. Using 70 instead"
+* Cope better if data model becomes corrupted
+* + restart option to 'device not found' mini-wizard & if tmp directory changed.
+* When saving a session file, note that pages have been saved to avoid
+  'Some pages have not been saved. Do you really want to quit?' message.
+* Improvements to the Crashed sessions dialog to make it more intuitive.
+* Update position of OCR text when cropping
+* Create PS level 3 instead of 1.
+* Fix check for unpaper version. Closes #285 (Scan fails if unpaper is not
+  installed but selected in post processing)
+* Fix check for tesseract version. Remove support for tesseract < 3.04.00.
+* Update to Hungarian translation (thanks to csola)
+* Update to Brazilian Portuguese translation (thanks to Arthur Rodrigues)
+* Update to German translation (thanks to Matthias Sprau)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.8.0 (11.06.2020):
+
+* Interpolate colours according to OCR confidence in HSV space.
+* Limit zoom to 100 to avoid errors like:
+  "drawing failure for widget 'GtkBox': error occurred in libfreetype"
+* Also update text position and rectangle when updating bounding box.
+* + button to add to text layer
+  Closes Debian bug 703124 (Add text after OCR)
+* + preference to disable device list cache
+* + mini-wizard if device not found
+* Fix save as PS. Closes Debian bug #962151
+ (Failure to save: unitialized value $SETTINGS{"ps_backend"})
+* Update to Hungarian translation (thanks to csola)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.7.0 (08.05.2020):
+
+* Cache device list to speed up first display of scan dialog.
+* Fix bug updating switch widgets in scan options.
+* Fixed bug importing file with non-ASCII characters in filename from file
+  browser.
+* Use daylight savings time from document date when setting timezone.
+* Use UTF8 in logs, fixing "wide character in print" warnings.
+* Fix UTF8 encoding when importing metadata from PDF or DjVu.
+* When editing OCR text, display bounding box on image and allow it to be
+  adjusted.
+* + buttons to navigate between OCR text boxes, sorted by confidence level.
+* Zoom to text when editing OCR
+* Fix error running File/Compress temporary files.
+* Use only xdg-email for creating email. Closes feature request #112
+  (Use gsettings and xdg-email instead of gconftool for sending e-mails)
+* Use GTK functionality instead of xdg-open for launching file viewer.
+* Update to French translation (thanks to Jean-Marc)
+
+
+2.6.7 (08.04.2020):
+
+* Fix bug causing stretched images after cropping.
+* Don't allow errors without page numbers to hang GUI.
+* Fixed bug importing multipage DjVu.
+* Fixed bug reloading options after setting manual paper size.
+
+
+2.6.6 (06.04.2020):
+
+* Support importing PDF with different resolutions in x and y directions.
+* Fix bug applying paper after option set SANE_INFO_INEXACT
+  Closes bugs #346 (gscan2pdf paper size selection inoperative) and
+  #348 (paper size selection has no effect for US Letter / US Legal)
+* Update to Bulgarian translation (thanks to Berov)
+* Update to Turkish translation (thanks to Utku BERBEROĞLU)
+
+
+2.6.5 (06.03.2020):
+
+* Fixed bug when editing page number causing page to deselect and thumbnails to
+  scroll to top of list
+* Use a scrolled window in the multiple message dialog to prevent it from
+  growing too large.
+* Use the "Don't show these messages again" checkbox to switch the checkboxes
+  for the individual messages. Set the button inconsistent if the states are not
+  all the same.
+* Fix warning message about pdftk (again) by making sure that user-defined tmp
+  directory is available in time.
+* Improve responsiveness with OCR output (again). Closes bug #192 (Sometimes
+  after saving a PDF, the page selection UI becomes sluggish/unresponsive)
+* Select # pages = all when switching from reverse->facing.
+  Closes bug #344 (# Pages in Scan Document dialog reverts to # from All)
+* Show "waiting" cursor for longer to prevent scans from being started before
+  all options applied.
+* Respect 'Use timezone from locale' option when setting file system timestamp
+* Update to Hungarian translation (thanks to csola)
+* Update to German translation (thanks to Martin Butter)
+* Update to Spanish translation (thanks to rodroes)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.6.4 (06.02.2020):
+
+* Limit the number of pages to scan when switching between scanning facing and
+  reverse pages.
+* Fix scan dialog if no devices found (again).
+* Improve responsiveness with OCR output
+* + 'Ignore duplex capabilities of scanner' preferences option. Closes feature
+  request #109 (Retain 'Source Document' options on 'Scan Document' dialog)
+* Fix running post-save hook on filenames with UTF-8.
+  Closes bug #341 (Wrong character encoding at post-save hook)
+* Fixed frequent layout/output-pages mismatch in unpaper dialog
+* Don't allow dialog offering to switch from Facing to Reverse after scanning
+  double-sided pages to block scanner thread.
+* Update to Czech translation (thanks to Pavel Borecki)
+* Update to German translation (thanks to Stephan Woidowski)
+* Update to Swedish translation (thanks to Jonatan Nyberg)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.6.3 (06.01.2020):
+
+* Fallback to core PDF font if requested font cannot be loaded.
+  Closes bug #336 (Saving to PDF never ends if empty font is selected)
+* Detect GraphicsMagick in ImageMagick compatibility mode.
+* Set program name to RDN ID to allow Gnome to add gscan2pdf as a favorite.
+* Fix importing metadata from PDFs when timezone has format like GMT-14
+* Update to Hungarian translation (thanks to csola)
+
+
+2.6.2 (27.11.2019):
+
+* Fix importing UTF-8 in DjVu text layer
+* Fix crash importing metadata
+* Add compatibility with combination of scanimage frontend and SANE 1.0.28
+  Closes bug #335 (Tests fail with sane-backends 1.0.28)
+* Update to Czech translation (thanks to Pavel Borecki)
+* Update to German translation (thanks to Stephan Woidowski)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.6.1 (12.11.2019):
+
+* Fix crash importing metadata
+
+
+2.6.0 (10.11.2019):
+
+* Fix crash closing multiple message dialog via x-icon
+  Closes bugs #333 (Segmentation fault when closing Messages window) and #334
+  (Closing Scan Document dialog using close button causes gscan2pdf to exit)
+* + --import-all option
+* + new rotate 180° icon. Closes feature request #107 (Replace 180 degree icon)
+* import metadata when opening PDF or DjVu files.
+  Closes feature request #89 (Load document metadata at during open)
+* Increment/decrement date on save dialog with +/- keys.
+* Fixed reload-recursion bug triggered by unusual environment (reprotest)
+* Update to French translation (thanks to Ltrlg)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.5.7 (11.10.2019):
+
+* Recognise "Document Table" as flatbed for imagescan backend.
+* Use option name as label for those options with no title.
+* Extended edit profile functionality in scan dialog to frontend options.
+* Close device when switching frontends so as not to block SANE for the new
+  frontend.
+* Allow tool processes to immediately continue working on subsequent pages
+  despite errors on previous ones.
+* Fix infinite loop scanning reverse pages
+* Update to German translation (thanks to Stephan Woidowski)
+* Update to Italian translation (thanks to Albano Battistella)
+* Update to Russian translation (thanks to Olesya Gerasimenko)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.5.6 (11.09.2019):
+
+* Prevent Negate from changing the alpha channel. 
+  Thanks to Chris Mayo for the patch. Closes merge request #25
+* Avoid image corruption with colour images when applying WhiteThreshold
+  after BlackThreshold.
+  Thanks to Chris Mayo for the patch. Closes merge request #26
+* Extended edit profile functionality in scan dialog to current scan options,
+  when no profile selected. Closes bug #328 (Blue cast to all colour scans)
+* Don't try to compress log file if it wasn't created.
+* Don't blacklist empty device name
+* Improve layout of multiple message dialog. Closes bug #329 (A scanner error
+  (ADF jammed) caused GScan2PDF to display an insane dialog box)
+* Don't use tiff2pdf to create temporary PDF to check for pdftk.
+  Closes bug #330 (Cannot save, pdftk failure to access /tmp)
+* Fix --import option. Closes Debian bug #934107
+  (Importing with --import=file.pdf does not import anything)
+* Fix updating extended page numbering on scan dialog after changing document
+* Fix printing. Closes bug #331 (print error suse leap 15.1)
+* Set "wait" cursor while scan options are being loaded and "progress" cursor
+  while scanning.
+* Use gtk-3 cursors for ImageView widget
+* Ghost scan button while scan options are being loaded and scanning.
+* Fix bug storing responses from multiple message window when no responses had
+  been stored before.
+* Update to Czech translation (thanks to Pavel Borecki)
+
+
+2.5.5 (19.07.2019):
+
+* Fix occasional error messages when clearing all pages
+* Only set paper to Manual if not applying profile
+* Update OCR view switching between pages with and without OCR output
+* xz compress log file if xz available
+* Fix bug applying paper after profile set SANE_INFO_INEXACT
+* When saving current settings as new profile, actually set the profile
+* If a device throws an error when opening it, add it to a session blacklist
+* + option tolerance to cover buggy backends that return inexact options
+  without setting SANE_INFO_INEXACT
+* Update to Hungarian translation (thanks to csola)
+* Update to German translation (thanks to Stephan Woidowski)
+* Update to Spanish translation (thanks to rodroes)
+
+
+2.5.4 (20.06.2019):
+
+* Fix bug applying paper whilst setting profile
+* Fix canvas usage in scan dialog.
+* Allow tabs to be scrolled to reduce width of scan dialog. Closes bug #242
+  (Scan Document window cannot be narrowed horizontally)
+* Restore split screen view for image and OCR output.
+* Update to Hungarian translation (thanks to csola)
+* Update to German translation (thanks to Stephan Woidowski)
+* Update to Swedish translation (thanks to Anders Jonsson)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.5.3 (20.05.2019):
+
+* Split up messages from gimp and unpaper to allow them to be ignored more
+  easily. Closes bug #321
+  (Error messages when returning from editing a scanned document using gimp)
+* Trap invalid dates in metadata.
+  Closes bug #323 (Crash when saving with invalid date)
+* Use GTK's FontChooserDialog for selecting font for OCR output in PDF
+* Moved font discovery to program start to accelerate display of save dialog
+* Removed owner password, as it does not encrypt.
+* Don't reset to defaults if no scan options set. Closes bug #324 (Changing scan
+  resolution from the default 100 ppi to 200 ppi creates invalid syntax for sane
+  parameters)
+* Update to German translation (thanks to Stephan Woidowski)
+* Update to Italian translation (thanks to Albano Battistella)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.5.2 (22.04.2019):
+
+* Allow translations for message types in multiple message window
+* Improve progress message whilst analysing pages
+* Don't reapply scan options after reload if setting returned SANE_INFO_INEXACT
+* Decode UTF-8 in font names for PDFs in save dialog
+* Wait for processes to finish to prevent zombies. Closes Debian bug #926634
+  (Delays opening dialogs, possibly related to defunct fc-list process)
+* Fix warning message about pdftk (again).
+  Closes bug #320 (Error message on startup: pdftk can't use /tmp)
+* Rename dpi->ppi (again) and us->μs
+* Update to Hungarian translation (thanks to csola)
+* Update to Czech translation (thanks to Pavel Borecki)
+
+
+2.5.1 (23.03.2019):
+
+* Fix warning message about pdftk
+* Update to Hungarian translation (thanks to csola)
+
+
+2.5.0 (22.03.2019):
+
+* Really optionally change the djvu access and modification times to the
+  metadata date.
+* Optionally encrypt PDFs.
+* Fix race condition when cancelling job.
+  Closes bug #317 (cancel tests randomly hang)
+* Fix bug causing Edit/Select/Blank only to work on second attempt
+* Fix bug where toolbar crop always operates on first page
+* Update to Hungarian translation (thanks to csola)
+* Update to German translation (thanks to Martin Butter)
+* Update to Italian translation (thanks to Albano Battistella)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.4.0 (24.02.2019):
+
+* Offer to switch from Facing to Reverse after scanning double-sided pages.
+  Closes feature request #100
+* + Edit profile functionality to scan dialog.
+* Reset scan options to defaults before applying profile
+* + Split screen view for image and OCR output.
+  Closes feature request #57 (Ability to view OCR output and Image at same time)
+* Switched to GIMP-like controls - LMB for selecting and MMB for panning.
+* + crop to toolbar and RMB menus
+* Fix saving as TIFF G3/4 if image not depth 1
+* Update to German translation (thanks to Stephan Woidowski)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+* Update to Italian translation (thanks to batman)
+  Closes feature request #105 and patch #20 (update italian translation)
+
+
+2.3.0 (26.01.2019):
+
+* Optionally also include time information in metadata of PDF or DjVU.
+  Closes feature request #102 (always sets the time to 0 UTC) (again)
+* Reduced "bouncing" effect when dragging OCR output
+* Fix update of image viewer/OCR output after deleting a page
+* Support different resolutions in x and y directions.
+  Closes feature request #101
+* Make post-scan PNG conversion optional
+* Remember size of multiple message window
+* Update to German translation (thanks to Stephan Woidowski)
+* Update to Swedish translation (thanks to Anders Jonsson)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.2.2 (31.12.2018):
+
+* Improved the error message when ImageMagick exceeds its resources.
+  Closes bug #303 (I import djvu. . . when exporting to djvu - failed due to
+  black and white images)
+* Allow foreground colour of text of OCR output to be themed
+* Correct some more vbox() calls left over from gtk+-2
+  Closes Debian bug #916011 (Blank dialog - Can't locate object method "vbox")
+* Use output image from user-defined tool even if it throws an error.
+* Don't reapply buttons after reloading options.
+  Closes bug #315 (Software Despeck setting - reload-recursion-limit)
+* Update to Spanish translation (thanks to rodroes)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+* Update to Italian translation (thanks to morodan)
+* Update to French translation (thanks to Hugues Drolet)
+
+
+2.2.1 (06.12.2018):
+
+* Clear OCR output canvas when switching pages
+* Ignore trailing whitespace in error messages when filtering them
+* Lock initial view of OCR output to image when switching pages
+* Fix centering of OCR output when zooming with mouse wheel
+* Update to German translation (thanks to Tobias Bannert)
+* Update to Czech translation (thanks to Pavel Borecki)
+
+
+2.2.0 (30.11.2018):
+
+* Check validity of device blacklist regex when applying preferences
+* Modify preference "Force new scan job between pages" to only take effect when
+  scanning from flatbed. Closes bug #309 (ADF-duplex mode brocken)
+* Fixed crash switching frontend option in Edit/Preferences between
+  libimage-sane-perl and scanimage.
+* Fixed visibility of scan widgets when switching from libimage-sane-perl to
+  scanimage.
+* Collect all warning and error messages in one dialog.  Closes bugs #309
+  (stuck while closing error windows) and #300 (gscan2pdf produces)
+* Be more tolerant of errors whilst fetching options.  Closes bug #313
+  (Error retreiving scanner options: error getting option 5: invalid argument)
+* Use default text if the title of a group of scan options is empty.
+* Lock panning of image and OCR output views
+* Update to German translation (thanks to Stephan Woidowski)
+* Update to Russian translation (thanks to Valerii)
+
+
+2.1.7 (12.10.2018):
+
+* Report PerlMagick errors to user.
+* Add note about checking policy.xml in case of ImageMagick Exception 445.
+* Add %De for filename extension to default filenames directives.
+* On selecting flatbed, force single-sided unless allow-batch-flatbed is enabled
+* Fixed saving PDFs with non-ASCII characters in the path and no extension.
+  Closes bug #312 (Bug: since v2.1.6 concerning special characters in file path)
+* Update page range before calling process (e.g. OCR, crop, etc.)
+* Update to Spanish translation (thanks to Eric Brandwein)
+* Update to Russian translation (thanks to Mikhail Novosyolov)
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.1.6 (20.09.2018):
+
+* Fixed starting processes from tools menu.
+  Closes bug #308 (Exit on Starting OCR)
+* Fixed opening UDT and unpaper dialog windows.
+
+
+2.1.5 (16.09.2018):
+
+* Pass page data to thread just in time to process it, rather than when the
+  process is defined. Previously, if the application was still busy, say with
+  tesseract whilst the user tried to save, then the resulting document would be
+  missing the pages updated by tesseract. Closes bug #247
+  (Error creating PDF image object: Can't call method "val" on an undefined value)
+* Update to Hungarian translation (thanks to csola)
+* Update to Czech translation (thanks to Pavel Borecki)
+* Update to German translation (thanks to Tobias Bannert)
+
+
+2.1.4 (29.07.2018):
+
+* Fix email functionality broken in v2.1.3. Closes Launchpad bug #1784168:
+  (gscan2pdf 2.1.3 not sends E-Mail (regression))
+
+
+2.1.3 (28.07.2018):
+
+* Only run test if session file can be deserialised. Closes bug #293 (again)
+  (t/175_open_session2.t fails on i686: Long integer size is not compatible)
+* Optionally also include timezone and time information in metadata of PDF or
+  DjVU. Closes feature request #102 (always sets the time to 0 UTC)
+* Don't unnecessarily use tiffcp on single-page TIFFs
+* Update to German translation (thanks to Tobias Bannert)
+
+
+2.1.2 (23.05.2018):
+
+* Fix bug causing config JSON file to be saved with numeric locale, and
+  therefore potentially corrupt.
+
+
+2.1.1 (14.05.2018):
+
+* Fix saving profile bug caused by deprecated Gtk2 API
+* + support for dragging files from file managers (again)
+* Update to Spanish translation (thanks to Rodrigo)
+* Update to Swedish translation (thanks to Anders Jonsson)
+
+
+2.1.0 (20.04.2018):
+
+* Support import of password-protected PDFs. Closes Debian bug #894764
+  (Please prompt for password on import of encrypted file)
+* Update cursor depending on edge of selection, and allow selection to be
+  modified by dragging the edge or corner
+* Update to Ukrainian translation (thanks to Yuri Chornoivan)
+
+
+2.0.3 (30.03.2018):
+
+* Always update image viewer if page selection changes
+  Closes Debian bug #893026 (Preview pane does not update)
+* Fixed manually typing date in metadata dialog (again)
+  Closes Debian bug #893024 (Manual entry into UI date widget is broken)
+* If image is zoomed to fit viewer, update zoom when the size of the viewer
+  changes
+* Update cursor depending on selected tool and position
+* Build corrupt session file by hand rather than storing binary file that is
+  not universally compatible. Closes bug #293
+  (t/175_open_session2.t fails on i686: Long integer size is not compatible)
+* Convert all scans to PNG to allow tesseract to extract resolution
+* Ignore invalid options in profile
+* Ignore options in profile that are already within tolerance. Closes #294
+  (Hangs on "Setting Option Source" When Changing Between Feeder and Flatbed)
+* Update to Hungarian translation (thanks to csola)
+
+
+2.0.2 (26.03.2018):
+
+* Clear view if no page selected
+* Change boolean scan options to use switch instead of checkbox widget
+* Fixed manually typing date in metadata dialog. Closes Debian bug #893024
+  (Manual entry into UI date widget is broken)
+* Take colours for image viewer from theme. Closes Debian bug #893025
+  (White UI background makes page borders disappear)
+* Support Glib::Object::Introspection < 0.043
+
+
+2.0.1 (12.03.2018):
+
+* Fixed editing OCR output
+* Fixed displaying image after undoing
+* Fixed displaying image after deleting page
+* Fixed text in progress bars
+* Fixed warning message clearing all pages if no scanner detected
+
+
+2.0.0 (08.03.2018):
+
+* Switch from gtk+-2 to gtk+-3, requiring the reimplementation of GtkImageview
+  in pure Perl, as C library not compatible with gtk+-3. Closes Debian bug
+  #884030 (Depends on obsolete libgoo-canvas-perl)
+* Fixed ghosting if flatbed only source option but not set.
+  Closes #290 (Page Options -> Pages: scanning only first page of n)
+* Fixed setting preferences if frontend not set to libsane-image-perl and no
+  scanner available. Closes #291 (Cannot change temporary directory)
+
+
+1.8.11 (26.01.2018):
+
+* + preference "Force new scan job between pages"
+* support applying profiles resulting in multiple reloads, to prevent profile
+  dropdown from being cleared after setting profile.
+  Closes #276 (Scan profile stays blank)
+* Update to Czech translation (thanks to Pavel Borecki)
+
+
+1.8.10 (27.11.2017):
+
+* + support for scan options without ranges, e.g. booleans, in tolerance check
+  introduced in v1.8.9
+
+
+1.8.9 (24.11.2017):
+
+* Rename preference "Open scan dialog at program start"
+  -> "Open scanner at program start"
+* Fix killing processes on cancel
+* Hide extended page numbering checkbox and source document frame unless scanner
+  is not capable of duplex and ADF is selected. Therefore, for duplex-capable
+  scanners, this is never shown. For duplex-incapable scanners, this is shown if
+  the ADF is selected, but otherwise hidden.
+* + support for the new API in ImageMagick 7 for unsharp mask
+* For single-sided documents, hide rotate facing/reverse/both side dropdown.
+* + missing documentation for Edit/Properties
+* Don't reapply scan settings if value is within tolerance.
+  Closes bug #287 (Reload recursion limit (5050) exceeded)
+* Fix crash reading corrupt config file
+  Closes bug #288 (gscan2pdf-1.8.8 does not run in Ubuntu 16.04)
+* Update to Slovak translation (thanks to Dušan Kazik)
+
+
+1.8.8 (29.10.2017):
+
+* Filter out 1 and 2 digit integers from tool warnings.
+  Show original message, not filtered message.
+  Closes bug #281 (Error processing with Tesserarct: Detected 99 Diacritics)
+* Add option to profile only after successfully applying it
+* Fix default value for unpaper script direction.
+* Fix race condition updating widgets before they can be created after cycling
+  device handle.
+* Fix 16-bit PNM parsing
+* Fix Perl warning about redundant argument in sprintf
+* Update to Hungarian translation (thanks to csola)
+
+
+1.8.7 (22.09.2017):
+
+* + units to scan and edit paper dialogues.
+* - unsupported libsane-perl offered as Frontend choice
+  Thanks to Chris Mayo for the patch. Closes merge request #19
+* Fixed support for Poppler (pdftops) as postscript backend.
+  Thanks to Chris Mayo for the patch. Closes merge request #18
+* - Reload recursion limit in Edit/Preferences
+  Set reload recursion limit as triangular number of number of scan options.
+  i.e. if there are 5 scan options, the recursion limit is 5+4+3+2+1=15
+  Closes bug #275 (reload recursion limit)
+* Fixed crash with scanimage frontend due to empty cache
+* Ghost save button, rather than hiding save dialogue if all pages removed.
+  Closes bug #253 (Save dialoque does not stay open)
+* Fixed bug causing profile dropdown to be cleared after setting profile
+* Filter out integers from tool warnings, analogous to the hex warnings from
+  unpaper.
+* Fixed visibility of options in save dialogue (again).
+* Right mouse click in thumbnail panel makes the page range (e.g. in save
+  dialogue) default to "selected".
+* Take filename of PDF to email from default filename settings (and therefore
+  from metadata). If this produces a blank filename, use "document.pdf".
+* Fixed bug requiring scan dialog to be requested twice after changing frontend
+* Update to Hungarian translation (thanks to csola)
+
+
+1.8.6 (22.08.2017):
+
+* Fixed visibility of options for DjVu, JPEG, & TIFF in save dialogue.
+* + Reload recursion limit in Edit/Preferences
+  Break of out reload recursion loop if maximum number of reloads is exceeded.
+* Reapply only those current scan settings that were reset by the reload
+* Fixed unpaper detection for v0.3.
+  Closes bug #273 (t/355_unpaper2.t test fails in gscan2pdf-1.8.5)
+
+
+1.8.5 (18.08.2017):
+
+* + support for Poppler (pdftops) as postscript backend.
+* - support for libsane-perl
+* Reapply current scan settings for those scanners that reset them when forcing
+  a reload
+* Eliminate unnecessary strings from gscan2pdf.pot to prevent unnecessary work
+  and confusion on the part of the translators.
+* + A3 to default paper sizes. Closes bug #262 (No "A3" paper size profile)
+* Update to Hungarian translation (thanks to csola)
+* Update to Slovak translation (thanks to Dušan Kazik)
+
+
+1.8.4 (28.07.2017):
+
+* Cope with Tesseract 3.0.5 writing Page 1 instead of Page 0
+  Thanks to Chris Mayo for the patch. Closes merge request #14
+* Assume pixels/inch if the image doesn't know better. Closes bug #258
+  (Tesseract 3.05.01: Warning. Invalid resolution 0 dpi. Using 70 instead)
+* Fix paragraph formatting in save as text output.
+  Thanks to Chris Mayo for the patch. Closes merge request #16
+* In preparation for future removal of libsane-perl frontend, change default
+  frontend libsane-perl -> libimage-sane-perl, and similarly switch selected
+  frontend on upgrade from older version. Assuming no major problems occur,
+  support for libsane-perl will be removed in the next release.
+* Fixed bug writing postscript file.
+* + support for ghostscript backend due to apparent bug in tiff2ps.
+* Round scan options with ranges to valid values before applying.
+* Fixed bug updating list of option-dependent values. Closes bug #264
+  (Effective resolution is 75 DPI despite selecting 600 or 1200).
+
+
+1.8.3 (01.07.2017):
+
+* + libimage-sane-perl frontend
+  - scanimage-perl and scanadf-perl frontends
+  Closes bug #219 (Rescan for devices not working properly).
+* Fixed bug writing multipage hOCR files.
+* Fixed bug switching between Tesseract and Cuneiform (particularly for German).
+
+
+1.8.2 (01.06.2017):
+
+* Don't ignore warnings from unpaper
+* Fix OCR being ghosted when Tesseract is installed.
+  Thanks to Chris Mayo for the patch. Closes merge request 13
+* + support for scanimage v1.0.27
+
+
+1.8.1 (27.05.2017):
+
+* Consistently ghost OCR and unpaper tools if the appropriate executables are
+  not available. Closes bug #151 (Unpaper detection is not handled correctly).
+* Fixed display of tesseract error messages, broken by commit
+  "Gscan2pdf::Tesseract: support output to stdout instead of temporary file"
+* Make RTL test work for other versions of ImageMagick.
+  Closes bug #246 (t/​357_unpaper_rtl.t test fails).
+* Improve support for button-type scan options.
+* + icons/gscan2pdf-papyrus.svg for use with Papyrus-like themes.
+  Thanks to Chris JC Jones for donating the icon.
+* + ppm & pbm extensions to open file chooser.
+  Closes bug #252 (Support for pbm nd ppm bitmap formats)
+* Fixed multipage scanning for Samsung CLX-4190.
+* Change metadata filename codes to use strftime
+* Many improvements to the display of OCR output.
+  Thanks to Peter Marschall for the patches.
+  Closes Debian bug #858767 (fixes & improvements to gscan2pdf)
+* Update to Hungarian translation (thanks to csola)
+* Update to Traditional Chinese translation (thanks to Po-Hsu Lin)
+* Update to Slovak translation (thanks to Dušan Kazik)
+
+
+1.8.0 (12.04.2017):
+
+* + "Writing system" option in "Clean Up" (unpaper) dialogue, affecting
+  the order in which the pages are imported when scans are split.
+  Closes feature request #94
+  (add "Deskew", "Descreen", "Split image" to "Save" dialog)
+* + support for Tesseract 3.05. Thanks to Chris Mayo for the patch
+  Closes bug #243 (tesseract 3.05 OCR Engine not recogized)
+* + support for unpaper --no-mask-center option.
+  Thanks to Peter Marschall for the patch
+* + contrast + brightness tool. Thanks to Peter Marschall for the patch
+  Closes bug #208 (allow luminance/contrast manipulation after scanning)
+* + option to convert filename whitespace to underscores.
+  Thanks to Peter Marschall for the patch
+* Fix crash caused by undefined profiles in .gscan2pdf
+  Closes support request #19 (Will not run past crashed session)
+* Move config file to use $XDG_CONFIG_HOME or $HOME/.config directory.
+  Thanks to Peter Marschall for the patch
+* Various cosmetic improvements. Thanks to Peter Marschall for the patches
+* Update to Italian translation (thanks to Milo Casagrande)
+* Update to Slovak translation (thanks to Dušan Kazik)
+
+
+1.7.3 (12.03.2017):
+
+* Fixed bug presenting blank scan dialog if no devices found. Closes bug #241
+  (Scan Document window cannot be opened if no scanner was found)
+* Fixed bug updating post-save hooks if save dialog already opened.
+  Closes Debian bug #756897 (Specify ways to proof-read document post-save)
+* Force resolution to be integer for DjVu to prevent errors whilst saving
+
+
+1.7.2 (12.02.2017):
+
+* Suppress errors from CLI frontends caused by rounding.
+* Reload default scan settings after rescanning for devices.
+
+
+1.7.1 (11.01.2017):
+
+* Fixed bug setting preferences.
+* Fixed bug saving when no post-save hooks defined.
+* Fixed bug attaching PDF to email.
+  Closes bug #221 (linuxmint - unable to attach scans to mail client)
+
+
+1.7.0 (04.01.2017):
+
+* + post-save hook.
+  Closes feature request #93 (post-save arbitrary command capability)
+  Closes feature requests #61-3 (Run userscript after every scan)
+* + option in Edit/Preferences to force # pages = all if ADF if selected
+  Closes feature request #54 (When changing to ADF auto select All)
+* + --import command-line option. Closes Launchpad (Ubuntu) bug #312839:
+  (needs command line options for Gnome integration)
+  Closes Debian bug #852506 (Command-line option to import file)
+* Fixed bug preventing append/prepend PDF in combination with set timestamp
+* Catch error setting timestamp for dates prior to 1970.
+  Closes bug #234 (seems to be stuck after closing the pdf)
+* Correctly scale boundary boxes when importing text layer of PDF
+* Cherry-picked several merge requests from Chris Mayo fixing tests and
+  documentation.
+* Fix saving TIFF with compression (introduced in 1.6.0).
+  Closes bug #235 (Saving a PNG with alpha channel as TIFF fails)
+* Update to Catalan translation (thanks to Davidmp)
+* Update to Slovak translation (thanks to Dušan Kazik)
+
+
+1.6.0 (02.12.2016):
+
+* Catch errors importing text layer of DjVu.
+* + support for dragging files from Nautilus (or Konqueror, or anything that
+  delivers URIs). Closes Launchpad (Ubuntu) bug #515854:
+  (Drag and drop PDF from Nautilus should import PDF)
+  and feature request #90 (Drag & drop image files into the application window)
+* + support for brackets in imported djvu hidden layer
+* Store document date as offset (reverted code introduced in v1.3.9)
+  Closes Debian bug #842239 (Arbitrary document metadata date chosen)
+* Support ampersand (&) in filenames whilst saving images
+  Closes bug #233 (Shell command injection when saving to an image format)
+  Thanks to Petr Písař for the patch.
+* Refactor most system() calls to use IPC::Open3 to eliminate need to escape
+  special characters from shell.
+* Eliminate warnings when reloading scan options with option groups.
+* + option to change the pdf and djvu access and modification times to the
+  metadata date
+* Sort config file and ensure only currently used settings are stored
+
+
+1.5.5 (23.10.2016):
+
+* Work around bug in imagemagick causing the image depth not to be respected.
+  Closes bug #231 (Saving PDF corrupts 1-bpp images imported from a PDF)
+  Thanks to Petr Písař for the patch.
+* Fix deleting pages by selecting thumbnails and hitting delete key.
+* Fixed drag-and-drop operations broken in v1.5.2.
+  Closes bug #232 (Unable to reorder pages in the thumbview)
+
+
+1.5.4 (14.10.2016):
+
+* Fixed cycle SANE handle error when using frontend other than libsane-perl.
+* Fixed bug preventing # pages = all by default, even with ADF.
+  Closes Debian bug #840534 (#Pages scan option always defaults to '1')
+
+
+1.5.3 (12.10.2016):
+
+* Added scroll bars to all tabs on scan dialog.
+  Closes bug #228 (missing scan+close button on scanning window)
+* Fixed bug copy-pasting pages where subsequent operations on new pages are
+  carried out on old pages.
+* Changed default compression for lineart PDFs to PNG.
+* Fixed cycle SANE handle option to reset options after reloading.
+* Fixed Perl warnings if backend offers no "source" scan option.
+* Update to Catalan translation (thanks to Davidmp)
+* Update to Slovak translation (thanks to Dušan Kazik)
+
+
+1.5.2 (24.08.2016):
+
+* Fixed bug prepending or appending to a PDF with a space in the path.
+* Refactored code handling geometry options to reduce complexity and duplication
+* Removed metadata variables %h, %i, %s, adding %H, %I, %S.
+  Closes bug #226 (Formatting timestamp for filename template broken)
+* Encode document date in ASCII to workaround a bug in PDF::API2 where UTF-8
+  encoding caused garbage in the metadata.
+  Closes bug #224 (CreationDate and ModDate fields are missing)
+* If the output from user-defined tool is pnm, there is no way to tell the
+  resolution, so assume that it is the same as the input.
+  Closes bug #227 (Page size corruption in 1.5.1)
+* Support hand-scanner option in test backend. Closes bug #223
+  ("Auto length detection" option does not work with ScanSnap IX500)
+  Closes bug #147 (infinite loop using libsane-perl and flat scanner)
+* Filter out double memory address from unpaper warning.
+  Closes Debian bug #833521 (unpaper AVStream codec deprecation warning)
+* Update to Slovak translation (thanks to Dušan Kazik)
+
+
+1.5.1 (26.07.2016):
+
+* Fix "Can't use string ("gimp %i") as an ARRAY ref"
+  Closes bug #222 (Error when run gscan2pdf 1.5)
+  Closes Debian bug #831597 (Can't use string ("gimp %i") as an ARRAY ref)
+* Store and apply backend (scanner-specific) and gscan2pdf settings separately.
+* Those frontend settings stored in profiles need not be stored in general
+  settings.
+* When paper in use, hide other geometry widgets
+* When saving profile, if name already exists,
+  add warning and don't duplicate the combobox text
+
+
+1.5.0 (11.06.2016):
+
+* Also import text layer when importing PDF or DjVu.
+  Closes feature request #55 (Import text from PDF/DjVu)
+* + option in Edit/Preferences to allow/forbid batch scanning from a flatbed
+  Closes bug #194 (Scanning "All" pages using Epson WorkForce 845 flatbed source
+  scans in an infinite loop)
+* Store date as string to avoid time zone problems
+  Closes Debian bug #823626 (Date in file name off by one day when saving)
+* Show warning when importing a PDF if number of images is not equal to number
+  of pages.
+* + option not to close save dialog.
+  Closes feature request #91 (Keep save dialoque open)
+* Update to Occitan (post 1500) translation (thanks to Cédric VALMARY)
+
+
+1.4.0 (14.04.2016):
+
+* Fixed double file overwrite confirmation
+* Update paper size combobox after setting profile
+  Closes feature request #75 (Ability to set default page size)
+* Integrate user-defined tools into scan post-process
+* + dialog window for user-defined tools
+  Closes feature request #39 (automatic color correction with aaphoto)
+* Fixed extended page numbering toggle
+* Fixed restoring crashed session
+* Fixed paper sizes after switching device. Closes bug #216
+  (options for A4, US Legal, and US Letter have disappeared in the Geometry
+   options for Scansnap IX500 in 1.3.9)
+* Correct hiding/showing of widgets when saving JPEG
+* Save session after an action rather than before so as not to lose the last
+  action in the event of a crash
+* Update to French translation (thanks to Jean-Marc)
+
+
+1.3.9 (06.03.2016):
+
+* Fixed warning from Perl 5.10.1 about use of uninitialized value in subroutine
+  entry in Gscan2pdf/Dialog/Scan/CLI.pm
+* Store absolute date instead of offset
+* If get_message_area() not available (because gtk+ is too old),
+  use get_content_area() or vbox()
+* Differentiate between readonly file and directory in error messages
+* Fixed bug opening session file
+* A deleted profile stays deleted across sessions
+* Fixed multiple reload callback, affecting setting profiles
+* If a profile affects geometry settings, update paper size widget appropriately
+  Closes Debian bug #815552 (fails to set geometry when loading saved profile)
+
+
+1.3.8 (04.02.2016):
+
+* Fixed bug saving TIFF, introduced in v1.3.6.
+  Closes Debian bug #812684 (cannot save in .tif format)
+* Fixed bug running tesseract from OCR dialog, introduced in v1.3.7.
+* Fixed bug saving, retrieving and applying profiles. Closes bug #163:
+  (paper size changes not applied consistently)
+* Update to Czech translation (thanks to Pavel Borecki)
+* Update to Ukrainian translation (thanks to Микола Ткач)
+
+
+1.3.7 (16.01.2016):
+
+* Fixed check that pages have been saved
+* Fixed scan->rotate->unpaper->OCR chaining (again). Closes:
+   bug #213 (Cant call method freeze on an undefined value)
+   bug #215 (thanks to Alastair for testing)
+* Filter out memory address from unpaper warning. Closes bug #205
+  (Gscan2pdf problem with unpaper 6.2) and Debian bug #807565
+  (Unpaper error dialog cannot be hidden permanently)
+* Ensure that process numbering is properly reinitialised when queue is empty.
+* Fixed error importing PDF with more than 999 pages. However, this exposed the
+  problem that each page is held as an open temporary file and that the system
+  can run out of file handles somewhere after 1000.
+
+
+1.3.6 (20.12.2015):
+
+* Use simplified tesseract call for tesseract >= 3.02.02. Closes patch #15
+  (Simplifying Tesseract call in Tesseract.pm). Thanks to Wikinaut for the patch
+* Add completion for author, title, subject & keyword metadata
+* Store the list of pages to be saved on hitting the save button, not waiting to
+  choose the filename. Closes Debian bug #648627
+  (post-dialog selection changes influence which pages are saved)
+* Fixed progress text when importing files with multiple pages
+* Some scanners activate paper-width and paper-height only for the ADF, and thus
+  send "invalid argument" when setting the paper size for the flatbed. Trap this
+  by also testing whether these options are active when setting the paper size.
+* When scanning "all" pages, but only a finite number are possible, report this
+  in the progress bar.
+* Update list of available paper sizes after every option reload, as different
+  sources (e.g. flatbed, ADF) support different geometries
+* Update list of rpm dependencies in .spec files (Closes support-requests #15)
+* Update to Danish translation (thanks to Aputsiaĸ Niels Janussen)
+* Update to French translation (thanks to Jean-Marc)
+* Update to Hebrew translation (thanks to Lior David)
+
+
+1.3.5 (07.10.2015):
+
+* Add prepend and append to PDF save options.
+  Closes feature request #76 (Append to pdf option)
+* Use new threading philosophy for scanning thread.
+* Fix bug applying profiles with duplicated or invalid options
+* Selecting single-sided pages also selects facing page. Closes bug #206
+  (Selecting 1-sided/front after 2-sided/back has a logical problem)
+* Fixed scan->unpaper->OCR chaining.
+* Changed defaults so that unpaper does not run by default after scanning.
+* Enabled hours, minutes and seconds in filename template.
+  Closes patch #12 (Enable hours, minutes and seconds in default filename).
+  Thanks to Jason Kankiewicz for the patch.
+* Update to German translation (thanks to Tobias Bannert)
+* Update to Slovak translation (thanks to Dušan Kazik)
+
+
+1.3.4 (04.08.2015):
+
+* Fix startup crash due to incorrect MessageDialog type and buttons
+
+
+1.3.3 (01.08.2015):
+
+* Suppress warnings when passed boolean as empty string
+  Closes LP: #844582 ("Invalid argument" when trying to scan)
+* Moved config file format to JSON. JSON::PP is a core module,
+  so this does not create a new dependency.
+* + option not to show dialog messages
+* Trap errors from unpaper, rotate, crop, threshold, negate, unsharp
+  processing tools
+  Closes bug #198 (empty pages when saving, GIMP, or printing)
+* Removed dependency on liblinux-distribution-perl as not available on FreeBSD
+* Also support gconftool-2 when checking for email client
+  Closes bug #200 (it doesn't attach on Fedora 21 (with thunderbird))
+* Update to German translation (thanks to Tobias Bannert)
+* Fixed program hang importing an empty file at the same time as other files
+* Rewrite threading system to simplify it and remove many race conditions
+* Fixed bug setting threshold-before-ocr check box
+
+
+1.3.2 (13.05.2015):
+
+* Fixed program hang displaying save dialog
+
+
+1.3.1 (10.05.2015):
+
+* Fixed bug saving PDF after thresholding
+* Warn if less free space in session directory than limit set in preferences
+* Fix defaults for unpaper and output-pages<->layout misalignment
+* Where available in the OCR output, use the full page/column/para/line/word
+  hiearchy in the djvu text layer. Closes bug #191
+  (Exported DjVu with Tesseract OCR miss a lot of structure infos)
+* Remove corrupt element from session after importing. Closes bug #195
+  (Any operation after opening a saved session crashes the program)
+* Basque translation (thanks to gorkaazk)
+* Update to German translation (thanks to Tobias Bannert)
+* Update to Russian translation (thanks to Aleksey Kabanov)
+
+
+1.3.0 (30.01.2015):
+
+* Avoid leading & trailing spaces in filename expanded from template
+  Closes bugs #172 & #169 and Debian bug #774099.
+  Thanks to Peter Marschall for the patch.
+* Various GUI improvements.
+  Closes Debian #774093 (various consistency updates for dialogs)
+  Thanks to Peter Marschall for the patch.
+* Improvements to the display of OCR output.
+  Closes Debian #774094 (misc. improvements for OCR'ed texts)
+  Thanks to Peter Marschall for the patch.
+* More improvements to date metadata widget
+  Closes Debian #774103 (fixes for date offset calculation)
+  Thanks to Peter Marschall for the patch.
+* + metadata for DjVu. Closes Debian #774097 (when saving as DjVU, use MetaData)
+  Thanks to Peter Marschall for the patch.
+* Refactored logging of OCR dependencies.
+  Closes Debian #710428
+  (Add "Found ocropus" to log information on application start)
+* Catch many filesystem errors
+* Return in one of the entry widgets in the the save dialog hits the
+  save button.
+
+
+1.2.7 (23.11.2014):
+
+* Use date from entry rather than calendar widget.
+  Closes bug #183 (Date not used)
+* Use icons for 'email as PDF' and the hand tool designed by Andreas E.
+  Closes LP: #1197264 (wrong icons in toolbar)
+* + threshold as part of OCR process
+  Closes feature request #35 (Image threshold adjustment for Tesseract alone)
+* Fix bug saving encoded characters in hOCR
+* Fix bug saving defaults that are not part of a profile
+* Add scrollbars to the 'Page Options' tab to make the scan button visible on
+  screens that are shorter than the scan dialog.
+  Closes bug #188 'Scan Document dialogue too big'
+* Fix crash on start if tesseract is not installed
+* Fix button display in Tools > Unsharp Mask
+  Closes Debian bug #769823
+  (menu entry Tools > Unsharp Mask lacks OK & Cancel buttons)
+* Finnish translation (thanks to tjamob)
+* Update to Czech translation (thanks to Pavel Borecki)
+* Update to French translation (thanks to Christophe CHAUVET)
+* Update to German translation (thanks to Tobias Bannert)
+* Update to Greek translation (thanks to SiliconDreams)
+* Update to Polish translation (thanks to Piotr Strębski)
+* Update to Russian translation (thanks to Eugene Marshal)
+* Update to Spanish translation (thanks to Max lenders)
+
+
+1.2.6 (27.09.2014):
+
+* Fix support for tesseract 3.02, broken by commit ae76b3cf.
+* Changed 'save text' to extract plain text from hOCR output
+* + 'save hOCR', to save hOCR output, where available.
+* Fixed logic of automatic selection of blank or dark pages.
+* If an error occurs whilst opening a device, remove it from the device list
+  and try the next, rather than giving up straight away.
+* Added text entry for date on save dialogs.
+  Closes feature-requests #81 (option to manualy keyin date (or at least year)
+* Added device blacklist
+* Fixed add paper button. Closes bug #178 (unable to add geometries)
+* Increase maximum page number to 9999
+  Feature request 82 (Scanning documents that are 1000 pages or more)
+
+
+1.2.5 (17.05.2014):
+
+* Fix today button on date dialog saving PDF
+  Closes bug #171 "Today" button in calendar jumps to February 1th, 1970
+* Fix resolution when processing non-standard sized images with unpaper
+* Speed up downsample option by using imagemagick sample instead of resize
+* Remove unnecessary decode_utf8() call causing
+  'Cannot decode string with wide characters' error in Perl 5.18.
+* Add support for tesseract 3.03.
+  Closes bug #173 "v1.2.4 doesn't display any output"
+* Fix bug writing images with quotes in filename
+  Closes bug #174 "Fail to save file when target folder has quote in filename"
+* Fix setting options which don't cause a reload.
+  Closes bug #168 (Resolution Errors on Multiple Scanners)
+  Closes bug #170 (Format A2 in PDF properties despite having chosen A4 while scanning)
+  Closes Debian bug #742233 (wrong resolution)
+  Closes LP: #1304484 (resolution incorrect, saved pdf far too large)
+
+
+1.2.4 (26.03.2014):
+
+* Tie PageRange widgets together
+  Closes bug #165 "all or selected? a surprise that can bite like snake" again
+* Fix parsing the units of the resolution of imported images.
+* Fix infinite loop scanning page 1 when 5+ exist.
+* Parse negative progress percentages from scanimage.
+* Fix scan dialog if no devices found.
+
+
+1.2.3 (27.01.2014):
+
+* Deal with crashed sessions with no session file
+* Fixed bug setting TMPDIR in preferences
+* Added menu item 'Open crashed session'
+* Don't process empty lists of pages
+  Closes bug #165 "all or selected? a surprise that can bite like snake"
+
+
+1.2.2 (13.01.2014):
+
+* Fixed paper editor widget
+* Fixed position of paper size widget
+* Hide geometry widgets at startup if paper selected
+
+
+1.2.1 (12.01.2014):
+
+* Fixed opening saved sessions
+* Fixed storing resolution of scanned images
+  Closes Debian bug #734854 (gscan2pdf wrong resolution)
+
+
+1.2.0 (23.11.2013):
+
+* Don't lose extension if user-defined tool converts pnm to pbm, ppm or pgm.
+  Closes Launchpad bug 889549 (again)
+  (gscan2pdf gimp integration creates page size error)
+* Allow thread to import different number of pages than requested.
+  Closes LP: #1163739 (Import of pdf no longer working)
+* Take the resolution directly from the scanner when scanning rather than
+  assuming that the system value is up-to-date.
+  Closes bug 134 (reduces PDF to half size of scan)
+* Fixed UTF8 handling with gocr
+  Thanks to patch from Pablo Saratxaga
+* Fixed import of multipage TIFFs
+  Closes Launchpad bug 1181019
+  (importing existing multipage tif file loads only the first one)
+* Actually change the device when the device combobox is changed.
+  Closes debian bug #729589
+  (Can not scan using a Canon LiDE 210 with version 1.1.3-1)
+* Show/hide options in CLI frontends via Edit/Preferences
+* Fix Thunderbird detection from XFCE. Closes debian bug #701581
+  (Thunderbird detection (for send email) does not work reliably on XFCE)
+* Fixed bug opening a session file from multiple sessions
+* + option in Edit/Preferences to automatically open the scan dialog
+  in the background on program start. Closes debian bug #717479
+  (Background-scanning for devices and options)
+* Update to Brazilian Portuguese translation (thanks to Rodrigo Zimmermann)
+* Update to Danish translation (thanks to peteradleralberti)
+* Update to French translation (thanks to mavosaure)
+* Update to Polish translation (thanks to Piotr Strębski)
+* Update to Russian translation (thanks to Aleksey Kabanov)
+* Update to Slovak translation (thanks to zdpo)
+* Update to Slovenian translation (thanks to Andrej Znidarsic)
+* Update to Turkish translation (thanks to Utku BERBEROĞLU)
+* Update to Ukrainian translation (thanks to Сергій Дубик)
+
+
+1.1.3 (25.02.2013):
+
+* Added missing arguments to 'changed-progress' signal emission.
+* Fix bug preventing import after error.
+  Closes bug 155 (can't enter correct file name after incorrect file name)
+* Fixed bug introduced in v1.1.2 causing only one page to be scanned
+  when all requested
+* Fixed bug introduced in v1.1.2 causing two pages to be scanned
+  when only one requested
+
+
+1.1.2 (10.02.2013):
+
+* Add scrollbar to prevent long font names making save dialog too wide
+  Closes Launchpad bug 1113208
+  (The save dialogue is way to big for my screen and cannot resize)
+* Don't need to convert image to .tiff for tesseract v3
+  Thanks to Leon Fisk for the patch
+* Fix parsing of hocr output from tesseract v3.02.01
+  Thanks to Leon Fisk for the patch
+* Correct tests for presence of cuneiform & tesseract installations
+
+
+1.1.1 (01.02.2013):
+
+* + support for tesseract 3.02.01
+* Fixed tesseract 3.00 support
+* Fixed bug sending PDF as email
+  Closes bug 152 (No eMail gscan2pdf 1.1 Suse 12.2)
+* Don't need to convert image to .bmp for cuneiform 1.1.0
+* Ensure the image resolution, and therefore the page size, is either taken
+  from the file or inferred from the page dimensions.
+  Closes Launchpad bug 889549
+  (gscan2pdf gimp integration creates page size error)
+* Update to Slovak translation (thanks to Prescott_SK)
+
+
+1.1.0 (18.11.2012):
+
+* Fix applying default settings to widgets in scanimage dialog
+  Closes debian bug #682818 (Presets aren't working)
+* Fixed bug editing OCR output.
+* Add profiles to libsane-perl frontend. Closes feature request #59
+  (Add profiles to define actions to be executed automatically)
+* Fixed switching to last directory on open/save
+* Fixed extracting image resolution in non-English locales
+  Closes bug 3572463 (After update suse 12.2 pdf blank page)
+* Much refactorisation of code to allow more regression tests
+  and reduce duplication
+* Fixed bug importing multipage PDF
+  Closes bug 3574898 (Always imports all pages of a PDF)
+* Update to German translation (thanks to Jari)
+* Update to Greek translation (thanks to Stavros Kakaliantis)
+* Update to Gujarati translation (thanks to Vishal Goswami)
+* Update to Occitan (post 1500) translation (thanks to Cédric VALMARY)
+* Update to Turkish translation (thanks to Utku BERBEROĞLU)
+
+
+1.0.6 (20.07.2012):
+
+* Fixed cropping when selector tool not active or page not selected
+  Closes bug 3544597 (crop tool not working)
+* Fixed renumber dialog
+  Closes bug 3545151 (renumber not working in version 1.0.5)
+* Fixed keyboard entry in dialog boxes
+  Closes Launchpad bug 1026944 (Unable to type text in Save dialog box)
+* + support for unpaper > 0.3
+  Closes bug 3542615 (Incompatibility with recent releases of unpaper)
+* Repage after crop
+  Closes bug 3526661 (cropping page twice: coordinates off)
+
+
+1.0.5 (15.07.2012):
+
+* Allow new processes to be started after pressing cancel button
+* Fixed paste menu
+  Closes bug 3517797 (Copy and paste no longer work)
+* Pad scans which have less data than their headers announce with blanks
+  Closes bug 3480247 (No image from HP6500A ADF)
+* Fix unpaper when used as part of scan process
+  Closes Debian bug #670640 (Can't call method get_cmdline)
+* Sort OCR languages in ComboBoxes
+* Deal with non-UTF-8 output from OCR. Closes Debian bug #670831
+  (gscan2pdf is not resilient against non utf-8 from tesseract)
+* Fix Email to PDF with kmail
+  Closes bug 3487790 (suse 12.1 emails no pdf)
+* Fix updating widgets in scanimage dialog
+  Closes debian bug #678911
+  (Device-dependent options disappear after selecting Lineart mode)
+* + Gujarati translation (thanks to Vishal Goswami)
+* Update to Brazilian Portuguese translation (thanks to Arthur Rodrigues)
+* Update to Simplified Chinese translation (thanks to Wang Dianjin)
+* Update to Czech translation (thanks to Zbyněk Schwarz)
+* Update to German translation (thanks to Dennis Baudys)
+* Update to Hungarian translation (thanks to Herczeg Zsolt)
+* Update to Japanese translation (thanks to Shushi Kurose)
+* Update to Polish translation (thanks to Wojciech Górnaś)
+* Update to Spanish translation (thanks to Adolfo Jayme Barrientos)
+* Update to Swedish translation (thanks to Tobias Holm)
+
+
+1.0.4 (11.04.2012):
+
+* Fixed Clean Up (unpaper) dialog
+
+
+1.0.3 (08.04.2012):
+
+* Refactor switch usage to satisfy Perl 5.10.
+  Closes bug 3514239 (gscan2pdf won't load)
+* Support page-width and page-height options with libsane-perl frontend
+  Closes bug 3441159 (Page size cannot be changed)
+  Closes bug 3052205 (Cannot set paper size)
+* Update to Russian translation (thanks to Oleg Koptev)
+
+
+1.0.2 (27.03.2012):
+
+* Fixed ocropus support
+  Closes bug 3487120 (Ocropus no longer in OCR selection)
+* Reference core font in PDF only once
+* Add more language codes for Tesseract and Cuneiform
+* + Tesseract 3.02 support
+  Closes Debian bug #665871
+* Fixed Perl exiting when restoring a crashed session
+* Don't add corrupted page if error is thrown copying the image
+  Closes Debian bug #663584
+* Fix restore crashed session
+  Closes Debian bug #664635
+* Update to German translation (thanks to Daniel Dietrich)
+* Update to Russian translation (thanks to Artem Karimov)
+* Update to Spanish translation (thanks to Fitoschido)
+* Update to Turkish translation (thanks to Utku BERBEROĞLU)
+* Update to Ukrainian translation (thanks to Сергій Дубик)
+
+
+1.0.1 (05.02.2012):
+
+* Fixed metadata in PDF
+  Closes Debian bug #653918
+  Thanks to Sebastian Schmidt for the patch
+* Embed TTF in PDF only once
+  Closes Debian bug #646298
+  Thanks to noreply@example.com for the patch
+* Decode HTML entities returned by Ocropus
+  Closes Debian bug #646246
+  Thanks to noreply@example.com for the patch
+* Fixed saving PS
+* Optionally start viewer after saving
+  Closes Debian bug #651666
+* Fixed email as PDF. Closes bug 3459124
+* Fixed error message importing DjVu with spaces in filename
+* Support multiple sessions
+  Closes Debian bug #645322
+* Optionally cycle SANE handle after scan
+* Fix import of PDFs with greyscale and colour images
+  Closes Debian bugs #645323 #563442
+* Fixed opening session files
+* Update to Brazilian Portuguese translation (thanks to Fitoschido)
+* Update to Catalan translation (thanks to Norbux)
+* Update to Dutch translation (thanks to Tico)
+* Update to Greek translation (thanks to jimpap)
+* Update to Hungarian translation (thanks to Szenográdi Norbert Péter)
+* Update to Spanish translation (thanks to Fitoschido)
+* Update to Turkish translation (thanks to Serkan Guldal)
+
+
+1.0.0 (16.09.2011):
+
+* Deal with version information from PDF::API2 
+* Suppressed "End of file reached" message.
+  Closes Debian bug #622844
+  Thanks to Sebastian Schmidt for the patch
+* Switch to OO interface for File::Temp, thus automatically clearing up
+  unneeded temporary files. Closes Debian bug #563461
+* Removed all blocking progress dialogs
+  Closes bug 2670868, Debian bug #577144
+* + Spinbuttons to crop dialog
+* + Edit/Select/No OCR
+* + Edit/Clear OCR
+  Closes Debian bug #602578
+* Combined Import and Open dialogs
+  Closes Debian bug #617885 #617886
+* + Tesseract 3.01 support. Closes bug 3246957, feature request 3081360
+* Fix embedding of UTF-8 OCR output
+* Update to Catalan translation (thanks to Norbux)
+* Update to Dutch translation (thanks to Tico)
+* Update to Hungarian translation (thanks to Gábor Sepsi)
+* Update to Italian translation (thanks to Milo Casagrande)
+* Update to Polish translation (thanks to pp/bs)
+* Update to Russian translation (thanks to Eugene Marshal)
+* Update to Spanish translation (thanks to R120X)
+* Update to Turkish translation (thanks to Utku BERBEROĞLU)
+* Update to Ukrainian translation (thanks to Сергій Дубик)
+
+
+0.9.32 (14.02.2011):
+
+* Use Log::Log4perl for logging messages
+* + Print option. Closes bug 2108705
+* Fixed ignored unpaper border-margin options
+* Fixed sensitivity of unpaper border-margin options on startup
+* Switched from forks to threads
+* + filters to the file selector
+  Thanks to Jarl Stefansson for the patch
+* Changed DPI->PPI.
+* Retrieve metadata from resource file as unicode
+  Thanks to Andy Fingerhut for the patch
+* Fixed bug saving postscript with multiple pages
+  Thanks to Andy Fingerhut for the patch
+* Fixed bug saving postscript with spaces in filename
+* Fixed bug saving OCR output as text
+  Thanks to Andy Fingerhut for the patch
+* Fixed bug saving to an existing write-protected file
+  Thanks to Andy Fingerhut for the patch
+* Fixed bug running OCR on pages with varying sizes
+  Thanks to Andy Fingerhut for the patch
+* Fixed regex for Tesseract language codes so that deu-f is recognised
+* Moved ocropus option tesslanguage to environment variable
+  Closes Debian bug #599181
+* Support cuneiform better by converting first to bmp if necessary
+  Closes LP: #654771
+* Use trick from Jakub Wilk to avoid hardcoding tessdata path
+* Deal better with errors from tesseract
+* Ask before clearing all pages
+  Closes Debian bug #608226
+* Don't load page if unpaper call is cancelled
+* Make escape button hide/kill active dialog/window
+* Update to Brazilian Portuguese translation (thanks to Júlio Cezar Santos Pires)
+* Update to Catalan translation (thanks to Norbux)
+* Update to Dutch translation (thanks to Tico)
+* Update to French translation (thanks to JeromeJ)
+* Update to German translation (thanks to Matthias Gutjahr)
+* Update to Italian translation (thanks to Luca Pedrazzi)
+* Update to Japanese translation (thanks to YAMAKAGE Hideo)
+* Update to Polish translation (thanks to Piotr Strębski)
+* Update to Russian translation (thanks to Oleg Koptev)
+* Update to Spanish translation (thanks to Fitoschido)
+* Update to Ukrainian translation (thanks to Сергій Дубик)
+
+
+0.9.31 (19.07.2010):
+
+* Don't attach PDF to email until it has been created
+  Closes 2941906 (Emailing PDF produces 0-byte attachment)
+* + user-defined shell commands
+  Closes Debian bug #510309 (gscan2pdf: Ability to configure how GIMP is started)
+* Update UI after restore
+  Closes 2952845 (Menu and toolbar items greyed out after restore)
+* Fixed bug in scanimage-perl with --batch option
+  Closes 2951789 (uninitialized value $batch_count scanimage-perl line 1199)
+* Do not allow multiple instances in order to prevent data loss
+  Closes 2962298 (gscan2pdf instances collide and delete hours of work)
+* + Cuneiform support
+  Closes 2927831 (Add cuneiforms to supported OCR engines)
+* Pad filenames of saved images with zeros to fix subsequent sorting issues
+  Closes 2958788 (Add leading zeros to export image filenames)
+  Thanks to Frederik Elwert for the patch
+* Fix embedding of OCR output from tesseract and GOCR (broken in v0.9.30)
+* Fixed ocropus use without debug option. Thanks to Klaus Ethgen for the patch.
+* Fixed UTF8 encoding in OCR output. Thanks to Klaus Ethgen for the patch.
+* Save default filename between sessions
+* Automatically hide unpaper and OCR dialogs when finished
+* Block delete event if main window is closed and quit not OK.
+  Closes 3015248 (Gscan2pdf quits without saving)
+  Closes LP 588974 (Program quits without saving)
+  Closes Debian bug #584787 (gscan2pdf: Gscan2pdf quits without saving)
+* Wait until scan exists before trying to import.
+  Closes 2991751 (gscan2pdf randomly aborting multiple-pages scanning)
+* Correct position of OCR output when downsampling.
+  Thanks to Matthijs Kooijman for the patch
+* Suppress warning "Useless use of sort in void context"
+  Closes Debian bug #585441 (gscan2pdf: "Useless use of sort in void context")
+* Offer to reload device-dependent options cache if empty
+  Closes LP 602560 (device-dependent options cache inobvious)
+* Start of Occitan (post 1500) translation (thanks to Cédric VALMARY)
+* Update to Catalan translation (thanks to Norbux)
+* Update to Simplified Chinese translation (thanks to Eleanor Chen)
+* Update to Danish translation (thanks to Ask Hjorth Larsen)
+* Update to Italian translation (thanks to suoko)
+* Update to Polish translation (thanks to Wojciech Górnaś)
+* Update to Portuguese translation (thanks to Sérgio Marques)
+* Update to Russian translation (thanks to Spector)
+* Update to Slovak translation (thanks to zdpo)
+* Update to Ukrainian translation (thanks to Сергій Дубик)
+
+
+0.9.30 (01.02.2010):
+
+* + Ocropus support
+* Use Goo::Canvas to place OCR output at boundary boxes supplied by Ocropus
+  New dependency on XML::Simple to parse hocr output from Ocropus
+* Write OCR output to PDF or DjVu at boundary boxes supplied by Goo::Canvas
+  Closes Debian bug #461086 (embed OCR output at correct position)
+  No longer additionally write OCR output as PDF annotation
+* + <ctrl>g shortcut for the scan dialog, moving intial focus to the scan button
+  Closes Debian bug #510314 (gscan2pdf: Mapping File_Scan to a shortcut key)
+* + Slovak to tesseract languages. Documented logic.
+  Closes 2793056 (gscan2pdf offers for tesseract only english)
+* Display and store TIFF compression options when saving PS
+* + basic functionality to view and modify numerical array scan options in graphical format
+* Incorporate PDF metadata in filename
+  Closes 2185401 (Save Dialog: option to concatenate date+title in filename)
+* Force bilevel image after thresholding
+  Closes Debian bug #557657 (gscan2pdf binarization option [wishlist])
+* Deactivate G3 and G4 compression for PDF, as not supported by PDF::API2
+* Also look for tesseract language packages in /usr/share/tesseract,
+  to support Fedora
+* Use Proc::Killfam to ensure that all subprocesses are killed with the parent
+* Fix broken link in documentation.
+  Closes 2929707 (Broken link om homepage)
+* Note resolution with libsane-perl whilst reading or updating options
+  Closes LP #424249 (locks when trying to save as PDF)
+* Fix bug cancelling scan with libsane-perl frontend
+* + Slovak translation (thanks to zdpo)
+* + Simplified Chinese translation (thanks to WangLu)
+* Start of Abkhaz translation
+* Start of Catalan translation
+* Update to Brazilian Portuguese translation (thanks to Andrius Gabriel da Luz)
+* Update to Bulgarian translation (thanks to Emil Pavlov)
+* Update to Czech translation (thanks to zdpo)
+* Update to Dutch translation (thanks to cumulus007)
+* Update to French translation (thanks to winniemiel05)
+* Update to German translation (thanks to PsychoKim)
+* Update to Hebrew translation (thanks to Ddorda)
+* Update to Italian translation (thanks to Nicola Cardinali)
+* Update to Korean translation (thanks to Elex)
+* Update to Polish translation (thanks to Piotr Strębski)
+* Update to Portuguese translation (thanks to Tiago Silva)
+* Update to Russian translation (thanks to aks-id)
+* Update to Slovenian translation (thanks to Simon Vidmar)
+* Update to Spanish translation (thanks to Yözen Hernández)
+* Update to Swedish translation (thanks to Mattias Ohlsson)
+* Update to Ukrainian translation (thanks to Сергій Дубик)
+
+
+0.9.29 (04.05.2009):
+
+* Delete frontend=scanimage.pl and frontend=scanadf.pl settings
+  Closes Debian bug #526845 (gscan2pdf: Renaming of frontends breaks current settings)
+
+
+0.9.28 (01.05.2009):
+
+* + Rescan devices.
+  Closes 2433654 (gscan2pdf loses USB scanner connection after replugging)
+* Fix JPEG compression for TIFF, broken in 0.9.27, changeset 60f40d2c0cf4
+* Display any errors from tiffcp
+* Fix TIFF compression in PDF
+  Closes Debian bug #506150 (gscan2pdf: pdf creation failes when using LZW compression)
+* Rename scanimage.pl and scanadf.pl to scanimage-perl and scanadf-perl
+  to fix lintian warnings about .pl suffices.
+* + Progress bar for scanadf frontend
+* + Renumber selected pages
+* + adf-mode. Closes 2533708 (Duplex ability not recognized)
+* Catch "sane_read: Operation was cancelled" message
+  Closes Debian bug #512758 (Error handling: 'Unknown message: "scanimage: sane_read: Operation was cancelled"')
+* Print 'Document feeder out of documents' message
+  Closes Debian bug #512760 (Error reporting: empty document feeder not reported)
+* Hide save window after saving PNM or DjVu
+  Closes Debian bug #515605 (gscan2pdf: repeating save-dialog when saving as pnm)
+* Fix bug preventing non-PNM being passed to GIMP.
+  Closes Debian bug #517913 (gscan2pdf: Tools -> Gimp broken)
+* + overscan-(top|bottom) options
+* Set batch-scan to yes if ADF used, or #pages is all or > 1
+  Closes LP #340099 (Scan all pages option doesn't stop when all pages are done)
+* Make sure languages combobox is hidden unless tesseract is selected for OCR
+  Closes LP #340096 (Tesseract languages options shown when GOCR is default selected)
+* Make rubberband selections persist between pages
+  Closes 2629351 (Rectangular Crop Area)
+* Use Test::Pod on documentation
+* + Select blank and dark pages. Closes 2567485 (auto detect blank pages)
+  Thanks to Roy Shahbazian for the patch.
+* Fixed bug where temp dir not created after previous session killed and old
+  temp dir deleted.
+  Closes 2735303 (Import function fails when stale session variable set)
+* Fixed bug after unpaper --output-pages=2 where OCR not carried out for second
+  page.
+* + Option to select whether OCR output is replaced, appended or prepended.
+  Closes 2578995 (prepend new OCR text to old text)
+  Thanks to Roy Shahbazian for the patch.
+* + Option to select pages modified since last OCR run.
+  Closes 2579015 (auto select modified pages)
+  Thanks to Roy Shahbazian for the patch.
+* Update to Brazilian Portuguese translation (thanks to André Gondim)
+* Update to Croatian translation (thanks to DarioSeparovic)
+* Update to Dutch translation (thanks to Jan Klopper)
+* Update to German translation (thanks to Manuel Rennecke)
+* + Hebrew translation (thanks to liorda)
+* Update to Italian translation (thanks to Andrea)
+* Update to Korean translation (thanks to You Hyun Jo)
+* Update to Norwegian Bokmal translation (thanks to Roger Skjerping Urstad)
+* Update to Russian translation (thanks to Vadim Peretokin)
+* Update to Slovenian translation (thanks to Robert Hrovat)
+* Update to Spanish translation (thanks to Szerelem)
+* Update to Traditional Chinese translation (thanks to Chien Cheng Wei)
+* Update to Ukrainian translation
+
+
+0.9.27 (11.12.2008):
+
+* Check whether crashed session exists before trying to open it.
+  Closes 2099857 (Program does not start, as long as file session is missing)
+* Switched many dialogs to modal.
+  Closes Debian bug #500547 (fails to save PDF files)
+* + scanimage.pl and scanadf.pl frontends
+* Parse units from --help output. Closes LP #283847
+  (Saving a djvu file with a resolution of 600dpi fails in gscan2pdf v0.9.26)
+* Corrected logic for auto-rotating manual double-sided scans.
+  Closes Debian bug #497629
+  (Rotation of pages does work on manual double sided scanning)
+* Force -depth 8 and -r 16 for TIFF JPEG compression to prevent error messages
+  from tiffcp
+* + Select (Odd|Even).
+  Closes Debian bug #497630 (Selection of all odd pages or all even pages)
+* + support for the renamed pagewidth and pageheight options to
+  page-width and page-height in SANE 1.1.0 in CVS.
+  Closes 2217511 (determining supported paper sizes fails with fujitsu adf)
+* + Properties dialog to show and change resolution of image
+* Write images including resolution information
+* Guess resolution of PNMs from shape of image
+  Closes Debian bug #504543 (gscan2pdf: Resolution strangeness)
+* Convert PNMs to TIFF before giving them to GIMP
+  Closes Debian bug #504546 (gscan2pdf: Resolution not sent to gimp)
+* Stop thumbnail panel being resized by main window
+  Closes Debian bug #507032
+  (improper window split between page list and preview pane)
+* Force depth if necessary when converting to pnm for unpaper
+  Closes 2340005 (keep image depth when running unpaper)
+* + Croatian translation (thanks to rmare)
+* + Korean translation (thanks to You Hyun Jo)
+* Update to Brazilian Portuguese translation (thanks to Alexandre Sapata Carbonell)
+* Update to Bulgarian translation (thanks to Mitko K.)
+* Update to Dutch translation (thanks to Jan Klopper)
+* Update to French translation (thanks to Simon Leblanc)
+* Update to German translation (thanks to Manuel Rennecke)
+* Update to Norwegian Bokmal translation (thanks to Kenneth Langdalen)
+* Update to Russian translation (thanks to Alexandre Prokoudine)
+* Update to Swedish translation (thanks to Mattias Ohlsson)
+
+
+0.9.26 (24.08.2008):
+
+* Various fixes causing TMPDIR not to work, including ~ expansion and creation
+  of TMPDIR if necessary.
+* + Scan profiles. Closes 1700803 (RFE: support scan profiles)
+* Fixed remembering directory on import
+* Look for error loading config and revert to defaults if necessary
+* Save and restore sessions,
+   a. to allow restore after crash
+   b. to be able to save your work, shutdown, and go back afterwards
+* + Automatic PDF compression option
+* + Tools/GIMP
+  Closes 1823585 (Edit in Gimp)
+* + Save as text.
+  Closes Debian bug #494074 (Select All Text; Save all OCRed text)
+* + Ukrainian translation (thanks to Serhey Kusyumoff)
+* Update to Dutch translation (thanks to Hans Spaans)
+* Update to German translation (thanks to Kim Linoh)
+* Update to Russian translation (thanks to Alexandre Prokoudine)
+* Update to Spanish translation (thanks to Yözen Hernández)
+* Update to Swedish translation (thanks to ChalkyGBG)
+
+
+0.9.25 (04.07.2008):
+
+* - current page selection as not intuitive for some people, and anyway not
+  strictly necessary.
+  Closes Debian bug #480947 (Defaults for pages are weird now)
+* + support for unpaper option --output-pages
+  Closes Launchpad bug #215683
+   (gscan2pdf should offer an option to split a scanned page)
+* Check for device before caching.
+* + Checkbox to disable option cache
+  Closes 1980762 (Second Start Failure)
+* Check {Pseudo|Direct}Class for pnm and convert to pbm in necessary for djvu
+  Closes Debian bug #486553 (gscan2pdf: unable to save as DjVu)
+* Correct DjVu text zones
+  Closes Debian bug #486680 (gscan2pdf: bizarre DjVu text zones)
+* Save resolution information with TIFF. Closes Debian bug #485641:
+  (gscan2pdf: No longer saves resolution in TIFF files)
+* fixed unsharp mask tool
+* + prefix option to preferences
+  Closes Debian bug #484641 (gscan2pdf: prefix option for scanimage command)
+* + Bulgarian translation (thanks to Emil Pavlov)
+* Update to Danish translation (thanks to Jacob Nielsen)
+* Update to Dutch translation (thanks to Lodder)
+* Update to French translation (thanks to Simon Leblanc)
+* Update to German translation (thanks to Kim Linoh)
+* Update to Italian translation (thanks to Milo Casagrande)
+* Update to Polish translation (thanks to Wojtek Jamrozy)
+* Update to Russian translation (thanks to Igor Zubarev)
+* Update to Spanish translation (thanks to Alejandro Rochette)
+
+
+0.9.24 (07.05.2008):
+
+* + check that the file can be written before saving PDF, TIFF or PS.
+  Closes 1915008 (crash when trying to save in non-writable directory)
+* use gtk+ set_do_overwrite_confirmation for save as DjVu.
+* detect thunderbird mail client and attach PDF appropriately.
+  Closes LP 202709 ("Email as PDF" option does not work with Thunderbird)
+* deal correctly with newline character in device name
+* + gain option from scanners/canonFB630u
+* always force depth before embedding image in PDF
+  Closes LP 204988 (gscan2pdf generates blank pages in the .pdf output)
+* fixed erroneous read-only error writing file
+* fixed threshold tool. Closes 1936561 (Threshold tool fails)
+* + Cache options
+* + crop tool
+* + adf_mode option from Epson GT-2500
+* + --device option
+* + negate tool
+* fixed bug preventing scanning when no device-dependent options reported
+* + Norwegian Bokmal translation (thanks to Mikal Krogstad)
+* + Persian translation (thanks to Artin)
+* + Hungarian translation (thanks to Szenográdi Norbert Péter)
+* + Japanese translation (thanks to John M)
+* Update to Czech translation (thanks to Petr Jelínek)
+* Update to Dutch translation (thanks to Jan Klopper)
+* Update to French translation (thanks to Simon Leblanc)
+* Update to German translation (thanks to Manuel Rennecke)
+* Update to Italian translation (thanks to Alberto)
+* Update to Slovenian translation (thanks to Robert Hrovat)
+* Update to Spanish translation (thanks to starmaker)
+
+
+0.9.23 (05.03.2008):
+
+* fixed bug running unpaper
+* hide progress bar when asking for page range to import
+
+
+0.9.22 (04.03.2008):
+
+* fixed incorrect error message when saving image
+  Closes Debian bug #463708 (gscan2pdf: Error when saving as PNG)
+* + Edit/Preferences to choose TMPDIR
+* moved Frontends, Save options and Restore window settings to Edit/Preferences
+* improve error messages saving PDF
+* + unsharp mask tool
+* merged Save PDF, Save Image & Save DjVu dialogs
+* request page range when importing a DjVu with more than one page, and extract
+  the pages singly
+  Closes Debian bug #462171 (importing DjVu files fails, hogs memory)
+* replace some unpaper references with 'Clean up'
+  Closes 1889896 ('unpaper' should be called something more clear)
+* prepopulate PDF filename with title
+  Closes 1889901 (Use PDF 'Title' as the default file name in the save dialog)
+* change max number of pages to scan to 999
+  Closes 1803801 (page # in document scan dialog show only number till 99)
+* use gtk+ set_do_overwrite_confirmation
+* prevent page range widget switching to all when deleting a page
+* + progress bar whilst rotating
+  Closes 1895947 (Show progress bar when rotating pages)
+* + rotate options to scan dialog
+  Closes 1889674 (Patch for Duplex Scanning)
+* fixed about dialog
+  Closes 1900576 (About dialog does not function on FC8)
+* use tiffcp rather than tiffsplit to import TIFFs
+  Closes Debian bug #462171 (importing DjVu files fails, hogs memory)
+* + Initial Slovenian translation (thanks to Robert Hrovat)
+* Update to Brazilian Portuguese translation (thanks to Manuel Rennecke)
+* Update to Czech translation (thanks to Petr Jelínek)
+* Update to Danish translation (thanks to Jacob Nielsen)
+* Update to Dutch translation (thanks to saabaero)
+* Update to French translation (thanks to Manuel Rennecke)
+* Update to German translation (thanks to Matthias Gutjahr)
+* Update to Portuguese translation (thanks to Manuel Rennecke)
+* Update to Russian translation (thanks to Alexandre Prokoudine)
+* Update to Spanish translation (thanks to Manuel Rennecke)
+* Update to Swedish translation (thanks to Poppe)
+* Update to Belarusian translation (thanks to booxter)
+* Update to Italian translation (thanks to Andrea (pikkio))
+* Update to Polish translation (thanks to Piotr Strębski)
+* Update to Traditional Chinese translation (thanks to Chien Cheng Wei)
+
+
+0.9.21 (01.02.2008):
+
+* ensure quit question only displayed once, rather than once per not-saved page
+* update selected/current/all heuristic
+  Closes Debian bug #461859 (better selected/current/all heuristic)
+* reset start page in scan dialog after File/New selected
+  Closes 1879331 (Choosing New file does not zero page count)
+* request page range when importing a PDF with more than one page
+  Closes Debian bug #461076 (importing PDFs causes /tmp/ overflow)
+* File/Compress working files
+* fixed bug remembering setting where setting is first in a list
+* fixed bug where thumbs get unselected after saving
+* fixed wide character crash caused by translations containing utf8.
+* + Initial Turkish translation (thanks to denz)
+* Update to Brazilian Portuguese translation (thanks to luther-x)
+* Update to Czech translation (thanks to Petr Jelínek)
+* Update to Greek translation (thanks to jimpap)
+* Update to Polish translation (thanks to nikt_taki)
+
+
+0.9.20 (18.01.2008):
+
+* fixed bug where backslashes in text layer in djvu files not escaped.
+* made ctrl-x, ctrl-c, ctrl-v work in text buffer
+* suppressed multiple paper size editor windows
+* + manual paper size
+* fixed bug trying to scan large paper size than scanner allows
+* + warning message when paper sizes too big for scanner
+* recognise warm-up message from gt68xx driver
+  Closes Debian bug #449421
+* cope with spaces in filename of image to save
+  Closes Debian bug #457377
+* improve tesseract language file search
+* implement --pagewidth|height properly [2348533a4a6a]
+  Closes Debian bug #457376 (gscan2pdf: Some paper sizes not available)
+* account for options that completely disappear or appear between modes
+  Closes 1868985 (can't disable invalid options (e.g. threshold))
+  Closes Debian bug #457249
+   (gscan2pdf: Tries to set threshold option for color scans)
+* + scanner.svg, pdf.svg, gscan2pdf.svg
+  - scanner.png, pdf.png, gscan2pdf.png
+  Closes bug 1836312 (Tangoify Icons)
+* fixed bug parsing scanimage progress output
+  Closes Debian bug #457375 (gscan2pdf: Nondeterministic duplex scanning)
+* ask when quitting if not all pages have been saved.
+  Closes Debian bug #461058 (does not ask when quitting without saving the PDF)
+* + Initial Brazilian Portuguese translation (thanks to Daniel Frank)
+* Update to Russian translation (thanks to Alexandre Prokoudine)
+* Update to German translation (thanks to Matthias Mailänder)
+* Update to French translation (thanks to Nicolas Stransky)
+* Update to Czech translation (thanks to Petr Jelínek)
+* Update to Danish translation (thanks to Jacob Nielsen)
+
+
+0.9.19 (19.11.2007):
+
+* fixed bug creating user-defined paper sizes
+
+
+0.9.18 (16.11.2007):
+
+* recoded DjVu save
+* + Photo compression to DjVu output. Respect! Miles better than JPEG
+* + DjVu import
+* + PS to save as image options
+* Split options in scan dialog into two tabs.
+  Closes bug 1812030 (Dialog Box Too Big to fit on screen)
+* build scan window before scanning for devices in order to make sure that
+  it centres properly.
+  Closes Debian bug #440902: window placement of scan dialog
+* djvu compression automatic on image depth to allow multiple pages with
+  different compression for each page
+* + TIFF compression options to PDF output
+  Closes bug 1803099 (created PDF files are huge)
+* + threshold tool.
+  Closes feature request 1750849 (RFE: support software controlled contrast)
+* + paper size editor
+* detect if destination directory is read-only
+  Closes 1829961 (Crash saving .pdf in r/o subdirectory using v0.9.17)
+* reset start page number in scan dialog after deleting a page
+* Update to Czech translation (thanks to Petr Jelínek)
+* Update to French translation (thanks to Nicolas Stransky)
+* Update to German translation (thanks to Matthias Gutjahr)
+* Update to Greek translation (thanks to Ioannis Koniaris)
+* Update to Polish translation (thanks to Brech)
+* Update to Russian translation (thanks to Alexandre Prokoudine)
+
+
+0.9.17 (02.10.2007):
+
+* + cut, copy and paste of pages
+  Closes Feature Request 1780866 (Cut/copy/paste editing functions)
+* + multiple-item drag-and-drop, including copy.
+  Closes Feature Request 1743098 (Improved drag'n'drop reordering of pages)
+* fixed bug saving DjVu with 2 pages
+* + ProgressBar during scan
+* + extended page numbering to scan dialog
+* Update to Czech translation (thanks to Petr Jelínek)
+* Update to Danish translation (thanks to Jacob Nielsen)
+* Update to German translation (thanks to Matthias Gutjahr)
+* + Greek translation (thanks to Spartakus)
+* Update to French translation (thanks to Nicolas Stransky)
+* Update to Italian translation (thanks to Andrea (pikkio))
+* Update to Polish translation (thanks to Piotr Strębski)
+* Update to Russian translation (thanks to Alexandre Prokoudine)
+* Update to Spanish translation (thanks to Yözen Hernández)
+* Relicensed under GPLv3
+
+
+0.9.16 (24.08.2007):
+
+* do not restore mode setting if default device not found
+* + workaround for those versions of imagemagick that produce 16bit output
+  with rotate.
+  Patch 1760543 (rotate creates 16bit images that tesseract can't read)
+  from Chris Mayo
+* + ProgressBar during image import
+* + Downsample option.
+  Closes Feature Request 1722832 (setting the resolution before export)
+* + Hidden text layer from OCR in djvu output
+* + Support for language options in tesseract-2.00
+* + UTF-8 support in OCR output
+* Fixed bug caused by imagemagick giving resolution=0.
+  Closes bug 1770367 (Illegal division by zero)
+* + ProgressBar during TIFF save
+* better attempt at trapping errors whilst embedding scan in PDF
+* + ProgressBar during DjVu save
+* Stop unpaper and ocr if scan is cancelled
+* Fixed scrolling bug during drag and drop
+* Update to Dutch translation (thanks to Eric Spierings)
+* Update to French translation (thanks to Nicolas Stransky)
+* Update to Spanish translation (thanks to Rodrigo Donado)
+
+
+0.9.15 (22.07.2007):
+
+* Fixed bug setting defaults, also responsible for preventing the
+  device-dependent options being displayed in certain circumstances.
+* store unpaper options in settings
+* fractional instead of pulsing ProgressBar & more info during PDF save
+* fixed bug where spaces in mode not escaped in shell
+* fixed bug parsing device-dependent options (affecting some Brother scanners).
+* + option not to restore window settings.
+  closes Debian bug 433497 (please don't remember window position)
+* Update to French translation (thanks to Nicolas Stransky)
+
+
+0.9.14 (11.07.2007):
+
+* Fixed bug parsing device-dependent options.
+  Closes bug 1751125 (Some device-dependent options have gone)
+* Update to French translation (thanks to Nicolas Stransky)
+* Update to Italian translation (thanks to Andrea (pikkio))
+* Update to Portugese translation (thanks to Hugo Pereira)
+* Update to Russian translation (thanks to Alexandre Prokoudine)
+
+
+0.9.13 (08.07.2007):
+
+* Select all or Ctrl-A works properly in thumbnails or OCR buffer, depending on
+  focus. Closes bug 1740131 (Ctrl-A (select all) in OCR window does not work).
+* + Tesseract support. Closes feature request 1725818 (tesseract for OCR?)
+* unset mode if changing device.
+  Closes bug 1741598 (2 scanners with differing mode options).
+* ghost scan all pages RadioButton if Flatbed selected.
+  Closes bug 1743059 (Endless scanning loop)
+* trap device busy error. Closes bug 1744451 (handle busy device)
+* Modify PDF metadata date format to conform to ISO-8601
+  Closes feature request 1744458 (change dates to ISO-8601)
+* Fixed double scan bug with scanadf frontend
+* Fixed bug where Custom paper size not set from default
+* Update to Danish translation (thanks to Jacob Nielsen)
+* Update to French translation (thanks to Pierre Slamich)
+* Update to Polish translation (thanks to Piotr Strębski)
+* Fixed blocking whilst setting up/updating scan dialog
+* + US Legal paper.
+  Closes feature request 1748679 (RFE: add legal paper size as an option)
+
+
+0.9.12 (19.06.2007):
+
+* + check for mode-dependent options.
+* note resolution info so that the resulting PDF has the correct paper size.
+  Closes bug 1736036 (page size is somehow a ratio of resolution)
+  and Debian bug 426525 (after unpaper, saving PDF causes magnified page)
+* + no-grayfilter option. Closes Debian bug 426529 (more unpaper options)
+* + error message if error on tiff export.
+  Closes Debian bug 426527 (tif/jpg export produces empty file)
+* + quality setting for JPG compression in save as PDF.
+  Closes feature request 1736043 (Compression setting)
+  and bug 1736582 (PDFs with embedded JPEGS are large)
+* save image functionality supporting TIFF, PNG, JPEG, PNM & GIF.
+  Closes feature request 1709380 (Support PNG output equivalent to TIFF)
+* save default dates as offset from current, closing bug 1736037
+  (pdf file->save dialog should automatically set the date to the current day)
+* Update to Czech translation (thanks to Petr Jelínek)
+* update to German translation (thanks to Florian)
+* update to Portuguese translation (thanks to Hugo Pereira)
+* Update to Spanish translation (thanks to Raúl González Duque)
+
+
+0.9.10 (05.06.2007):
+
+* patch credits
+* Switched rotate icons from Crystal (KDE) to those stolen from Eye of Gnome
+* Closed bug 1712967
+  (long lines in ocr output resized document display off screen)
+* + contrast and threshold controls
+* handle PNG, JPEG, GIF, PNM natively,
+   closing feature request 1708448 (JPG to PDF)
+   and bugs 1714874 (import b/w pdf problem)
+   and 1669413 (Problem with "callback")
+* + PDF compression options (JPEG, PNG), closing feature request 1708036
+* + --speed option (Epson 1200)
+* + ProgressBar for PDF save, closing feature request 1712964
+* + Portuguese translation (thanks to Hugo Pereira)
+* + Danish translation (thanks to Jacob Nielsen)
+* Update to Czech translation (thanks to Petr Jelínek)
+* Update to Dutch translation (thanks to Eric Spierings)
+* Update to French translation (thanks to codL)
+* remembers OCR on scan setting
+* + unpaper on scan
+* + calibration-cache option for Canon LiDE25
+* + roadmap to website/help
+
+
+0.9.9 (30.04.2007):
+
+* Closed bug 1709377
+   ("Unknwn msg: scanimage: unrec'd option --compression=None'")
+* Fixed bug where attempt to run gocr after scanning despite not being installed
+* Replaced about MessageDialog with AboutDialog
+* Update to Russian translation (thanks to Alexandre Prokoudine)
+* Update to Czech translation (thanks to Petr Jelínek)
+* Update to Dutch translation (thanks to Eric Spierings)
+* Packed unpaper options into Gtk2::Notebook to make dialog shorter, closed bug
+  1709379 ("unpaper-0.2 dialog too tall for 1024x768")
+
+
+0.9.8 (28.04.2007):
+
+* - compression option from scan dialog.
+* Explicitly sets compression=None if mode=Lineart
+* + Check for PDF::API2
+* Forces startup check on new version
+* Runs unpaper sequencially on pages instead of in parallel
+* Enabled double sided scanning for scanadf frontend
+* + no-deskew, no-border-scan, no-border-align, no-mask-scan, no-blackfilter
+  no-noisefilter, no-blurfilter, black-threshold, white-threshold options to
+  unpaper
+* + Stock icon for about
+* Scrolls thumb list to selected page
+* Embeds OCR output in white on white hidden behind scan. pdftotext can extract
+  contents, and can be indexed by Beagle.
+* Update to Spanish translation (thanks to Th3n3k)
+* Moved OCR buffer to main window
+* Patch from John Goerzen to adjust brightness
+  and add negative support for SpinBoxes
+* Patches from John Goerzen to add .tif and .djvu endings if necessary,
+  plus fixed bug adding .pdf ending.
+* Separated perlmagick and imagemagick dependencies
+* Updated French translation (thanks to Mathieu Goeminne)
+
+
+0.9.7 (04.04.2007):
+
+* Fixed bug calling help
+* Fixed error message caused by update_options sub being called twice.
+* Streamlined image creation (speedup)
+* Adjusted widget justification in scan dialog
+* Suppressed rounded messages from scanadf frontend
+* Remembers scan area
+* Ghosts zoom and rotate buttons if no page selected
+* Fixed bug where custom scan area not hidden when A4 or Letter selected
+* Help update
+
+
+0.9.6 (31.03.2007):
+
+* Replaced "Enable Options" with "Enable Save Options"
+* After cancelling scan, I/O error ignored.
+* tiff2pdf replaced with PDF::API2,
+  fixing character encoding bug in metadata
+* OCR result buffer embedded as annotation in PDF
+* + PDF import
+* Loads modules when needed, rather than at start to speed up start-up.
+* Can import any format that imagemagick recognises
+* Makes use of new_from_file_at_scale (speedup)
+* OptionMenus swapped for ComboBoxes (+EventBoxes to wrap ToolTips)
+* Fixed bug caused by trying to hide save_TIFF dialog although not created
+* + SpinButtons to adjust top left corner of scan area
+* Ghosts save options when no pages to save
+* + Italian translation (thanks to Alberto Boiti)
+* Update to Dutch translation (thanks to Eric Spierings)
+
+
+0.9.5 (08.03.2007):
+
+* Fixed bug where nothing saved if no default for page rage
+* Seperated pdf, tiff and scan compression defaults
+* Save TIFF and DjVu respects enable options toggle
+* + cancel on scan dialog sends ctrl-c to scanimage
+* update to Czech translation (thanks to Petr Jelínek)
+
+
+0.9.4 (25.02.2007):
+
+* Using the top right hand close button to quit saves the settings properly.
+* enable PDF options toggle
+* + compression scan option
+* closed bug 1656900 where hup condition not recognised under FreeBSD.
+* update to Czech translation (thanks to Petr Jelínek)
+* update to German translation (thanks to Florian)
+* update to Russian translation (thanks to Alexandre Prokoudine)
+
+
+0.9.3 (08.02.2007):
+
+* Switched the deprecated Gtk2::SimpleList to Gtk2::Ex::Simple::List.
+* Fixed bug where thumbnail lost after undo/redo
+* Deleting pages selects nearest page
+* + unpaper --border-align and --border-margin support
+* + compression options for save TIFF
+* unpaper ghosted if imagemagick not present
+* updated scan and PDF icons (thanks to lodp)
+
+
+0.9.2 (31.01.2007):
+
+* Update to Czech translation (thanks to Petr Jelínek)
+* + Spanish translation (thanks to mecedesjorge)
+* Passes image depth to imagemagick to ensure rotation produces a valid TIFF
+* + DjVu support
+Fixed bug where device-dependent options disappear if frontend changed whilst
+  scan dialog hidden.
+* + Progress bar whilst updating device-dependent options
+* + unpaper support
+* + Undo/redo
+
+
+0.9.1 (23.01.2007):
+
+Fixed bug where frontend not properly selected
+
+
+0.9.0 (19.01.2007):
+
+* + OCR support
+* scanadf frontend uses own device-dependent options
+* Displays start-up message if optional packages missing
+
+
+0.8.9 (11.01.2007):
+
+* + Spanish translation (thanks to mecedesjorge)
+* Update to Czech translation (thanks to Petr Jelínek)
+* + Support for scanadf frontend
+* + Email as PDF
+* Displays warm-up message if backend supports it
+* Ghosts out the rotate menus and buttons if imagemagick not installed
+
+
+0.8.7 (31.12.2006):
+
+* + Belarusian translation (thanks to booxter)
+* + Chinese (Taiwan) translation (thanks to cwchien)
+* + Czech translation (thanks to Petr Jelínek)
+* + Russian translation (thanks to Alexandre Prokoudine)
+* + Update to Swedish translation (thanks to Daniel Nylander)
+* - 2 scanimage calls (speedup).
+* Adds the device to the model name if the same model present more than once.
+* + Drag-n-drop autoscrolls the thumbnail list.
+* Error thrown if Locale::gettext version < 1.05.
+* + New icons for application and rotate buttons (thanks to lodp)
+
+
+0.8.4 (11.12.2006):
+
+* + Polish translation (thanks to Wojciech Myrda)
+* Update to French translation (thanks to Nicolas Velin)
+* + Support for HP ScanJet 6390c.
+* Fixed bug caused by moving thumbnail/detail window divider so that detail
+  window disappears.
+* Fixed missing translations in scanimage commandline options
+* Set open or save buttons as default on all FileChooserDialogs
+* + 1mm tolerance to paper size check
+
+
+0.8.3 (25.11.2006):
+
+* Stickier right mouse button
+* + Dutch translation (thanks to Tikkel)
+* Update to German translation (thanks to Christoph Langner)
+* Update to French translation (thanks to Simon Leblanc)
+* Rewrote Makefile with MakeMaker
+Corrected .deb to all instead of i386 architecture
+* + code to allow translation of scanimage commandline options
+* + .rpm build
+
+
+0.8.2 (10.11.2006):
+
+* + Partial Swedish translation (thanks to Daniel Nylander)
+* + Partial French translation (thanks to Nicolas Velin)
+* Update to German translation (thanks to joeb)
+* Fixed bug in arguments passed to scanimage in non-English locale
+* + liblocale-gettext-perl (>= 1.05) dependency in .deb
+* + Support for epson_3490 and canoscan_FB_630P scanners
+* chmod a+rw for executable in deb
+
+
+0.8.1 (01.11.2006):
+
+* + Gnome menu
+* Fixed zoom bug
+* + German translation (thanks to Christoph Langner)
+
+
+0.8.0 (28.10.2006):
+
+* + Rotate options
+* Automatically adds .pdf extension if not already there
+* Renamed Import menu to Import TIFF
+* Changed the scan toolbar button from print to print-preview
+* Made Zip compression default if not in settings
+* Fixed lack of shortcut for File menu
+* + German translation
+
+
+0.7.12 (22.10.2006):
+
+* Fixed bug displaying detail view in multipage scans
+
+
+0.7.11 (19.10.2006):
+
+* Fixed bug importing from temp
+* Fixed bug no PDF file created if JPEG compression selected (thanks Thomas for the patch)
+* + FAQ
+* + more tooltips
+* + Support for niash scanner
+* + Right mouse button menus
+* Wrapped all strings in gettext calls for internationalisation
+* Ignores "rounded br-" warnings from scanimage
+* Update to help to improve html look
+* Copes with spaces in device-dependent options
+* Copes with strange characters in device names
+* Uses new FileChooser instead of old FileSelection
+
+
+0.7.2 (05.10.2006):
+
+* + button-wait scan option
+* + source scan option
+* Fixed locale problem, forcing LC_NUMERIC=C
+* Tidied up drag and drop routine
+
+
+0.7 (23.09.2006):
+
+* + Drag and drop page reordering
+* + Toolbar buttons
+* + Tool tips
+* + View menu
+* + Some documentation
+* + Help viewer
+* Improved window handling
+* + PDF compression options
+* Fixed libpixbuf-tiff Read error
+* Fixed dialog after unknown scan warning
+
+
+0.6.3 (08.09.2006):
+
+* Fixed "scanimage: option --br-y: bad option value" bug
+* Child windows hidden rather than destroyed to improve speed and prevent multiple instances.
+* + # pages to scan to config file
+* + Renumber menu item
+* + Config save for PDF, scan and window settings
+* + Added config file support for window maximize state
+* Changed order of options in tiff2pdf call for FreeBSD compatibility
+* Moved test output to external file
+* Parses paper size from device-dependent options
+
+
+0.6.2 (04.09.2006):
+
+* Fixed bug in Letter size scans
+
+
+0.6.1 (01.09.2006):
+
+* Renumber by editing page number
+* Destroy window after pdf write
+* Read options from --help --device-name=<dev>
+* + Test mode
+* Hides Custom paper sizes when not needed
+
+
+0.6 (22.08.2006):
+
+* Error checking for import
+* Import multiselect
+* + Save as TIFF
+* + Import multipage TIFFs
+
+
+0.5 (21.08.2006):
+
+* + Support for PDF Metadata
+* + Doublesided scan options
+* + deb packaging
+
+
+0.4 (16.08.2006):
+
+* + Thumbnails
+* + Edit menu
+* + Install script
+
+
+0.3 (08.08.2006):
+
+* Resizing widgets and more scan options.
+
+
+0.2 (07.08.2006):
+
+* + Scan options
+
+
+0.1 (06.08.2006):
+
+* Initial release

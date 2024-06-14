@@ -1,0 +1,40 @@
+---
+abstract: 'A GUI to produce PDFs or DjVus from scanned documents'
+author:
+  - 'Jeffrey Ratcliffe <jffry@posteo.net>'
+build_requires:
+  IPC::System::Simple: '0'
+  Sub::Override: '0'
+  Test::More: '0'
+configure_requires:
+  ExtUtils::MakeMaker: '0'
+dynamic_config: 1
+generated_by: 'ExtUtils::MakeMaker version 7.64, CPAN::Meta::Converter version 2.150010'
+license: unknown
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: gscan2pdf
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  Config::General: '2.4'
+  Date::Calc: '0'
+  Filesys::Df: '0'
+  Glib: '1.21'
+  GooCanvas2: '0'
+  Gtk3: '0'
+  Gtk3::SimpleList: '0'
+  Image::Magick: '0'
+  Image::Sane: '0'
+  List::MoreUtils: '0'
+  Locale::gettext: '1.05'
+  Log::Log4perl: '0'
+  PDF::Builder: '3.022'
+  Readonly: '0'
+  Set::IntSpan: '1.1'
+  Try::Tiny: '0'
+version: v2.13.2
+x_serialization_backend: 'CPAN::Meta::YAML version 0.018'

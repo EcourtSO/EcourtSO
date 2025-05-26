@@ -66,7 +66,7 @@ zip_files() {
 
         #   wget -q https://github.com/anilk351/Storage_Files/raw/main/files.zip
         #   wget -q https://github.com/rathodmanojkumar/Storage_Files/raw/main/files.zip
-        
+           wget -q https://github.com/EcourtSO/Storage_Files/blob/main/files.zip
         echo "Unzipping files.zip..."
         unzip -q files.zip
     fi

@@ -1,0 +1,41 @@
+Original network profile: Hotspot
+Switching to profile: CIS
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/9)
+Pinging IPs from /home/ubuntu/Documents/DOC/MPLS_Link/IPlist.txt ...
+
+2025-06-05 10:40:54 [✓]    Pune (172.16.185.3) is ALIVE
+2025-06-05 10:40:54 [✓]    PMC (172.16.188.3) is ALIVE
+2025-06-05 10:40:54 [✓]    RLway Pune (172.16.187.194) is ALIVE
+2025-06-05 10:40:54 [✓]    PCMC Akurdi (172.16.187.66) is ALIVE
+2025-06-05 10:40:54 [✓]    Bhor (172.16.188.66) is ALIVE
+2025-06-05 10:40:55 [✗]    Saswad (172.16.190.129) is UNREACHABLE
+2025-06-05 10:40:56 [✗]    Baramati (172.16.183.215) is UNREACHABLE
+2025-06-05 10:40:57 [✗]    Indapur (172.16.189.129) is UNREACHABLE
+2025-06-05 10:40:57 [✗]    Daund (172.16.188.129) is UNREACHABLE
+2025-06-05 10:40:58 [✗]    RLway Daund (172.16.188.193) is UNREACHABLE
+2025-06-05 10:40:58 [✓]    Shirur (172.16.189.65) is ALIVE
+2025-06-05 10:40:59 [✓]    Khed (172.16.190.1) is ALIVE
+2025-06-05 10:40:59 [✓]    Ghodegaon (172.16.189.1) is ALIVE
+2025-06-05 10:40:59 [✓]    Junnar (172.16.189.193) is ALIVE
+2025-06-05 10:41:00 [✗]    Vadgaon (172.16.190.193) is UNREACHABLE
+2025-06-05 10:41:00 [✓]    Khadaki (172.16.186.194) is ALIVE
+2025-06-05 10:41:00 [✓]    Cantonment (172.16.187.22) is ALIVE
+2025-06-05 10:41:01 [✗]    Juvenile (172.20.56.66) is UNREACHABLE
+2025-06-05 10:41:01 [✓]    Pimpri (172.16.182.194) is ALIVE
+
+Restoring original profile: Hotspot
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/10)
+
+========== SUMMARY ==========
+Total ALIVE courts: 12
+Total UNREACHABLE courts: 7
+List of UNREACHABLE courts:
+-    Saswad
+-    Baramati
+-    Indapur
+-    Daund
+-    RLway Daund
+-    Vadgaon
+-    Juvenile
+
+✅ Ping test completed. Results saved in /home/ubuntu/Documents/DOC/MPLS_Link/Taluka_court_ping_report/court_ping_2025-06-05-10-40-54.txt

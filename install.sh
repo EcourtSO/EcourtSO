@@ -171,7 +171,7 @@ execute_task() {
         5) install_proxykey ;;
         6) repair_anydesk ;;
         7) setup_hotspot ;;
-        *) echo "Invalid entry." ;;
+        8) echo "Invalid entry." ;;
     esac
 }
 

@@ -1,0 +1,95 @@
+Source: gscan2pdf
+Section: utils
+Testsuite: autopkgtest-pkg-perl
+Priority: optional
+Build-Depends: debhelper-compat (= 13)
+Build-Depends-Indep: fonts-noto-extra,
+                     gettext,
+                     ghostscript,
+                     gsfonts,
+                     imagemagick,
+                     libatk-adaptor,
+                     libconfig-general-perl (>= 2.40),
+                     libdate-calc-perl,
+                     libgoocanvas2-perl,
+                     libgtk3-imageview-perl,
+                     libgtk3-simplelist-perl,
+                     libhtml-parser-perl,
+                     libimage-magick-perl,
+                     libimage-sane-perl,
+                     libipc-system-simple-perl,
+                     liblocale-codes-perl (>= 3.60),
+                     liblocale-gettext-perl (>= 1.05),
+                     liblog-log4perl-perl,
+                     liblist-moreutils-perl,
+                     libossp-uuid-perl | libdata-uuid-perl,
+                     libpdf-builder-perl (>= 3.022),
+                     libproc-processtable-perl,
+                     libreadonly-perl,
+                     librsvg2-common,
+                     libset-intspan-perl (>= 1.10),
+                     libsub-override-perl,
+                     libtest-pod-perl,
+                     libtiff-tools,
+                     libtry-tiny-perl,
+                     perl (>= 5.8.0-7),
+                     poppler-utils,
+                     sane-utils (>= 1.0.17),
+                     xauth,
+                     xfonts-base,
+                     xvfb
+Maintainer: Jeffrey Ratcliffe <jjr@debian.org>
+Standards-Version: 4.6.1.0
+Vcs-Git: https://git.code.sf.net/p/gscan2pdf/code
+Vcs-Browser: https://sourceforge.net/p/gscan2pdf/code/ci/master/tree/
+Homepage: http://gscan2pdf.sourceforge.net/
+Rules-Requires-Root: no
+
+Package: gscan2pdf
+Architecture: all
+Depends: imagemagick,
+         libgoocanvas2-perl,
+         libconfig-general-perl (>= 2.40),
+         libdate-calc-perl,
+         libfilesys-df-perl,
+         libgtk3-perl (>= 0.028),
+         libgtk3-imageview-perl,
+         libgtk3-simplelist-perl,
+         libhtml-parser-perl,
+         libimage-magick-perl,
+         libimage-sane-perl,
+         liblist-moreutils-perl,
+         liblocale-codes-perl (>= 3.60),
+         liblocale-gettext-perl (>= 1.05),
+         liblog-log4perl-perl,
+         libossp-uuid-perl | libdata-uuid-perl,
+         libpdf-builder-perl (>= 3.022),
+         libproc-processtable-perl,
+         libreadonly-perl,
+         librsvg2-common,
+         libset-intspan-perl (>= 1.10),
+         libtiff-tools,
+         libtry-tiny-perl,
+         sane-utils (>= 1.0.17),
+         ${misc:Depends}
+Recommends: xdg-utils,
+            djvulibre-bin,
+            pdftk,
+            unpaper,
+            tesseract-ocr | gocr | cuneiform
+Description: GUI to produce PDFs or DjVus from scanned documents
+ Only five clicks are required to scan several pages and then save all or a
+ selection as a PDF or DjVu file, including metadata if required.
+ .
+ gscan2pdf can control flatbed or sheet-fed (ADF) scanners with SANE via
+ libimage-sane-perl, scanimage or scanadf, and can scan multiple
+ pages at once. It presents a thumbnail view of scanned pages, and permits
+ simple operations such as cropping, rotating and deleting pages.
+ .
+ OCR can be used to recognise text in the scans, and the output
+ embedded in the PDF or DjVu.
+ .
+ PDF conversion is done by PDF::Builder.
+ .
+ The resulting document may be saved as a PDF, DjVu, multipage TIFF file, or
+ single page image file.

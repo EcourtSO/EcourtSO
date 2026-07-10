@@ -1,0 +1,860 @@
+Sub FormatRoznama
+    ' ------------------------------------------------------------
+    ' Main macro to clean up and format Roznama documents in Writer
+    ' ------------------------------------------------------------
+
+    ' --- Define dispatcher and document frame ---
+    Dim docFrame   As Object
+    Dim dispatcher As Object
+
+    ' Get access to the current document frame
+    docFrame   = ThisComponent.CurrentController.Frame
+    dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+
+    ' ------------------------------------------------------------
+    ' Step 1: Select all text in the document
+    ' ------------------------------------------------------------
+    dispatcher.executeDispatch(docFrame, ".uno:SelectAll", "", 0, Array())
+
+    ' ------------------------------------------------------------
+    ' Step 2: Set top and bottom margins
+    ' ------------------------------------------------------------
+    Dim marginArgs(4) As New com.sun.star.beans.PropertyValue
+    marginArgs(0).Name = "TopBottomMargin.TopMargin"
+    marginArgs(0).Value = 10
+    marginArgs(1).Name = "TopBottomMargin.BottomMargin"
+    marginArgs(1).Value = 10
+    marginArgs(2).Name = "TopBottomMargin.ContextMargin"
+    marginArgs(2).Value = False
+    marginArgs(3).Name = "TopBottomMargin.TopRelMargin"
+    marginArgs(3).Value = 100
+    marginArgs(4).Name = "TopBottomMargin.BottomRelMargin"
+    marginArgs(4).Value = 100
+
+    dispatcher.executeDispatch(docFrame, ".uno:TopBottomMargin", "", 0, marginArgs())
+
+    ' ------------------------------------------------------------
+    ' Step 3: Stop numbering at current position
+    ' ------------------------------------------------------------
+    Dim numArgs1(0) As New com.sun.star.beans.PropertyValue
+    numArgs1(0).Name = "NumberingStart"
+    numArgs1(0).Value = False
+
+    dispatcher.executeDispatch(docFrame, ".uno:NumberingStart", "", 0, numArgs1())
+
+    ' ------------------------------------------------------------
+    ' Step 4: Reset numbering start to maximum (65535)
+    ' ------------------------------------------------------------
+    Dim numArgs2(0) As New com.sun.star.beans.PropertyValue
+    numArgs2(0).Name = "NumNewStartAt"
+    numArgs2(0).Value = 65535
+
+    dispatcher.executeDispatch(docFrame, ".uno:NumNewStartAt", "", 0, numArgs2())
+
+    ' ------------------------------------------------------------
+    ' Step 5: Insert Court Name in brackets after "Proceeding is closed"
+    ' ------------------------------------------------------------
+    Dim docMain     As Object
+    Dim viewCursor  As Object
+    Dim foundRange  As Object
+    Dim searchDesc  As Object
+    Dim courtName   As String
+    Dim foundItem   As Object
+    Dim textCursor  As Object
+    Dim selection   As Object
+
+    docMain = ThisComponent
+    viewCursor = docMain.CurrentController.ViewCursor   ' visible cursor
+    docMain.lockControllers                             ' disable rendering for speed
+
+    ' Create search descriptor
+    searchDesc = docMain.createSearchDescriptor
+    searchDesc.SearchString = "IN THE COURT OF"
+    foundRange = docMain.findFirst(searchDesc)
+
+    If Not IsNull(foundRange) Then
+        ' "IN THE COURT OF" is found
+        viewCursor.goToRange(foundRange.End, False)
+        viewCursor.goToEndOfLine(True)
+        courtName = viewCursor.String
+
+        ' Search for "Proceeding is closed"
+        With searchDesc
+            .SearchString = "Proceeding is closed"
+            .SearchCaseSensitive = False
+        End With
+
+        foundRange = docMain.findAll(searchDesc)
+        If Not IsNull(foundRange) Then
+            ' For each "Proceeding is closed" found
+            For Each foundItem In foundRange
+                ' Move cursor below "Proceeding is closed"
+                With viewCursor
+                    .goToRange(foundItem.End, False)
+                    .goDown(1, False)       ' move one line down (before Judge name)
+                    .ParaAdjust = 1         ' align to right
+                End With
+
+                ' Fix: VisibleCursor cannot set String, so use TextCursor in current cell
+                selection = docMain.CurrentController.Selection.getByIndex(0)
+                textCursor = selection.Cell.createTextCursor
+
+                With textCursor
+                    .goToRange(viewCursor.End, False)
+                    .String = "(" & Trim(courtName) & ")"   ' insert court name in brackets
+                    .CharWeight = com.sun.star.awt.FontWeight.BOLD
+                End With
+            Next
+        End If
+    End If
+
+    ' Unlock controllers (enable rendering again)
+    If docMain.hasControllersLocked Then docMain.unlockControllers
+
+    ' ------------------------------------------------------------
+    ' (Next steps will include Judge search, cleanup, etc.)
+    ' ------------------------------------------------------------
+    ' ------------------------------------------------------------
+    ' Step 6: Search for "Judge" in the document
+    ' ------------------------------------------------------------
+    Dim judgeDispatcher As Object
+    Dim searchArgs(18) As New com.sun.star.beans.PropertyValue
+    Dim docFrame2 As Object
+
+    docFrame2       = ThisComponent.CurrentController.Frame
+    judgeDispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+
+    searchArgs(0).Name  = "SearchItem.StyleFamily" : searchArgs(0).Value  = 2
+    searchArgs(1).Name  = "SearchItem.CellType"    : searchArgs(1).Value  = 0
+    searchArgs(2).Name  = "SearchItem.RowDirection": searchArgs(2).Value  = True
+    searchArgs(3).Name  = "SearchItem.AllTables"   : searchArgs(3).Value  = False
+    searchArgs(4).Name  = "SearchItem.Backward"    : searchArgs(4).Value  = False
+    searchArgs(5).Name  = "SearchItem.Pattern"     : searchArgs(5).Value  = False
+    searchArgs(6).Name  = "SearchItem.Content"     : searchArgs(6).Value  = False
+    searchArgs(7).Name  = "SearchItem.AsianOptions": searchArgs(7).Value  = False
+    searchArgs(8).Name  = "SearchItem.AlgorithmType": searchArgs(8).Value = 1
+    searchArgs(9).Name  = "SearchItem.SearchFlags" : searchArgs(9).Value  = 65536
+    searchArgs(12).Name = "SearchItem.Locale"      : searchArgs(12).Value = 255
+    searchArgs(13).Name = "SearchItem.ChangedChars": searchArgs(13).Value = 2
+    searchArgs(14).Name = "SearchItem.DeletedChars": searchArgs(14).Value = 2
+    searchArgs(15).Name = "SearchItem.InsertedChars": searchArgs(15).Value = 2
+    searchArgs(16).Name = "SearchItem.TransliterateFlags": searchArgs(16).Value = 1280
+    searchArgs(17).Name = "SearchItem.Command"     : searchArgs(17).Value = 3
+    searchArgs(18).Name = "Quiet"                  : searchArgs(18).Value = True
+
+    judgeDispatcher.executeDispatch(docFrame2, ".uno:ExecuteSearch", "", 0, searchArgs())
+
+    ' ------------------------------------------------------------
+    ' Step 7: Cleanup using Regular Expressions
+    ' Remove unwanted blank lines, spaces, and patterns
+    ' ------------------------------------------------------------
+
+    Dim docCleanup As Object, replaceDesc As Object
+
+    ' --- Remove double newlines ---
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchString = "\n\n"
+        .SearchRegularExpression = True
+        .ReplaceString = ""
+    End With
+    docCleanup.replaceAll(replaceDesc)
+
+    ' --- Remove leading newline at start of lines ---
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchString = "^\n"
+        .SearchRegularExpression = True
+        .ReplaceString = ""
+    End With
+    docCleanup.replaceAll(replaceDesc)
+
+    ' --- Remove empty lines ---
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchString = "^$"
+        .SearchRegularExpression = True
+        .ReplaceString = ""
+    End With
+    docCleanup.replaceAll(replaceDesc)
+
+    ' --- Fix newline + space + newline pattern ---
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchString = "\n \n"
+        .SearchRegularExpression = True
+        .ReplaceString = "\n"
+    End With
+    docCleanup.replaceAll(replaceDesc)
+
+    ' --- Remove single character lines ---
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchString = "^.$"
+        .SearchRegularExpression = True
+        .ReplaceString = ""
+    End With
+    docCleanup.replaceAll(replaceDesc)
+
+    ' --- Remove extra empty lines again ---
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchString = "^$"
+        .SearchRegularExpression = True
+        .ReplaceString = ""
+    End With
+    docCleanup.replaceAll(replaceDesc)
+
+    ' --- Remove newline + space at end of line ---
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchString = "\n $"
+        .SearchRegularExpression = True
+        .ReplaceString = ""
+    End With
+    docCleanup.replaceAll(replaceDesc)
+
+    ' --- Replace "IN THE COURT OF ..." with "& Mohod" ---
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchString = "IN THE COURT OF [:print:]{1,100}\n"
+        .SearchRegularExpression = True
+        .ReplaceString = "& Mohod"
+    End With
+    docCleanup.replaceAll(replaceDesc)
+
+    ' --- Remove unwanted newline before "Mohod" ---
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchString = "\n Mohod"
+        .SearchRegularExpression = True
+        .ReplaceString = ""
+    End With
+    docCleanup.replaceAll(replaceDesc)
+
+    ' --- Remove lines that only contain a space ---
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchString = "^ \n"
+        .SearchRegularExpression = True
+        .ReplaceString = ""
+    End With
+    docCleanup.replaceAll(replaceDesc)
+    ' ------------------------------------------------------------
+    ' Step 8: Set Page Style Margins
+    ' ------------------------------------------------------------
+    Dim styleFamilies As Object, pageStyles As Object, pageStyle As Object
+    Dim viewCursor2 As Object, activePageStyle As String
+    Dim docPage As Object
+
+    docPage = ThisComponent
+    viewCursor2 = docMain.CurrentController.getViewCursor()   ' use ViewCursor
+
+    ' Get the current page style
+    activePageStyle = viewCursor2.PageStyleName
+    pageStyles = docMain.StyleFamilies.getByName("PageStyles")
+    pageStyle  = pageStyles.getByName(activePageStyle)
+
+    ' Set margins (in 1/100 mm)
+    pageStyle.LeftMargin   = 2000
+    pageStyle.TopMargin    = 11
+    pageStyle.RightMargin  = 1000
+    pageStyle.BottomMargin = 5
+
+    ' ------------------------------------------------------------
+    ' Step 9: Apply font formatting for Exhibit references (Exh.)
+    ' ------------------------------------------------------------
+    Dim regexDesc As Object
+    Dim foundRanges As Object
+    Dim foundText As Object
+    Dim i As Integer
+
+    ' --- Exhibit formats like Exh-1, Exh.1, 1/A, etc. ---
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = _
+        "^Exh-[:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}\/[ABCD]|" & _
+        "^Exh.[:digit:]{1,4}\/[ABCD]|" & _
+        "^\([ABCD]\) Exh.[:digit:]{1,4}|" & _
+        "^[ABCD]- Exh. [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}|" & _
+        "^[ABCD]-[:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4}|" & _
+        "^Exh. [:digit:]{1,4}|" & _
+        "^Exh [:digit:]{1,4}|" & _
+        "^\([ABCD]\)Exh.[:digit:]{1,4}|" & _
+        "^[ABCD]-Exh.[:digit:]{1,4}|" & _
+        "^[ABCD] [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}.|" & _
+        "^Exh.[:digit:]{1,4}/[ABCD]-"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName  = "Bitstream Charter"
+        foundText.CharHeight    = 12
+        foundText.CharWeight    = 150
+    Next i
+
+    ' --- Exhibit formats with two numbers, like "Exh-1, 2" ---
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = _
+        "^Exh-[:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}|" & _
+        "^\([ABCD]\) Exh.[:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD]- Exh. [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD]-[:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^Exh. [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^Exh [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD] Exh. [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD] Exh.[:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD] Exh [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^([ABCD]) Exh. [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD] Exh [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD] Exh [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^\([ABCD]\)Exh.[:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD]-Exh.[:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD] [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}, [:digit:]{1,4}.|" & _
+        "^Exh.[:digit:]{1,4}/[ABCD], [:digit:]{1,4}-"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName  = "Bitstream Charter"
+        foundText.CharHeight    = 12
+        foundText.CharWeight    = 150
+    Next i
+
+    ' --- Exhibit formats with three numbers, like "Exh-1, 2, 3" ---
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = _
+        "^Exh-[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^\([ABCD]\) Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD]- Exh. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD]-[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^Exh. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^Exh [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^([ABCD])Exh [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^([ABCD])Exh. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^([ABCD])Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^\([ABCD]\)Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD]-Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[ABCD] Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}.|" & _
+        "^Exh.[:digit:]{1,4}/[ABCD], [:digit:]{1,4}, [:digit:]{1,4}-"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName  = "Bitstream Charter"
+        foundText.CharHeight    = 12
+        foundText.CharWeight    = 150
+    Next i
+    ' ------------------------------------------------------------
+    ' Step 10: Exhibit formats with ranges (like "Exh-1-5", "1/A-2")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = _
+        "^Exh-[:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}\/[ABCD]-[:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4}\/[ABCD]-[:digit:]{1,4}|" & _
+        "^\([ABCD]\) Exh.[:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^[ABCD]- Exh. [:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^[ABCD]-[:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^Exh. [:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^Exh [:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^([ABCD]) Exh [:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^([ABCD]) Exh. [:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^([ABCD]) Exh.[:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^\([ABCD]\)Exh.[:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^[ABCD]-Exh.[:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^[ABCD] [:digit:]{1,4}-[:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}-[:digit:]{1,4}.|" & _
+        "^Exh.[:digit:]{1,4}/[ABCD]-[:digit:]{1,4}-"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName  = "Bitstream Charter"
+        foundText.CharHeight    = 12
+        foundText.CharWeight    = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 11: Exhibit formats with dash + spaces (like "Exh-1 - 5")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = _
+        "^Exh-[:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}\/[ABCD] - [:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4}\/[ABCD] - [:digit:]{1,4}|" & _
+        "^\([ABCD]\) Exh.[:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^[ABCD]- Exh. [:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^-[:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^[ABCD]-[:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^Exh. [:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^Exh [:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^([ABCD]) Exh [:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^([ABCD]) Exh. [:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^([ABCD]) Exh.[:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^\([ABCD]\)Exh.[:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^[ABCD]-Exh.[:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^[ABCD] [:digit:]{1,4} - [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4} - [:digit:]{1,4}.|" & _
+        "^Exh.[:digit:]{1,4}/[ABCD] - [:digit:]{1,4}-"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName  = "Bitstream Charter"
+        foundText.CharHeight    = 12
+        foundText.CharWeight    = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 12: Exhibit formats with "to" (like "Exh-1 to 5")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = _
+        "^Exh-[:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}\/[ABCD] to [:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4}\/[ABCD] to [:digit:]{1,4}|" & _
+        "^\([ABCD]\) Exh.[:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^[ABCD]- Exh. [:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^[ABCD]-[:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^Exh. [:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^Exh [:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^([ABCD]) Exh [:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^([ABCD]) Exh. [:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^([ABCD]) Exh.[:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^\([ABCD]\)Exh.[:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^[ABCD]-Exh.[:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^[ABCD] [:digit:]{1,4} to [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4} to [:digit:]{1,4}.|" & _
+        "^Exh.[:digit:]{1,4}/[ABCD] to [:digit:]{1,4}-"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName  = "Bitstream Charter"
+        foundText.CharHeight    = 12
+        foundText.CharWeight    = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 13: Exhibit formats with "and" (like "Exh-1 and 2")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = _
+        "^Exh-[:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4}\/[ABCD] and [:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4}\/[ABCD] and [:digit:]{1,4}|" & _
+        "^\([ABCD]\) Exh.[:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^[ABCD]- Exh. [:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^[ABCD]-[:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^Exh. [:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^Exh.[:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^Exh [:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^([ABCD]) Exh [:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^([ABCD]) Exh. [:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^([ABCD]) Exh.[:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^\([ABCD]\)Exh.[:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^[ABCD]-Exh.[:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^[ABCD] [:digit:]{1,4} and [:digit:]{1,4}|" & _
+        "^[:digit:]{1,4} and [:digit:]{1,4}.|" & _
+        "^Exh.[:digit:]{1,4}/[ABCD] and [:digit:]{1,4}-"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName  = "Bitstream Charter"
+        foundText.CharHeight    = 12
+        foundText.CharWeight    = 150
+    Next i
+    ' ------------------------------------------------------------
+    ' Step 14: Exhibit formats starting with a newline
+    ' (like "\nExh-1", "\n1/A", etc.)
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = _
+        "\nExh-[:digit:]{1,4}|" & _
+        "\n[:digit:]{1,4}\/[ABCD]|" & _
+        "\nExh.[:digit:]{1,4}\/[ABCD]|" & _
+        "\n\([ABCD]\) Exh.[:digit:]{1,4}|" & _
+        "\n[ABCD]- Exh. [:digit:]{1,4}|" & _
+        "\n[:digit:]{1,4}|" & _
+        "\n[ABCD]-[:digit:]{1,4}|" & _
+        "\nExh.[:digit:]{1,4}|" & _
+        "\nExh. [:digit:]{1,4}|" & _
+        "\nExh [:digit:]{1,4}|" & _
+        "\n\([ABCD]\)Exh.[:digit:]{1,4}|" & _
+        "\n[ABCD]-Exh.[:digit:]{1,4}|" & _
+        "\n[ABCD] [:digit:]{1,4}|" & _
+        "\n[:digit:]{1,4}.|" & _
+        "\nExh.[:digit:]{1,4}/[ABCD]-"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName  = "Bitstream Charter"
+        foundText.CharHeight    = 12
+        foundText.CharWeight    = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 15: Start Devanagari (Marathi/Hindi) formatting
+    ' Formatting case numbers with "प्रकरण क्र." (Case No.)
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "^प्रकरण क्र.[:digit:]{1,10}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Shree-Devanagari 714"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 16: Devanagari with multiple numbers
+    ' (e.g., "प्रकरण क्र.1, 2")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "^प्रकरण क्र.[:digit:]{1,4},[:digit:]{1,4}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Shree-Devanagari 714"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 17: Devanagari with three numbers
+    ' (e.g., "प्रकरण क्र.1, 2, 3")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "^प्रकरण क्र.[:digit:]{1,4},[:digit:]{1,4},[:digit:]{1,4}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Shree-Devanagari 714"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+    ' ------------------------------------------------------------
+    ' Step 18: Devanagari with number range (e.g., "प्रकरण क्र.1-5")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "^प्रकरण क्र.[:digit:]{1,4}-[:digit:]{1,4}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Shree-Devanagari 714"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 19: Devanagari with "to" (e.g., "प्रकरण क्र.1 to 5")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "^प्रकरण क्र.[:digit:]{1,4} to [:digit:]{1,4}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Shree-Devanagari 714"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 20: Devanagari with "and" (e.g., "प्रकरण क्र.1 and 2")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "^प्रकरण क्र.[:digit:]{1,4} and [:digit:]{1,4}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Shree-Devanagari 714"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 21: Devanagari with year format (e.g., "प्रकरण क्र.123/2025")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "^प्रकरण क्र.[:digit:]{1,4}/[:digit:]{4}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Shree-Devanagari 714"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 22: Devanagari with year + range (e.g., "प्रकरण क्र.123/2025-126/2025")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "^प्रकरण क्र.[:digit:]{1,4}/[:digit:]{4}-[:digit:]{1,4}/[:digit:]{4}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Shree-Devanagari 714"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 23: Devanagari with year + "to" (e.g., "प्रकरण क्र.123/2025 to 130/2025")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "^प्रकरण क्र.[:digit:]{1,4}/[:digit:]{4} to [:digit:]{1,4}/[:digit:]{4}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Shree-Devanagari 714"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 24: Devanagari with year + "and" (e.g., "प्रकरण क्र.123/2025 and 124/2025")
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "^प्रकरण क्र.[:digit:]{1,4}/[:digit:]{4} and [:digit:]{1,4}/[:digit:]{4}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Shree-Devanagari 714"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+    ' ------------------------------------------------------------
+    ' Step 25: Witness references (Prosecution / Defence Witness)
+    ' Examples: "PW-1", "P.W.1", "DW-2", "D.W.2", etc.
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = _
+        "(P|p)\.?W\.?-?\s?[:digit:]{1,4}|" & _
+        "(D|d)\.?W\.?-?\s?[:digit:]{1,4}"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharFontName = "Bitstream Charter"
+        foundText.CharHeight   = 12
+        foundText.CharWeight   = 150
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 26: Heading "Date" (bold)
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "Date"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharWeight = 150   ' Bold
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 27: Heading "Order" (bold)
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "Order"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharWeight = 150   ' Bold
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 28: Heading "Judgment" (bold)
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "Judgment"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharWeight = 150   ' Bold
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 29: Heading "Final Order" (bold)
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "Final Order"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharWeight = 150   ' Bold
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 30: Heading "Proceeding is closed" (bold)
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "Proceeding is closed"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.CharWeight = 150   ' Bold
+    Next i
+    ' ------------------------------------------------------------
+    ' Step 31: Align "Proceeding is closed" lines to the right
+    ' ------------------------------------------------------------
+    regexDesc = ThisComponent.createReplaceDescriptor
+    regexDesc.searchRegularExpression = True
+    regexDesc.searchString = "Proceeding is closed"
+
+    foundRanges = ThisComponent.findAll(regexDesc)
+    For i = 0 To foundRanges.Count - 1
+        foundText = foundRanges.getByIndex(i)
+        foundText.ParaAdjust = com.sun.star.style.ParagraphAdjust.RIGHT
+    Next i
+
+    ' ------------------------------------------------------------
+    ' Step 32: Remove extra spaces before punctuation
+    ' (e.g., " ,", " .", " :", " ;")
+    ' ------------------------------------------------------------
+    docCleanup = ThisComponent
+    replaceDesc = docCleanup.createReplaceDescriptor
+    With replaceDesc
+        .SearchRegularExpression = True
+        .SearchString = " ,"
+        .ReplaceString = ","
+    End With
+    docCleanup.replaceAll(replaceDesc)
+
+    replaceDesc.SearchString = " \."
+    replaceDesc.ReplaceString = "."
+    docCleanup.replaceAll(replaceDesc)
+
+    replaceDesc.SearchString = " :"
+    replaceDesc.ReplaceString = ":"
+    docCleanup.replaceAll(replaceDesc)
+
+    replaceDesc.SearchString = " ;"
+    replaceDesc.ReplaceString = ";"
+    docCleanup.replaceAll(replaceDesc)
+
+    ' ------------------------------------------------------------
+    ' Step 33: Normalize multiple spaces into single space
+    ' ------------------------------------------------------------
+    replaceDesc.SearchString = " {2,}"
+    replaceDesc.ReplaceString = " "
+    docCleanup.replaceAll(replaceDesc)
+
+    ' ------------------------------------------------------------
+    ' Step 34: Trim spaces at beginning of lines
+    ' ------------------------------------------------------------
+    replaceDesc.SearchString = "^ "
+    replaceDesc.ReplaceString = ""
+    docCleanup.replaceAll(replaceDesc)
+
+    ' ------------------------------------------------------------
+    ' Step 35: Trim spaces at end of lines
+    ' ------------------------------------------------------------
+    replaceDesc.SearchString = " $"
+    replaceDesc.ReplaceString = ""
+    docCleanup.replaceAll(replaceDesc)
+
+    ' ------------------------------------------------------------
+    ' Step 36: Normalize repeated dots (e.g., "....." → "...")
+    ' ------------------------------------------------------------
+    replaceDesc.SearchString = "\.{4,}"
+    replaceDesc.ReplaceString = "..."
+    docCleanup.replaceAll(replaceDesc)
+
+    ' ------------------------------------------------------------
+    ' Step 37: Final paragraph alignment for judge's name
+    ' Example: Align to right for last paragraph if needed
+    ' ------------------------------------------------------------
+    viewCursor.gotoEnd(False)
+    viewCursor.ParaAdjust = com.sun.star.style.ParagraphAdjust.RIGHT
+
+    ' ------------------------------------------------------------
+    ' Step 38: Ensure consistent font for entire document body
+    ' ------------------------------------------------------------
+    dispatcher.executeDispatch(docFrame, ".uno:SelectAll", "", 0, Array())
+
+    Dim fontArgs(2) As New com.sun.star.beans.PropertyValue
+    fontArgs(0).Name  = "CharFontName"
+    fontArgs(0).Value = "Bitstream Charter"
+    fontArgs(1).Name  = "CharHeight"
+    fontArgs(1).Value = 12
+    fontArgs(2).Name  = "CharWeight"
+    fontArgs(2).Value = 100  ' normal
+
+    dispatcher.executeDispatch(docFrame, ".uno:CharFontName", "", 0, fontArgs())
+
+    ' ------------------------------------------------------------
+    ' End of Macro
+    ' ------------------------------------------------------------
+End Sub

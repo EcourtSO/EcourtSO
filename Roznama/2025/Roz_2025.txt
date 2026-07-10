@@ -1,0 +1,1887 @@
+REM  *****  BASIC  *****
+sub Roznama
+
+rem ----------------------------------------------------------------------
+rem define variables
+dim document1   as object
+dim dispatcher1 as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document1   = ThisComponent.CurrentController.Frame
+dispatcher1 = createUnoService("com.sun.star.frame.DispatchHelper")
+
+
+rem ----------------------------------------------------------------------
+dispatcher1.executeDispatch(document1, ".uno:SelectAll", "", 0, Array())
+
+rem ----------------------------------------------------------------------
+dim args288(4) as new com.sun.star.beans.PropertyValue
+args288(0).Name = "TopBottomMargin.TopMargin"
+args288(0).Value = 10
+args288(1).Name = "TopBottomMargin.BottomMargin"
+args288(1).Value = 10
+args288(2).Name = "TopBottomMargin.ContextMargin"
+args288(2).Value = false
+args288(3).Name = "TopBottomMargin.TopRelMargin"
+args288(3).Value = 100
+args288(4).Name = "TopBottomMargin.BottomRelMargin"
+args288(4).Value = 100
+
+dispatcher1.executeDispatch(document1, ".uno:TopBottomMargin", "", 0, args288())
+
+rem ----------------------------------------------------------------------
+dim args289(0) as new com.sun.star.beans.PropertyValue
+args289(0).Name = "NumberingStart"
+args289(0).Value = false
+
+dispatcher1.executeDispatch(document1, ".uno:NumberingStart", "", 0, args289())
+
+rem ----------------------------------------------------------------------
+dim args290(0) as new com.sun.star.beans.PropertyValue
+args290(0).Name = "NumNewStartAt"
+args290(0).Value = 65535
+
+dispatcher1.executeDispatch(document1, ".uno:NumNewStartAt", "", 0, args290())
+
+
+	dim oDoc as object, oVCur as object, oFound as object, oDesc as object, s$, o as object, oCur as object, oSel as object
+	oDoc=ThisComponent
+	oVCur=oDoc.CurrentController.ViewCursor 'visible cursor
+	oDoc.lockControllers 'no screen rendering, faster
+	oDesc=oDoc.createSearchDescriptor
+	oDesc.SearchString="IN THE COURT OF"
+	oFound=oDoc.findFirst(oDesc)
+	if NOT isNull(oFound) then 'IN THE COURT OF is found
+		oVCur.goToRange(oFound.End, false)
+		oVCur.goToEndOfLine(true)
+		s=oVCur.String
+		with oDesc
+			.SearchString="Proceeding is closed"
+			.SearchCaseSensitive=false 'for sure no case-sensitive searching
+		end with
+		oFound=oDoc.findAll(oDesc)
+		if NOT isNull(oFound) then 'found: Proceeding is closed
+			for each o in oFound 'traverse particular "Proceeding is closed"
+				rem macro supposes all findings are in TextTables
+				with oVCur
+					.goToRange(o.End, false)
+					.goDown(1, false) 'go one line below "Proceeding is closed" - it supposes there is empty line between "Proceeding is closed" and "Judge"
+					.ParaAdjust=1 'align to right
+				end with
+				rem problem is, the Visible Cursor doesn't want to set the String, so it need use Text Cursor in current Cell
+				oSel=oDoc.CurrentController.Selection.getByIndex(0) 'current selection is Visible Cursor
+				oCur=oSel.Cell.createTextCursor 'Text Cursor in current Cell
+				with oCur
+				.goToRange(oVCur.End, false)
+				.String="(" & Trim(s) & ")" 'write String with brackets
+				.CharWeight=com.sun.star.awt.FontWeight.BOLD
+end with
+			next
+		end if
+	end if
+	if oDoc.hasControllersLocked then oDoc.unlockControllers 'screen rendering ON
+	
+rem define variables
+dim dispatcher as object
+Dim sText As String
+sText = "Judge"
+rem ----------------------------------------------------------------------
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+rem ----------------------------------------------------------------------
+
+dim args1(18) as new com.sun.star.beans.PropertyValue
+args1(0).Name = "SearchItem.StyleFamily"
+args1(0).Value = 2
+args1(1).Name = "SearchItem.CellType"
+args1(1).Value = 0
+args1(2).Name = "SearchItem.RowDirection"
+args1(2).Value = true
+args1(3).Name = "SearchItem.AllTables"
+args1(3).Value = false
+args1(4).Name = "SearchItem.Backward"
+args1(4).Value = false
+args1(5).Name = "SearchItem.Pattern"
+args1(5).Value = false
+args1(6).Name = "SearchItem.Content"
+args1(6).Value = false
+args1(7).Name = "SearchItem.AsianOptions"
+args1(7).Value = false
+args1(8).Name = "SearchItem.AlgorithmType"
+args1(8).Value = 1
+args1(9).Name = "SearchItem.SearchFlags"
+args1(9).Value = 65536
+args1(12).Name = "SearchItem.Locale"
+args1(12).Value = 255
+args1(13).Name = "SearchItem.ChangedChars"
+args1(13).Value = 2
+args1(14).Name = "SearchItem.DeletedChars"
+args1(14).Value = 2
+args1(15).Name = "SearchItem.InsertedChars"
+args1(15).Value = 2
+args1(16).Name = "SearchItem.TransliterateFlags"
+args1(16).Value = 1280
+args1(17).Name = "SearchItem.Command"
+args1(17).Value = 3
+args1(18).Name = "Quiet"
+args1(18).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ExecuteSearch", "", 0, args1())
+
+        dim oDoc22 as object, oDesc22 as object
+        oDoc22=ThisComponent
+        oDesc22=oDoc22.createReplaceDescriptor
+        with oDesc22
+                .SearchString="\n\n" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc22.replaceAll(oDesc22)
+
+        dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc1.createReplaceDescriptor
+        with oDesc1
+                .SearchString="^\n" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc1.replaceAll(oDesc1)
+
+        dim oDoc2 as object, oDesc2 as object
+        oDoc2=ThisComponent
+        oDesc2=oDoc2.createReplaceDescriptor
+        with oDesc2
+                .SearchString="^$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc2.replaceAll(oDesc2)
+
+        dim oDoc3 as object, oDesc3 as object
+        oDoc3=ThisComponent
+        oDesc3=oDoc3.createReplaceDescriptor
+        with oDesc3
+                .SearchString="\n \n" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString="\n"
+        end with
+        oDoc3.replaceAll(oDesc3)
+        dim oDoc4 as object, oDesc4 as object
+        oDoc4=ThisComponent
+        oDesc4=oDoc4.createReplaceDescriptor
+        with oDesc4
+                .SearchString="^.$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc4.replaceAll(oDesc4)
+        dim oDoc5 as object, oDesc5 as object
+        oDoc5=ThisComponent
+        oDesc5=oDoc5.createReplaceDescriptor
+        with oDesc5
+                .SearchString="^$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc5.replaceAll(oDesc5)
+
+        dim oDoc6 as object, oDesc6 as object
+        oDoc6=ThisComponent
+        oDesc6=oDoc6.createReplaceDescriptor
+        with oDesc6
+                .SearchString="\n $" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc6.replaceAll(oDesc6)
+        dim oDoc7 as object, oDesc7 as object
+        oDoc7=ThisComponent
+        oDesc7=oDoc7.createReplaceDescriptor
+        with oDesc7
+                .SearchString="IN THE COURT OF [:print:]{1,100}\n" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString="& Mohod"
+        end with
+        oDoc7.replaceAll(oDesc7)
+        dim oDoc8 as object, oDesc8 as object
+        oDoc8=ThisComponent
+        oDesc8=oDoc8.createReplaceDescriptor
+        with oDesc8
+                .SearchString="\n Mohod" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc8.replaceAll(oDesc8)
+
+		dim oDoc69 as object, oDesc69 as object
+        oDoc69=ThisComponent
+        oDesc69=oDoc69.createReplaceDescriptor
+        with oDesc69
+                .SearchString="^ \n" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc69.replaceAll(oDesc69)
+
+		
+Dim oStyleFamilies, oFamilies, oPageStyles, oStyle
+  Dim oVCurs, oPageStyleName
+  Dim fromleft%, fromtop%, fromright%, frombottom%
+  Dim oDoc11
+  oDoc11 = ThisComponent
+
+  REM You don't need the view cursor, you can use any TextCursor 
+  oVCurs = oDoc.CurrentController.getViewCursor() 
+  oPageStyleName = oVCurs.PageStyleName
+  oPageStyles = oDoc.StyleFamilies.getByName("PageStyles")
+  oStyle  = oPageStyles.getByName(oPageStyleName)
+  REM fromleft, fromtop, fromright, frombottom = whatever you want 
+  oStyle.LeftMargin = 2000
+  oStyle.TopMargin = 011  
+  oStyle.RightMargin = 1000
+  oStyle.BottomMargin = 005
+  
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^Exh-[:digit:]{1,4}|^[:digit:]{1,4}\/[ABCD]|^Exh.[:digit:]{1,4}\/[ABCD]|^\([ABCD]\) Exh.[:digit:]{1,4}|^[ABCD]- Exh. [:digit:]{1,4}|^[:digit:]{1,4}|^[ABCD]-[:digit:]{1,4}|^Exh.[:digit:]{1,4}|^Exh. [:digit:]{1,4}|^Exh [:digit:]{1,4}|^\([ABCD]\)Exh.[:digit:]{1,4}|^[ABCD]-Exh.[:digit:]{1,4}|^[ABCD] [:digit:]{1,4}|^[:digit:]{1,4}.|^Exh.[:digit:]{1,4}/[ABCD]-"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^Exh-[:digit:]{1,4}, [:digit:]{1,4}|^[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}|^Exh.[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}|^\([ABCD]\) Exh.[:digit:]{1,4}, [:digit:]{1,4}|^[ABCD]- Exh. [:digit:]{1,4}, [:digit:]{1,4}|^[:digit:]{1,4}, [:digit:]{1,4}|^[ABCD]-[:digit:]{1,4}, [:digit:]{1,4}|^Exh. [:digit:]{1,4}, [:digit:]{1,4}|^Exh.[:digit:]{1,4}, [:digit:]{1,4}|^Exh [:digit:]{1,4}, [:digit:]{1,4}|^[ABCD] Exh. [:digit:]{1,4}, [:digit:]{1,4}|^[ABCD] Exh.[:digit:]{1,4}, [:digit:]{1,4}|^[ABCD] Exh [:digit:]{1,4}, [:digit:]{1,4}|^([ABCD]) Exh. [:digit:]{1,4}, [:digit:]{1,4}|^[ABCD] Exh [:digit:]{1,4}, [:digit:]{1,4}|^[ABCD] Exh [:digit:]{1,4}, [:digit:]{1,4}|^\([ABCD]\)Exh.[:digit:]{1,4}, [:digit:]{1,4}|^[ABCD]-Exh.[:digit:]{1,4}, [:digit:]{1,4}|^[ABCD] [:digit:]{1,4}, [:digit:]{1,4}|^[:digit:]{1,4}, [:digit:]{1,4}.|^Exh.[:digit:]{1,4}/[ABCD], [:digit:]{1,4}-"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^Exh-[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}, [:digit:]{1,4}|^Exh.[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}, [:digit:]{1,4}|^\([ABCD]\) Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[ABCD]- Exh. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[ABCD]-[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^Exh. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^Exh [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^([ABCD])Exh [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^([ABCD])Exh. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^([ABCD])Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^\([ABCD]\)Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[ABCD]-Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[ABCD] [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}.|^Exh.[:digit:]{1,4}/[ABCD], [:digit:]{1,4}, [:digit:]{1,4}-"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^Exh-[:digit:]{1,4}-[:digit:]{1,4}|^[:digit:]{1,4}\/[ABCD]-[:digit:]{1,4}|^Exh.[:digit:]{1,4}\/[ABCD]-[:digit:]{1,4}|^\([ABCD]\) Exh.[:digit:]{1,4}-[:digit:]{1,4}|^[ABCD]- Exh. [:digit:]{1,4}-[:digit:]{1,4}|^[:digit:]{1,4}-[:digit:]{1,4}|^[ABCD]-[:digit:]{1,4}-[:digit:]{1,4}|^Exh. [:digit:]{1,4}-[:digit:]{1,4}|^Exh.[:digit:]{1,4}-[:digit:]{1,4}|^Exh [:digit:]{1,4}-[:digit:]{1,4}|^([ABCD]) Exh [:digit:]{1,4}-[:digit:]{1,4}|^([ABCD]) Exh. [:digit:]{1,4}-[:digit:]{1,4}|^([ABCD]) Exh.[:digit:]{1,4}-[:digit:]{1,4}|^\([ABCD]\)Exh.[:digit:]{1,4}-[:digit:]{1,4}|^[ABCD]-Exh.[:digit:]{1,4}-[:digit:]{1,4}|^[ABCD] [:digit:]{1,4}-[:digit:]{1,4}|^[:digit:]{1,4}-[:digit:]{1,4}.|^Exh.[:digit:]{1,4}/[ABCD]-[:digit:]{1,4}-"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^Exh-[:digit:]{1,4} - [:digit:]{1,4}|^[:digit:]{1,4}\/[ABCD] - [:digit:]{1,4}|^Exh.[:digit:]{1,4}\/[ABCD] - [:digit:]{1,4}|^\([ABCD]\) Exh.[:digit:]{1,4} - [:digit:]{1,4}|^[ABCD]- Exh. [:digit:]{1,4} - [:digit:]{1,4}|^-[:digit:]{1,4} - [:digit:]{1,4}|^[ABCD]-[:digit:]{1,4} - [:digit:]{1,4}|^Exh. [:digit:]{1,4} - [:digit:]{1,4}|^Exh.[:digit:]{1,4} - [:digit:]{1,4}|^Exh [:digit:]{1,4} - [:digit:]{1,4}|^([ABCD]) Exh [:digit:]{1,4} - [:digit:]{1,4}|^([ABCD]) Exh. [:digit:]{1,4} - [:digit:]{1,4}|^([ABCD]) Exh.[:digit:]{1,4} - [:digit:]{1,4}|^\([ABCD]\)Exh.[:digit:]{1,4} - [:digit:]{1,4}|^[ABCD]-Exh.[:digit:]{1,4} - [:digit:]{1,4}|^[ABCD] [:digit:]{1,4} - [:digit:]{1,4}|^[:digit:]{1,4} - [:digit:]{1,4}.|^Exh.[:digit:]{1,4}/[ABCD] - [:digit:]{1,4}-"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^Exh-[:digit:]{1,4} to [:digit:]{1,4}|^[:digit:]{1,4}\/[ABCD] to [:digit:]{1,4}|^Exh.[:digit:]{1,4}\/[ABCD] to [:digit:]{1,4}|^\([ABCD]\) Exh.[:digit:]{1,4} to [:digit:]{1,4}|^[ABCD]- Exh. [:digit:]{1,4} to [:digit:]{1,4}|^[:digit:]{1,4} to [:digit:]{1,4}|^[ABCD]-[:digit:]{1,4} to [:digit:]{1,4}|^Exh. [:digit:]{1,4} to [:digit:]{1,4}|^Exh.[:digit:]{1,4} to [:digit:]{1,4}|^Exh [:digit:]{1,4} to [:digit:]{1,4}|^([ABCD]) Exh [:digit:]{1,4} to [:digit:]{1,4}|^([ABCD]) Exh. [:digit:]{1,4} to [:digit:]{1,4}|^([ABCD]) Exh.[:digit:]{1,4} to [:digit:]{1,4}|^\([ABCD]\)Exh.[:digit:]{1,4} to [:digit:]{1,4}|^[ABCD]-Exh.[:digit:]{1,4} to [:digit:]{1,4}|^[ABCD] [:digit:]{1,4} to [:digit:]{1,4}|^[:digit:]{1,4} to [:digit:]{1,4}.|^Exh.[:digit:]{1,4}/[ABCD] to [:digit:]{1,4}-"
+
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^Exh-[:digit:]{1,4} and [:digit:]{1,4}|^[:digit:]{1,4}\/[ABCD] and [:digit:]{1,4}|^Exh.[:digit:]{1,4}\/[ABCD] and [:digit:]{1,4}|^\([ABCD]\) Exh.[:digit:]{1,4} and [:digit:]{1,4}|^[ABCD]- Exh. [:digit:]{1,4} and [:digit:]{1,4}|^[:digit:]{1,4} and [:digit:]{1,4}|^[ABCD]-[:digit:]{1,4} and [:digit:]{1,4}|^Exh. [:digit:]{1,4} and [:digit:]{1,4}|^Exh.[:digit:]{1,4} and [:digit:]{1,4}|^Exh [:digit:]{1,4} and [:digit:]{1,4}|^([ABCD]) Exh [:digit:]{1,4} and [:digit:]{1,4}|^([ABCD]) Exh. [:digit:]{1,4} and [:digit:]{1,4}|^([ABCD]) Exh.[:digit:]{1,4} and [:digit:]{1,4}|^\([ABCD]\)Exh.[:digit:]{1,4} and [:digit:]{1,4}|^[ABCD]-Exh.[:digit:]{1,4} and [:digit:]{1,4}|^[ABCD] [:digit:]{1,4} and [:digit:]{1,4}|^[:digit:]{1,4} and [:digit:]{1,4}.|^Exh.[:digit:]{1,4}/[ABCD] and [:digit:]{1,4}-"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\nExh-[:digit:]{1,4}|\n[:digit:]{1,4}\/[ABCD]|\nExh.[:digit:]{1,4}\/[ABCD]|\n\([ABCD]\) Exh.[:digit:]{1,4}|\n[ABCD]- Exh. [:digit:]{1,4}|\n[:digit:]{1,4}|\n[ABCD]-[:digit:]{1,4}|\nExh.[:digit:]{1,4}|\nExh. [:digit:]{1,4}|\nExh [:digit:]{1,4}|\n\([ABCD]\)Exh.[:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4}|\n[:digit:]{1,4}.|\nExh.[:digit:]{1,4}/[ABCD]"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\nExh-[:digit:]{1,4}, [:digit:]{1,4}|\n[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}|\nExh.[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}|\n\([ABCD]\) Exh.[:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD]- Exh. [:digit:]{1,4}, [:digit:]{1,4}|\n[:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD]-[:digit:]{1,4}, [:digit:]{1,4}|\nExh. [:digit:]{1,4}, [:digit:]{1,4}|\nExh.[:digit:]{1,4}, [:digit:]{1,4}|\nExh [:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD] Exh. [:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD] Exh.[:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD] Exh [:digit:]{1,4}, [:digit:]{1,4}|\n([ABCD]) Exh. [:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD] Exh [:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD] Exh [:digit:]{1,4}, [:digit:]{1,4}|\n\([ABCD]\)Exh.[:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4}, [:digit:]{1,4}|\n[:digit:]{1,4}, [:digit:]{1,4}.|\nExh.[:digit:]{1,4}/[ABCD], [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\nExh-[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}, [:digit:]{1,4}|\nExh.[:digit:]{1,4}\/[ABCD], [:digit:]{1,4}, [:digit:]{1,4}|\n\([ABCD]\) Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD]- Exh. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD]-[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nExh. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nExh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nExh [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n([ABCD])Exh [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n([ABCD])Exh. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n([ABCD])Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n\([ABCD]\)Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}.|\nExh.[:digit:]{1,4}/[ABCD], [:digit:]{1,4}, [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\nExh-[:digit:]{1,4}-[:digit:]{1,4}|\n[:digit:]{1,4}\/[ABCD]-[:digit:]{1,4}|\nExh.[:digit:]{1,4}\/[ABCD]-[:digit:]{1,4}|\n\([ABCD]\) Exh.[:digit:]{1,4}-[:digit:]{1,4}|\n[ABCD]- Exh. [:digit:]{1,4}-[:digit:]{1,4}|\n[:digit:]{1,4}-[:digit:]{1,4}|\n[ABCD]-[:digit:]{1,4}-[:digit:]{1,4}|\nExh. [:digit:]{1,4}-[:digit:]{1,4}|\nExh.[:digit:]{1,4}-[:digit:]{1,4}|\nExh [:digit:]{1,4}-[:digit:]{1,4}|\n([ABCD]) Exh [:digit:]{1,4}-[:digit:]{1,4}|\n([ABCD]) Exh. [:digit:]{1,4}-[:digit:]{1,4}|\n([ABCD]) Exh.[:digit:]{1,4}-[:digit:]{1,4}|\n\([ABCD]\)Exh.[:digit:]{1,4}-[:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4}-[:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4}-[:digit:]{1,4}|\n[:digit:]{1,4}-[:digit:]{1,4}.|\nExh.[:digit:]{1,4}/[ABCD]-[:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\nExh-[:digit:]{1,4} - [:digit:]{1,4}|\n[:digit:]{1,4}\/[ABCD] - [:digit:]{1,4}|\nExh.[:digit:]{1,4}\/[ABCD] - [:digit:]{1,4}|\n\([ABCD]\) Exh.[:digit:]{1,4} - [:digit:]{1,4}|\n[ABCD]- Exh. [:digit:]{1,4} - [:digit:]{1,4}|\n-[:digit:]{1,4} - [:digit:]{1,4}|\n[ABCD]-[:digit:]{1,4} - [:digit:]{1,4}|\nExh. [:digit:]{1,4} - [:digit:]{1,4}|\nExh.[:digit:]{1,4} - [:digit:]{1,4}|\nExh [:digit:]{1,4} - [:digit:]{1,4}|\n([ABCD]) Exh [:digit:]{1,4} - [:digit:]{1,4}|\n([ABCD]) Exh. [:digit:]{1,4} - [:digit:]{1,4}|\n([ABCD]) Exh.[:digit:]{1,4} - [:digit:]{1,4}|\n\([ABCD]\)Exh.[:digit:]{1,4} - [:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4} - [:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4} - [:digit:]{1,4}|\n[:digit:]{1,4} - [:digit:]{1,4}.|\nExh.[:digit:]{1,4}/[ABCD] - [:digit:]{1,4}"
+
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\nExh-[:digit:]{1,4} to [:digit:]{1,4}|\n[:digit:]{1,4}\/[ABCD] to [:digit:]{1,4}|\nExh.[:digit:]{1,4}\/[ABCD] to [:digit:]{1,4}|\n\([ABCD]\) Exh.[:digit:]{1,4} to [:digit:]{1,4}|\n[ABCD]- Exh. [:digit:]{1,4} to [:digit:]{1,4}|\n[:digit:]{1,4} to [:digit:]{1,4}|\n[ABCD]-[:digit:]{1,4} to [:digit:]{1,4}|\nExh. [:digit:]{1,4} to [:digit:]{1,4}|\nExh.[:digit:]{1,4} to [:digit:]{1,4}|\nExh [:digit:]{1,4} to [:digit:]{1,4}|\n([ABCD]) Exh [:digit:]{1,4} to [:digit:]{1,4}|\n([ABCD]) Exh. [:digit:]{1,4} to [:digit:]{1,4}|\n([ABCD]) Exh.[:digit:]{1,4} to [:digit:]{1,4}|\n\([ABCD]\)Exh.[:digit:]{1,4} to [:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4} to [:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4} to [:digit:]{1,4}|\n[:digit:]{1,4} to [:digit:]{1,4}.|\nExh.[:digit:]{1,4}/[ABCD] to [:digit:]{1,4}"
+
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\nExh-[:digit:]{1,4} and [:digit:]{1,4}|\n[:digit:]{1,4}\/[ABCD] and [:digit:]{1,4}|\nExh.[:digit:]{1,4}\/[ABCD] and [:digit:]{1,4}|\n\([ABCD]\) Exh.[:digit:]{1,4} and [:digit:]{1,4}|\n[ABCD]- Exh. [:digit:]{1,4} and [:digit:]{1,4}|\n[:digit:]{1,4} and [:digit:]{1,4}|\n[ABCD]-[:digit:]{1,4} and [:digit:]{1,4}|\nExh. [:digit:]{1,4} and [:digit:]{1,4}|\nExh.[:digit:]{1,4} and [:digit:]{1,4}|\nExh [:digit:]{1,4} and [:digit:]{1,4}|\n([ABCD]) Exh [:digit:]{1,4} and [:digit:]{1,4}|\n([ABCD]) Exh. [:digit:]{1,4} and [:digit:]{1,4}|\n([ABCD]) Exh.[:digit:]{1,4} and [:digit:]{1,4}|\n\([ABCD]\)Exh.[:digit:]{1,4} and [:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4} and [:digit:]{1,4}|\n[ABCD]-Exh.[:digit:]{1,4} and [:digit:]{1,4}|\n[:digit:]{1,4} and [:digit:]{1,4}.|\nExh.[:digit:]{1,4}/[ABCD] and [:digit:]{1,4}"
+
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^[अबकड] [:digit:]{1,4}|^नि. [:digit:]{1,4}|^नि[:digit:]{1,4}|^[अबकड]\/नि.[:digit:]{1,4}|^[अबकड]-नि.[:digit:]{1,4}|^[अबकड] - नि. [:digit:]{1,4}|^[अबकड] - नि [:digit:]{1,4}|^[अबकड] \/ नि. [:digit:]{1,4}|^[अबकड] \/ नि [:digit:]{1,4}|^नि-[:digit:]{1,4}\/[अबकड]|^[:digit:]{1,4}\/[अबकड]|^[अबकड] [:digit:]{1,4}|^नि [:digit:]{1,4}|^[:digit:]{1,4}|^[अबकड]-[:digit:]{1,4}|^नि. क्र.[:digit:]{1,4}|^नि. क्र. [:digit:]{1,4}|^नि.क्र. [:digit:]{1,4}|^नि.[:digit:]{1,4}|^नि.क्र.[:digit:]{1,4}.|^ए/[:digit:]{1,4}|^बी/[:digit:]{1,4}|^सी/[:digit:]{1,4}|^डी/[:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^[:digit:]{1,4}\/[अबकड], [:digit:]{1,4}|^नि-[:digit:]{1,4}\/[अबकड], [:digit:]{1,4}|^[अबकड] \/ नि [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड] \/ नि. [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड] - नि. [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड]-नि.[:digit:]{1,4}, [:digit:]{1,4}|^[अबकड]\/नि.[:digit:]{1,4}, [:digit:]{1,4}|^नि[:digit:]{1,4}, [:digit:]{1,4}|^नि. [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड] [:digit:]{1,4}, [:digit:]{1,4}|^नि [:digit:]{1,4}, [:digit:]{1,4}|^[:digit:]{1,4}, [:digit:]{1,4}|^[अबकड]-[:digit:]{1,4}, [:digit:]{1,4}|^नि. क्र. [:digit:]{1,4}, [:digit:]{1,4}|^नि.क्र.[:digit:]{1,4}, [:digit:]{1,4}|^नि.क्र. [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड] नि.क्र. [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड] नि.क्र. [:digit:]{1,4}, [:digit:]{1,4}|^([अबकड]) नि. क्र. [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड] नि.क्र. [:digit:]{1,4}, [:digit:]{1,4}|^नि.[:digit:]{1,4}, [:digit:]{1,4}|^नि.क्र.[:digit:]{1,4}, [:digit:]{1,4}.|^ए/[:digit:]{1,4}, [:digit:]{1,4}|^बी/[:digit:]{1,4}, [:digit:]{1,4}|^सी/[:digit:]{1,4}, [:digit:]{1,4}|^डी/[:digit:]{1,4}, [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^[:digit:]{1,4}\/[अबकड], [:digit:]{1,4}, [:digit:]{1,4}|^नि-[:digit:]{1,4}\/[अबकड], [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड] \/ नि [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड] \/ नि. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड] - नि. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड]-नि.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड]\/नि.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^नि[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^नि. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^नि. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड] [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^नि [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^[अबकड]-[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^नि. क्र. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^नि.क्र.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^नि.क्र. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^([अबकड])नि. क्र. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^([अबकड])नि. क्र. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^([अबकड])नि. क्र.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^नि.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^नि.क्र.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}.|^ए/[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^बी/[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^सी/[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|^डी/[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^[:digit:]{1,4}\/[अबकड]-[:digit:]{1,4}|^नि-[:digit:]{1,4}\/[अबकड]-[:digit:]{1,4}|^[अबकड] \/ नि [:digit:]{1,4}-[:digit:]{1,4}|^[अबकड] \/ नि. [:digit:]{1,4}-[:digit:]{1,4}|^[अबकड] - नि [:digit:]{1,4}-[:digit:]{1,4}|^[अबकड] - नि. [:digit:]{1,4}-[:digit:]{1,4}|^[अबकड]-नि.[:digit:]{1,4}-[:digit:]{1,4}|^[अबकड]\/नि.[:digit:]{1,4}-[:digit:]{1,4}|^नि[:digit:]{1,4}-[:digit:]{1,4}|^नि. [:digit:]{1,4}-[:digit:]{1,4}|^[अबकड] [:digit:]{1,4}-[:digit:]{1,4}|^नि [:digit:]{1,4}-[:digit:]{1,4}|^[:digit:]{1,4}-[:digit:]{1,4}|^[अबकड]-[:digit:]{1,4}-[:digit:]{1,4}|^नि. क्र. [:digit:]{1,4}-[:digit:]{1,4}|^नि.क्र. [:digit:]{1,4}-[:digit:]{1,4}|^नि. क्र. [:digit:]{1,4}-[:digit:]{1,4}|^([अबकड]) नि. क्र. [:digit:]{1,4}-[:digit:]{1,4}|^([अबकड]) नि. क्र. [:digit:]{1,4}-[:digit:]{1,4}|^([अबकड]) नि.क्र.[:digit:]{1,4}-[:digit:]{1,4}|^नि.[:digit:]{1,4}-[:digit:]{1,4}|^नि.क्र.[:digit:]{1,4}-[:digit:]{1,4}|^ए/[:digit:]{1,4}-[:digit:]{1,4}|^बी/[:digit:]{1,4}-[:digit:]{1,4}|^सी/[:digit:]{1,4}-[:digit:]{1,4}|^डी/[:digit:]{1,4}-[:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^[:digit:]{1,4}\/[अबकड] - [:digit:]{1,4}|^नि-[:digit:]{1,4}\/[अबकड] - [:digit:]{1,4}|^[अबकड] \/ नि [:digit:]{1,4} - [:digit:]{1,4}|^[अबकड]\/नि.[:digit:]{1,4} - [:digit:]{1,4}|^नि[:digit:]{1,4} - [:digit:]{1,4}|^नि. [:digit:]{1,4} - [:digit:]{1,4}|^[अबकड] [:digit:]{1,4} - [:digit:]{1,4}|^नि [:digit:]{1,4} - [:digit:]{1,4}|^[:digit:]{1,4} - [:digit:]{1,4}|^[अबकड]-[:digit:]{1,4} - [:digit:]{1,4}|^नि. क्र. [:digit:]{1,4} - [:digit:]{1,4}|^नि.क्र. [:digit:]{1,4} - [:digit:]{1,4}|^नि. क्र. [:digit:]{1,4} - [:digit:]{1,4}|^([अबकड]) नि. क्र. [:digit:]{1,4} - [:digit:]{1,4}|^([अबकड]) नि. क्र. [:digit:]{1,4} - [:digit:]{1,4}|^([अबकड]) नि.क्र.[:digit:]{1,4} - [:digit:]{1,4}|^नि.[:digit:]{1,4} - [:digit:]{1,4}|^नि.क्र.[:digit:]{1,4} - [:digit:]{1,4}|^ए/[:digit:]{1,4} - [:digit:]{1,4}|^बी/[:digit:]{1,4} - [:digit:]{1,4}|^सी/[:digit:]{1,4} - [:digit:]{1,4}|^डी/[:digit:]{1,4} - [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "^[:digit:]{1,4}\/[अबकड] ते [:digit:]{1,4}|^नि-[:digit:]{1,4}\/[अबकड] ते [:digit:]{1,4}|^[अबकड] \/ नि [:digit:]{1,4} ते [:digit:]{1,4}|^[अबकड] \/ नि. [:digit:]{1,4} ते [:digit:]{1,4}|^[अबकड] - नि [:digit:]{1,4} ते [:digit:]{1,4}|^[अबकड] - नि. [:digit:]{1,4} ते [:digit:]{1,4}|^[अबकड]-नि.[:digit:]{1,4} ते [:digit:]{1,4}|^[अबकड]\/नि.[:digit:]{1,4} ते [:digit:]{1,4}|^नि[:digit:]{1,4} ते [:digit:]{1,4}|^नि. [:digit:]{1,4} ते [:digit:]{1,4}|^[अबकड] [:digit:]{1,4} ते [:digit:]{1,4}|^नि [:digit:]{1,4} ते [:digit:]{1,4}|^[:digit:]{1,4} ते [:digit:]{1,4}|^[अबकड]-[:digit:]{1,4} ते [:digit:]{1,4}|^नि. क्र. [:digit:]{1,4} ते [:digit:]{1,4}|^नि.क्र. [:digit:]{1,4} ते [:digit:]{1,4}|^नि. क्र. [:digit:]{1,4} ते [:digit:]{1,4}|^([अबकड]) नि. क्र. [:digit:]{1,4} ते [:digit:]{1,4}|^([अबकड]) नि. क्र. [:digit:]{1,4} ते [:digit:]{1,4}|^([अबकड]) नि.क्र.[:digit:]{1,4} ते [:digit:]{1,4}|^नि.[:digit:]{1,4} ते [:digit:]{1,4}|^नि.क्र.[:digit:]{1,4} ते [:digit:]{1,4}|^ए/[:digit:]{1,4} ते [:digit:]{1,4}|^बी/[:digit:]{1,4} ते [:digit:]{1,4}|^सी/[:digit:]{1,4} ते [:digit:]{1,4}|^डी/[:digit:]{1,4} ते [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n[अबकड] [:digit:]{1,4}|\nनि. [:digit:]{1,4}|\nनि[:digit:]{1,4}|\n[अबकड]\/नि.[:digit:]{1,4}|\n[अबकड]-नि.[:digit:]{1,4}|\n[अबकड] - नि. [:digit:]{1,4}|\n[अबकड] - नि [:digit:]{1,4}|\n[अबकड] \/ नि. [:digit:]{1,4}|\n[अबकड] \/ नि [:digit:]{1,4}|\nनि-[:digit:]{1,4}\/[अबकड]|\n[:digit:]{1,4}\/[अबकड]|\n[अबकड] [:digit:]{1,4}|\nनि [:digit:]{1,4}|\n[:digit:]{1,4}|\n[अबकड]-[:digit:]{1,4}|\nनि. क्र.[:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4}|\nनि.क्र. [:digit:]{1,4}|\nनि.[:digit:]{1,4}|\nनि.क्र.[:digit:]{1,4}|\nए/[:digit:]{1,4}|\nबी/[:digit:]{1,4}|\nसी/[:digit:]{1,4}|\nडी/[:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n[:digit:]{1,4}\/[अबकड], [:digit:]{1,4}|\nनि-[:digit:]{1,4}\/[अबकड], [:digit:]{1,4}|\n[अबकड] \/ नि [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड] \/ नि. [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड] - नि. [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड]-नि.[:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड]\/नि.[:digit:]{1,4}, [:digit:]{1,4}|\nनि[:digit:]{1,4}, [:digit:]{1,4}|\nनि. [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड] [:digit:]{1,4}, [:digit:]{1,4}|\nनि [:digit:]{1,4}, [:digit:]{1,4}|\n[:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड]-[:digit:]{1,4}, [:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4}, [:digit:]{1,4}|\nनि.क्र.[:digit:]{1,4}, [:digit:]{1,4}|\nनि.क्र. [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड] नि.क्र. [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड] नि.क्र. [:digit:]{1,4}, [:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड] नि.क्र. [:digit:]{1,4}, [:digit:]{1,4}|\nनि.[:digit:]{1,4}, [:digit:]{1,4}|\nनि.क्र.[:digit:]{1,4}, [:digit:]{1,4}|\nए/[:digit:]{1,4}, [:digit:]{1,4}|\nबी/[:digit:]{1,4}, [:digit:]{1,4}|\nसी/[:digit:]{1,4}, [:digit:]{1,4}|\nडी/[:digit:]{1,4}, [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n[:digit:]{1,4}\/[अबकड], [:digit:]{1,4}, [:digit:]{1,4}|\nनि-[:digit:]{1,4}\/[अबकड], [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड] \/ नि [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड] \/ नि. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड] - नि. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड]-नि.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड]\/नि.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nनि[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nनि. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nनि. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड] [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nनि [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n[अबकड]-[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nनि.क्र.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nनि.क्र. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n([अबकड])नि. क्र. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n([अबकड])नि. क्र. [:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\n([अबकड])नि. क्र.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nनि.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nनि.क्र.[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nए/[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nबी/[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nसी/[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}|\nडी/[:digit:]{1,4}, [:digit:]{1,4}, [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n[:digit:]{1,4}\/[अबकड]-[:digit:]{1,4}|\nनि-[:digit:]{1,4}\/[अबकड]-[:digit:]{1,4}|\n[अबकड] \/ नि [:digit:]{1,4}-[:digit:]{1,4}|\n[अबकड] \/ नि. [:digit:]{1,4}-[:digit:]{1,4}|\n[अबकड] - नि [:digit:]{1,4}-[:digit:]{1,4}|\n[अबकड] - नि. [:digit:]{1,4}-[:digit:]{1,4}|\n[अबकड]-नि.[:digit:]{1,4}-[:digit:]{1,4}|\n[अबकड]\/नि.[:digit:]{1,4}-[:digit:]{1,4}|\nनि[:digit:]{1,4}-[:digit:]{1,4}|\nनि. [:digit:]{1,4}-[:digit:]{1,4}|\n[अबकड] [:digit:]{1,4}-[:digit:]{1,4}|\nनि [:digit:]{1,4}-[:digit:]{1,4}|\n[:digit:]{1,4}-[:digit:]{1,4}|\n[अबकड]-[:digit:]{1,4}-[:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4}-[:digit:]{1,4}|\nनि.क्र. [:digit:]{1,4}-[:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4}-[:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4}-[:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4}-[:digit:]{1,4}|\n([अबकड]) नि.क्र.[:digit:]{1,4}-[:digit:]{1,4}|\nनि.[:digit:]{1,4}-[:digit:]{1,4}|\nनि.क्र.[:digit:]{1,4}-[:digit:]{1,4}|\nए/[:digit:]{1,4}-[:digit:]{1,4}|\nबी/[:digit:]{1,4}-[:digit:]{1,4}|\nसी/[:digit:]{1,4}-[:digit:]{1,4}|\nडी/[:digit:]{1,4}-[:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n[:digit:]{1,4}\/[अबकड] - [:digit:]{1,4}|\nनि-[:digit:]{1,4}\/[अबकड] - [:digit:]{1,4}|\n[अबकड] \/ नि [:digit:]{1,4} - [:digit:]{1,4}|\n[अबकड]\/नि.[:digit:]{1,4} - [:digit:]{1,4}|\nनि[:digit:]{1,4} - [:digit:]{1,4}|\nनि. [:digit:]{1,4} - [:digit:]{1,4}|\n[अबकड] [:digit:]{1,4} - [:digit:]{1,4}|\nनि [:digit:]{1,4} - [:digit:]{1,4}|\n[:digit:]{1,4} - [:digit:]{1,4}|\n[अबकड]-[:digit:]{1,4} - [:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4} - [:digit:]{1,4}|\nनि.क्र. [:digit:]{1,4} - [:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4} - [:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4} - [:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4} - [:digit:]{1,4}|\n([अबकड]) नि.क्र.[:digit:]{1,4} - [:digit:]{1,4}|\nनि.[:digit:]{1,4} - [:digit:]{1,4}|\nनि.क्र.[:digit:]{1,4} - [:digit:]{1,4}|\nए/[:digit:]{1,4} - [:digit:]{1,4}|\nबी/[:digit:]{1,4} - [:digit:]{1,4}|\nसी/[:digit:]{1,4} - [:digit:]{1,4}|\nडी/[:digit:]{1,4} - [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n[:digit:]{1,4}\/[अबकड] ते [:digit:]{1,4}|\nनि-[:digit:]{1,4}\/[अबकड] ते [:digit:]{1,4}|\n[अबकड] \/ नि [:digit:]{1,4} ते [:digit:]{1,4}|\n[अबकड] \/ नि. [:digit:]{1,4} ते [:digit:]{1,4}|\n[अबकड] - नि [:digit:]{1,4} ते [:digit:]{1,4}|\n[अबकड] - नि. [:digit:]{1,4} ते [:digit:]{1,4}|\n[अबकड]-नि.[:digit:]{1,4} ते [:digit:]{1,4}|\n[अबकड]\/नि.[:digit:]{1,4} ते [:digit:]{1,4}|\nनि[:digit:]{1,4} ते [:digit:]{1,4}|\nनि. [:digit:]{1,4} ते [:digit:]{1,4}|\n[अबकड] [:digit:]{1,4} ते [:digit:]{1,4}|\nनि [:digit:]{1,4} ते [:digit:]{1,4}|\n[:digit:]{1,4} ते [:digit:]{1,4}|\n[अबकड]-[:digit:]{1,4} ते [:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4} ते [:digit:]{1,4}|\nनि.क्र. [:digit:]{1,4} ते [:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4} ते [:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4} ते [:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4} ते [:digit:]{1,4}|\n([अबकड]) नि.क्र.[:digit:]{1,4} ते [:digit:]{1,4}||\nनि.[:digit:]{1,4} ते [:digit:]{1,4}|\nनि.क्र.[:digit:]{1,4} ते [:digit:]{1,4}|\nए/[:digit:]{1,4} ते [:digit:]{1,4}|\nबी/[:digit:]{1,4} ते [:digit:]{1,4}|\nसी/[:digit:]{1,4} ते [:digit:]{1,4}|\nडी/[:digit:]{1,4} ते [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n[:digit:]{1,4}\/[अबकड] व [:digit:]{1,4}|\nनि-[:digit:]{1,4}\/[अबकड] व [:digit:]{1,4}|\n[अबकड] \/ नि [:digit:]{1,4} व [:digit:]{1,4}|\n[अबकड] \/ नि. [:digit:]{1,4} व [:digit:]{1,4}|\n[अबकड] - नि [:digit:]{1,4} व [:digit:]{1,4}|\n[अबकड] - नि. [:digit:]{1,4} व [:digit:]{1,4}|\n[अबकड]-नि.[:digit:]{1,4} व [:digit:]{1,4}|\n[अबकड]\/नि.[:digit:]{1,4} व [:digit:]{1,4}|\nनि[:digit:]{1,4} व [:digit:]{1,4}|\nनि. [:digit:]{1,4} व [:digit:]{1,4}|\n[अबकड] [:digit:]{1,4} व [:digit:]{1,4}|\nनि [:digit:]{1,4} व [:digit:]{1,4}|\n[:digit:]{1,4} व [:digit:]{1,4}|\n[अबकड]-[:digit:]{1,4} व [:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4} व [:digit:]{1,4}|\nनि.क्र. [:digit:]{1,4} व [:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4} व [:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4} व [:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4} व [:digit:]{1,4}|\n([अबकड]) नि.क्र.[:digit:]{1,4} व [:digit:]{1,4}||\nनि.[:digit:]{1,4} व [:digit:]{1,4}|\nनि.क्र.[:digit:]{1,4} व [:digit:]{1,4}|\nए/[:digit:]{1,4} व [:digit:]{1,4}|\nबी/[:digit:]{1,4} व [:digit:]{1,4}|\nसी/[:digit:]{1,4} व [:digit:]{1,4}|\nडी/[:digit:]{1,4} व [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n[:digit:]{1,4}\/[अबकड] आणि [:digit:]{1,4}|\nनि-[:digit:]{1,4}\/[अबकड] आणि [:digit:]{1,4}|\n[अबकड] \/ नि [:digit:]{1,4} आणि [:digit:]{1,4}|\n[अबकड] \/ नि. [:digit:]{1,4} आणि [:digit:]{1,4}|\n[अबकड] - नि [:digit:]{1,4} आणि [:digit:]{1,4}|\n[अबकड] - नि. [:digit:]{1,4} आणि [:digit:]{1,4}|\n[अबकड]-नि.[:digit:]{1,4} आणि [:digit:]{1,4}|\n[अबकड]\/नि.[:digit:]{1,4} आणि [:digit:]{1,4}|\nनि[:digit:]{1,4} आणि [:digit:]{1,4}|\nनि. [:digit:]{1,4} आणि [:digit:]{1,4}|\n[अबकड] [:digit:]{1,4} आणि [:digit:]{1,4}|\nनि [:digit:]{1,4} आणि [:digit:]{1,4}|\n[:digit:]{1,4} आणि [:digit:]{1,4}|\n[अबकड]-[:digit:]{1,4} आणि [:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4} आणि [:digit:]{1,4}|\nनि.क्र. [:digit:]{1,4} आणि [:digit:]{1,4}|\nनि. क्र. [:digit:]{1,4} आणि [:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4} आणि [:digit:]{1,4}|\n([अबकड]) नि. क्र. [:digit:]{1,4} आणि [:digit:]{1,4}|\n([अबकड]) नि.क्र.[:digit:]{1,4} आणि [:digit:]{1,4}||\nनि.[:digit:]{1,4} आणि [:digit:]{1,4}|\nनि.क्र.[:digit:]{1,4} आणि [:digit:]{1,4}|\nए/[:digit:]{1,4} आणि [:digit:]{1,4}|\nबी/[:digit:]{1,4} आणि [:digit:]{1,4}|\nसी/[:digit:]{1,4} आणि [:digit:]{1,4}|\nडी/[:digit:]{1,4} आणि [:digit:]{1,4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "/ [:digit:]{1,10} / [:digit:]{1,10}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "[:digit:]{2}-[:digit:]{2}-[:digit:]{4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next I
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = ": [:print:]{1,100} / "
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = ": [:print:]{1,100} / "
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+rem ----------------------------------------------------------------------
+dispatcher.executeDispatch(document, ".uno:SelectAll", "", 0, Array())
+
+rem ----------------------------------------------------------------------
+dim args9(4) as new com.sun.star.beans.PropertyValue
+args9(0).Name = "CharFontName.StyleName"
+args9(0).Value = ""
+args9(1).Name = "CharFontName.Pitch"
+args9(1).Value = 2
+args9(2).Name = "CharFontName.CharSet"
+args9(2).Value = -1
+args9(3).Name = "CharFontName.Family"
+args9(3).Value = 3
+args9(4).Name = "CharFontName.FamilyName"
+args9(4).Value = "Liberation Serif"
+
+dispatcher.executeDispatch(document, ".uno:CharFontName", "", 0, args9())
+
+rem ----------------------------------------------------------------------
+dim args10(2) as new com.sun.star.beans.PropertyValue
+args10(0).Name = "FontHeight.Height"
+args10(0).Value = 12
+args10(1).Name = "FontHeight.Prop"
+args10(1).Value = 100
+args10(2).Name = "FontHeight.Diff"
+args10(2).Value = 0
+
+dispatcher.executeDispatch(document, ".uno:FontHeight", "", 0, args10())
+
+rem ----------------------------------------------------------------------
+dim args11(4) as new com.sun.star.beans.PropertyValue
+args11(0).Name = "TopBottomMargin.TopMargin"
+args11(0).Value = 10
+args11(1).Name = "TopBottomMargin.BottomMargin"
+args11(1).Value = 10
+args11(2).Name = "TopBottomMargin.ContextMargin"
+args11(2).Value = false
+args11(3).Name = "TopBottomMargin.TopRelMargin"
+args11(3).Value = 100
+args11(4).Name = "TopBottomMargin.BottomRelMargin"
+args11(4).Value = 100
+
+dispatcher.executeDispatch(document, ".uno:TopBottomMargin", "", 0, args11())
+
+rem ----------------------------------------------------------------------
+dim args12(0) as new com.sun.star.beans.PropertyValue
+args12(0).Name = "NumberingStart"
+args12(0).Value = false
+
+dispatcher.executeDispatch(document, ".uno:NumberingStart", "", 0, args12())
+
+rem ----------------------------------------------------------------------
+dim args13(0) as new com.sun.star.beans.PropertyValue
+args13(0).Name = "NumNewStartAt"
+args13(0).Value = 65535
+
+dispatcher.executeDispatch(document, ".uno:NumNewStartAt", "", 0, args13())
+
+dim args15(0) as new com.sun.star.beans.PropertyValue
+args15(0).Name = "ControlCodes"
+args15(0).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ControlCodes", "", 0, args15())
+
+rem ----------------------------------------------------------------------
+dim args16(0) as new com.sun.star.beans.PropertyValue
+args16(0).Name = "ControlCodes"
+args16(0).Value = false
+
+dispatcher.executeDispatch(document, ".uno:ControlCodes", "", 0, args16())
+
+
+rem ----------------------------------------------------------------------
+dim args20(0) as new com.sun.star.beans.PropertyValue
+args20(0).Name = "ControlCodes"
+args20(0).Value = true
+
+dispatcher.executeDispatch(document, ".uno:ControlCodes", "", 0, args20())
+
+
+rem ----------------------------------------------------------------------
+dim args22(0) as new com.sun.star.beans.PropertyValue
+args22(0).Name = "ControlCodes"
+args22(0).Value = false
+
+dispatcher.executeDispatch(document, ".uno:ControlCodes", "", 0, args22())
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n[:print:]{1,100} Vs [:print:]{1,100}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "[:digit:]{2}-[:digit:]{2}-[:digit:]{4}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next I
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = ": [:print:]{1,100} / "
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "/ [:digit:]{1,10} / [:digit:]{1,10}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "Case Adjourn for: [:print:]{1,100}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "Matter adjourned for [:print:]{1,100}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+  
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "[:print:]{1,100}: प्रकरण करिता तहकुब"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "[:print:]{1,100}: Proceeding is closed"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "[:print:]{1,100}: प्रकरण बंद करण्यात आले"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "Case Adjourn for: "
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 100
+next i
+  
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = ": प्रकरण करिता तहकुब"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 100
+next i
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = ": Proceeding is closed"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 100
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = ": Proceeding is closed"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 100
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = ": प्रकरण बंद करण्यात आले"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 100
+next i
+
+rem ----------------------------------------------------------------------
+sText = InputBox("Please enter designation of Hon. P. O.: viz. Judge, \n Judge,  DJ, CJSD, JMFC,  B.O., B.O.\n न्यायाधीश, आदेशानुसार etc.  ", "Roznama Setting Shortcut by Mr. Aniruddha Mohod, Amravati (Maharashtra)")
+
+        dim oDoc9 as object, oDesc9 as object
+        oDoc9=ThisComponent
+        oDesc9=oDoc9.createReplaceDescriptor
+        with oDesc9
+                .SearchString="Judge$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=sText
+        end with
+        oDoc9.replaceAll(oDesc9)
+        dim oDoc10 as object, oDesc10 as object
+        oDoc10=ThisComponent
+        oDesc10=oDoc10.createReplaceDescriptor
+        with oDesc10
+                .SearchString="न्यायाधीश$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=sText
+        end with
+        oDoc10.replaceAll(oDesc10)
+    
+        
+	dim oDoc19 as object, oStyles19 as object, oStyle19 as object, undoMgr19 as object
+	const cUndo19="Edit Style"
+	oDoc19=ThisComponent
+	undoMgr19=oDoc.UndoManager
+	undoMgr19.enterUndoContext(cUndo) 'only one step in Undo/Redo for all tables
+	rem paragraph style
+	oStyles19=oDoc19.StyleFamilies.getByName("ParagraphStyles") 'or: CharacterStyles etc. (see oDoc.StyleFamilies.ElementNames)
+	oStyle19=oStyles19.getByName("Text body")
+	with oStyle19
+		.ParaKeepTogether=true
+		.ParaSplit=false
+	end with
+	undoMgr19.leaveUndoContext(cUndo)
+	
+	dim oDoc20 as object, oTable20 as object, oRow20 as object, undoMgr20 as object
+	const cUndo20="Change Tables"
+	oDoc20=ThisComponent
+	undoMgr20=oDoc20.UndoManager
+	undoMgr20.enterUndoContext(cUndo) 'only one step in Undo/Redo for all tables
+	for each oTable20 in oDoc20.TextTables
+		rem set "Allow table to split"
+		oTable20.Split=false 'if Table split is false, then there isn't necessary to set "Allow row to break"
+		rem set "Allow row to break" 
+'		for each oRow in oTable.Rows
+'			oRow.IsSplitAllowed=false 'it is necessary to set each row
+'		next
+	next
+	undoMgr20.leaveUndoContext(cUndo20)
+
+		dim oDoc70 as object, oDesc70 as object
+        oDoc70=ThisComponent
+        oDesc70=oDoc70.createReplaceDescriptor
+        with oDesc70
+                .SearchString="IN THE COURT OF Smt. J. S. Thakare Jt Civil Judge J.D JMFC Warud " 
+                .ReplaceString="IN THE COURT OF Smt. J. S. Thakare (Incharge) Jt Civil Judge J.D JMFC Warud "
+        end with
+        oDoc70.replaceAll(oDesc69)
+	               
+end sub
+
+Sub RemoveParty
+        dim oDoc13 as object, oDesc13 as object
+        oDoc13=ThisComponent
+        oDesc13=oDoc13.createReplaceDescriptor
+        with oDesc13
+                .SearchString="\n[:print:]{1,100} Vs [:print:]{1,100}" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc13.replaceAll(oDesc13)
+        
+        dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc13.createReplaceDescriptor
+        with oDesc1
+                .SearchString="\n[:print:]{1,100} वि. [:print:]{1,100}" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc1.replaceAll(oDesc1)
+        
+        dim oDoc70 as object, oDesc70 as object
+        oDoc70=ThisComponent
+        oDesc70=oDoc70.createReplaceDescriptor
+        with oDesc70
+                .SearchString="IN THE COURT OF Smt. J. S. Thakare Jt Civil Judge J.D JMFC Warud " 
+                .ReplaceString="IN THE COURT OF Smt. J. S. Thakare (Incharge) Jt Civil Judge J.D JMFC Warud "
+        end with
+        oDoc70.replaceAll(oDesc70)
+        
+End Sub
+
+Sub RemoveAdvocate
+        dim oDoc14 as object, oDesc14 as object
+        oDoc14=ThisComponent
+        oDesc14=oDoc14.createReplaceDescriptor
+        with oDesc14
+                .SearchString="\n[:print:]{1,100} Advocate /[:print:]{0,100}" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc14.replaceAll(oDesc14)
+        
+        dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc1.createReplaceDescriptor
+        with oDesc1
+                .SearchString="\n[:print:]{1,100} वकील /[:print:]{0,100}" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc1.replaceAll(oDesc1)
+End Sub
+
+Sub RemoveLine
+        dim oDoc15 as object, oDesc15 as object
+        oDoc15=ThisComponent
+        oDesc15=oDoc15.createReplaceDescriptor
+        with oDesc15
+                .SearchString="------------------------------------------------------------------------------------------------------------------------$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc15.replaceAll(oDesc15)
+        
+        dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc1.createReplaceDescriptor
+        with oDesc1
+                .SearchString="^$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc1.replaceAll(oDesc1)
+End Sub
+
+Sub BelowLine
+        dim oDoc16 as object, oDesc16 as object
+        oDoc16=ThisComponent
+        oDesc16=oDoc16.createReplaceDescriptor
+        with oDesc16
+                .SearchString="------------------------------------------------------------------------------------------------------------------------$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString="&\n"
+        end with
+        oDoc16.replaceAll(oDesc16)
+End Sub
+
+
+Sub RemoveCourt
+        dim oDoc17 as object, oDesc17 as object
+        oDoc17=ThisComponent
+        oDesc17=oDoc17.createReplaceDescriptor
+        with oDesc17
+                .SearchString="IN THE COURT OF [:print:]{1,100}\n" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc17.replaceAll(oDesc17)
+        
+        dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc1.createReplaceDescriptor
+        with oDesc1
+                .SearchString="[:print:]{1,100} यांचे न्यायालयात \n" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc1.replaceAll(oDesc1)
+End Sub
+
+Sub RemoveStage
+        dim oDoc17 as object, oDesc17 as object
+        oDoc17=ThisComponent
+        oDesc17=oDoc17.createReplaceDescriptor
+        with oDesc17
+                .SearchString="Case Adjourn for: [:print:]{1,100}$|[:print:]{1,100} प्रकरण करिता तहकुब" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc17.replaceAll(oDesc17)
+        
+        dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc1.createReplaceDescriptor
+        with oDesc1
+                .SearchString="^$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc1.replaceAll(oDesc1)
+End Sub
+
+
+
+Sub addDataFromODS
+	on local error goto bug
+	rem ODS info
+	const cODSname="Roznama Vlookup.ods", cSheetName="Sheet3"
+
+	dim oDoc as object, sUrl$, p()
+	oDoc=ThisComponent 'current ODT
+	p=split(oDoc.URL, "/") : p(ubound(p))=cODSname 'your ODS is in the same directory like current ODT
+	sUrl=join(p, "/") 'URL to ODS
+
+	rem get data from ODS
+	dim ODS as object, oSheet as object, oRange as object, oCur as object, data(), args(0) as new com.sun.star.beans.PropertyValue
+	args(0).Name="Hidden" : args(0).Value=true
+	ODS=StarDesktop.loadComponentFromUrl(sUrl, "_blank", 0, args()) 'open ODS as hidden
+	oSheet=ODS.Sheets.getByName(cSheetName)
+	oCur=oSheet.createCursor : oCur.goToEndOfUsedArea(false) 'detect last cell in sheet
+	oRange=oSheet.getCellRangeByPosition(0, 1, oCur.RangeAddress.EndColumn, oCur.RangeAddress.EndRow) 'columns without 1st row
+	'1st and 2nd column without 1 row
+	data=oRange.getDataArray() 'data from oRange
+	ODS.close(true)
+
+	rem modify ODT
+	dim i&, s$, oStatusbar as object, oDesc as object, j&, iLen&, oFound as object, oVCur as object, undoMgr as object, sUndo$, sLine$, iLine%
+	oStatusbar=oDoc.CurrentController.StatusIndicator 'progressbar in Statusbar
+	oStatusbar.start("", ubound(data))
+	oVCur=oDoc.CurrentController.ViewCursor 'visible cursor
+	undoMgr=oDoc.UndoManager 'object for Undo/Redo
+	oDoc.lockControllers 'no screen rendering, faster
+	oDesc=oDoc.createSearchDescriptor
+	oDesc.SearchRegularExpression=true
+	for i=lbound(data) to ubound(data)
+		p=split(data(i)(0), "/")
+		iLen=Len(p(0)) : s=""
+		for j=1 to iLen 'adapt the string from ODS, for example SCC/304357/2012 -> S\.*C\.*C\.*\s*/\s*304357\s*/\s*2012
+			s=s & Mid(p(0), j, 1) & "\.*" '!!! regular expression supposes only dots among letters, no other marks (SCC -> S.C.C.)
+		next j
+		p(0)=s
+		oDesc.SearchString=join(p, "\s*/\s*")
+		oFound=oDoc.findFirst(oDesc)
+		if NOT isNull(oFound) then
+			sUndo=data(i)(0) & " " & data(i)(1)
+			undoMgr.enterUndoContext(sUndo) 'title for Undo
+			oDoc.CurrentController.Select(oFound)
+			with oVCur
+				.goToRange(oFound.Start, false)
+				.goToStartOfLine(false)
+				.String=" "
+				.collapseToStart
+				.CharWeight=com.sun.star.awt.FontWeight.BOLD 'set the bold format
+				.String=data(i)(1) & ")" 'Sr. No.
+				do 'find "IN THE COURT OF" in lines above the Sr. No.
+					.goUp(1, false)
+					.goToStartOfLine(false)
+					.goToEndOfLine(true)
+					sLine=oVCur.String
+					if InStr(sLine, "IN THE COURT OF")>0 then 'test if "IN THE COURT OF" is in current line
+						rem 1st line
+						.goToEndOfLine(false)
+						oDoc.Text.insertControlCharacter(oVCur.End, com.sun.star.text.ControlCharacter.LINE_BREAK, false) 'add Shift+Enter at the top of Found
+						.String=data(i)(2) 'Act Section
+						rem 2nd line
+						.goToEndOfLine(false)
+						oDoc.Text.insertControlCharacter(oVCur.End, com.sun.star.text.ControlCharacter.LINE_BREAK, false) 'add Shift+Enter at the top of Found
+						.CharWeight=com.sun.star.awt.FontWeight.BOLD
+						.String=data(i)(0) 'CASE NO from ODS (column A) 
+						'oFound.String 'string found in ODT (instead CASE NO from ODS)
+						exit do
+					end if
+					iLine=iLine+1
+				loop while iLine<5 'maximum lines to try above Sr. No.
+			end with
+			undoMgr.leaveUndoContext(sUndo) 'more operations (Sr. No. + Act Section) as one operation for Undo
+		end if
+		if i MOD 10=0 then oStatusbar.setValue(i) 'update statusbar
+	next i
+	oVCur.goToStart(false)
+	if oDoc.hasControllersLocked then oDoc.unlockControllers 'screen rendering yes
+	oStatusbar.end : oStatusbar.reset
+	
+	dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc1.createReplaceDescriptor
+        with oDesc1
+                .SearchString="\n[:print:]{1,100}/[:digit:]{1,10}/[:digit:]{1,4}" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc1.replaceAll(oDesc1)
+	exit sub
+bug: 'some error
+	if NOT isNull(ODS) then ODS.close(true)
+	if oDoc.hasControllersLocked then oDoc.unlockControllers
+	msgbox("line: " & Erl & chr(13) & Err & ": " & Error, 16, "addDataFromODS")
+dim oDoc2 as object, oDesc2 as object
+        oDoc2=ThisComponent
+        oDesc2=oDoc2.createReplaceDescriptor
+        with oDesc2
+                .SearchString="\n[:print:]{1,100}/[:digit:]{1,10}/[:digit:]{1,4}" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc2.replaceAll(oDesc2)
+		
+		dim oDoc3 as object, oDesc3 as object
+        oDoc3=ThisComponent
+        oDesc3=oDoc3.createReplaceDescriptor
+        with oDesc3
+                .SearchString="\n\n" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString="\n"
+        end with
+        oDoc3.replaceAll(oDesc3)
+		
+End Sub
+
+
+Sub ExtractCaseNumbersDashboard
+	dim oDoc as object, oDesc as object, oFound as object, data as object, oDoc2 as object
+	oDoc=ThisComponent
+	oDesc=oDoc.createSearchDescriptor
+	with oDesc
+		.SearchString="[:print:]{1,100}/[:digit:]{1,100}/[:digit:]{1,4}"
+		.SearchRegularExpression=true
+	end with
+	oFound=oDoc.findAll(oDesc)
+	if NOT isNull(oFound) then 'something is found
+		oDoc.CurrentController.Select(oFound) 'Select
+		data=oDoc.currentController.getTransferable 'Copy
+		oDoc2=StarDesktop.LoadComponentFromUrl("private:factory/swriter", "_blank", 0, array()) 'new document
+		oDoc2.CurrentController.insertTransferable(data) 'Paste
+	end if
+	
+	dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc1.createReplaceDescriptor
+        with oDesc1
+                .SearchString="  " 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString="\n"
+        end with
+        oDoc1.replaceAll(oDesc1)	
+
+        dim oDoc5 as object, oDesc5 as object
+        oDoc5=ThisComponent
+        oDesc5=oDoc5.createReplaceDescriptor
+        with oDesc5
+                .SearchString="." 
+                .ReplaceString=""
+        end with
+        oDoc5.replaceAll(oDesc5)	
+        
+        dim oDoc4 as object, oDesc4 as object
+        oDoc4=ThisComponent
+        oDesc4=oDoc4.createReplaceDescriptor
+        with oDesc4
+                .SearchString="^$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc4.replaceAll(oDesc4)
+
+		dim oDoc6 as object, oDesc6 as object
+        oDoc6=ThisComponent
+        oDesc6=oDoc5.createReplaceDescriptor
+        with oDesc6
+                .SearchString="^$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc6.replaceAll(oDesc6)
+End Sub
+
+Sub EnterAndExtract 'extract parts of text to new document, the array in conditions() has the conditions for one new document
+	dim oDoc as object, oFound as object, oCur as object, o1 as object, o2 as object, i&, calc as object, s$, regex$, copy as object, oTable as object, _
+		oDesc1 as object, oDesc2 as object, p(), cond, oDocNew as object, oVCurNew as object, args(0) as new com.sun.star.beans.PropertyValue
+		args(0).Name="Hidden" : args(0).Value=true
+	const repl="@@@" 'replacement for | in conditions, because the whole regexp 'condition1|condition2|condition3|...' is searched
+	const iEnters=4 'count of empty paragraphs in new document between pasted text
+
+rem define variables
+dim dispatcher as object
+Dim sText As String
+sText = ""
+rem ----------------------------------------------------------------------
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+rem ----------------------------------------------------------------------
+
+rem ----------------------------------------------------------------------
+sText = InputBox("Please enter the text string e.g. Bail papers, Vakalatna filed for, Deposition etc.", "Roznama Setting Shortcut by Mr. Aniruddha Mohod, Amravati (Maharashtra)")
+
+	'add new array("condition1", "condition2", ...) next new document
+	conditions=array( _
+		array(sText), _
+	)
+
+	oDoc=ThisComponent
+	calc=CreateUnoService("com.sun.star.sheet.FunctionAccess") 'function from Calc
+	oCur=oDoc.Text.createTextCursor 'Text cursor in document
+	oDesc1=oDoc.createSearchDescriptor
+	with oDesc1 'for searching 
+		.SearchString="IN\s+THE\s+COURT\s+OF|यांचे\s+न्यायालयात\s"
+		.SearchRegularExpression=true
+		.SearchBackwards=true
+	end with
+	oDesc2=oDoc.createSearchDescriptor
+	with oDesc2
+		.SearchString="^-{5,}$"
+		.SearchRegularExpression=true
+		.SearchBackwards=false
+	end with
+	
+	for each cond in conditions
+		redim p(ubound(cond))
+		for i=lbound(cond) to ubound(cond) 'spaces in user conditions are transformed to regexp: \s+
+			s=calc.callFunction("REGEX", array(cond(i), "\s+", "\\s+", "g"))
+			p(i)=replace(s, "|", repl) 'replace the | in conditions
+		next i
+		regex=join(p, "|") 'string with conditions for regex -> condition1|condition2|condition3
+		oDocNew=StarDesktop.loadComponentFromUrl("private:factory/swriter", "_blank", 0, args) 'new document
+		oVCurNew=oDocNew.CurrentController.ViewCursor
+		rem search TextTables for regex condition
+		for each oTable in oDoc.TextTables
+			if searchInTable(oTable, regex, repl) then 'text in table is found
+				o1=oDoc.findNext(oTable.Anchor, oDesc1) 'find IN THE COURT OF before table
+				if NOT isNull(o1) then 'IN THE COURT OF is found
+					o2=oDoc.findNext(oTable.Anchor, oDesc2) 'find line with -----
+					if NOT isNull(o2) then 'line ----- is found
+						oCur.goToRange(o1.Start, false)
+						oCur.goToRange(o2.End, true)
+						copy=oDoc.CurrentController.getTransferableForTextRange(oCur)
+						oDocNew.CurrentController.insertTransferable(copy)
+						for i=1 to iEnters 'add blank paragraphs to new document to has spaces between pasted parts
+							oVCurNew.goToEnd(false)
+							oDocNew.Text.InsertControlCharacter(oVCurNew.End, com.sun.star.text.ControlCharacter.APPEND_PARAGRAPH, false) 'add new Paragraph
+						next i
+						oVCurNew.goToEnd(false)
+					end if
+				end if
+			end if
+		next
+		oDocNew.CurrentController.Frame().ContainerWindow.Visible=true
+	next
+End Sub
+
+Function searchInTable(oTable as object, regex$, repl$) as boolean 'return true if regex is found in oTable; repl is substitution for | if text in cell has |
+	dim dataArray(), row, cell, calc as object, s$
+	calc=CreateUnoService("com.sun.star.sheet.FunctionAccess")
+	dataArray=oTable.DataArray
+	for each row in dataArray
+		for each cell in row
+			s=replace(cell, "|", repl) 'replace | in text from table for proper searching with regex condtion1|condition2|condition3
+			s=calc.callFunction("REGEX", array(s, regex))
+			if s<>"" then 'FOUND text in table
+				searchInTable=true
+				exit function
+			end if
+		next
+	next
+	searchInTable=false
+End Function
+
+Sub addDataFromODSMarathi
+	on local error goto bug
+	rem ODS info
+	const cODSname="Roznama Vlookup.ods", cSheetName="Sheet3"
+
+	dim oDoc as object, sUrl$, p()
+	oDoc=ThisComponent 'current ODT
+	p=split(oDoc.URL, "/") : p(ubound(p))=cODSname 'your ODS is in the same directory like current ODT
+	sUrl=join(p, "/") 'URL to ODS
+
+	rem get data from ODS
+	dim ODS as object, oSheet as object, oRange as object, oCur as object, data(), args(0) as new com.sun.star.beans.PropertyValue
+	args(0).Name="Hidden" : args(0).Value=true
+	ODS=StarDesktop.loadComponentFromUrl(sUrl, "_blank", 0, args()) 'open ODS as hidden
+	oSheet=ODS.Sheets.getByName(cSheetName)
+	oCur=oSheet.createCursor : oCur.goToEndOfUsedArea(false) 'detect last cell in sheet
+	oRange=oSheet.getCellRangeByPosition(0, 1, oCur.RangeAddress.EndColumn, oCur.RangeAddress.EndRow) 'columns without 1st row
+	'1st and 2nd column without 1 row
+	data=oRange.getDataArray() 'data from oRange
+	ODS.close(true)
+
+	rem modify ODT
+	dim i&, s$, oStatusbar as object, oDesc as object, j&, iLen&, oFound as object, oVCur as object, undoMgr as object, sUndo$, sLine$, iLine%
+	oStatusbar=oDoc.CurrentController.StatusIndicator 'progressbar in Statusbar
+	oStatusbar.start("", ubound(data))
+	oVCur=oDoc.CurrentController.ViewCursor 'visible cursor
+	undoMgr=oDoc.UndoManager 'object for Undo/Redo
+	oDoc.lockControllers 'no screen rendering, faster
+	oDesc=oDoc.createSearchDescriptor
+	oDesc.SearchRegularExpression=true
+	for i=lbound(data) to ubound(data)
+		p=split(data(i)(0), "/")
+		iLen=Len(p(0)) : s=""
+		for j=1 to iLen 'adapt the string from ODS, for example SCC/304357/2012 -> S\.*C\.*C\.*\s*/\s*304357\s*/\s*2012
+			s=s & Mid(p(0), j, 1) & "\.*" '!!! regular expression supposes only dots among letters, no other marks (SCC -> S.C.C.)
+		next j
+		p(0)=s
+		oDesc.SearchString=join(p, "\s*/\s*")
+		oFound=oDoc.findFirst(oDesc)
+		if NOT isNull(oFound) then
+			sUndo=data(i)(0) & " " & data(i)(1)
+			undoMgr.enterUndoContext(sUndo) 'title for Undo
+			oDoc.CurrentController.Select(oFound)
+			with oVCur
+				.goToRange(oFound.Start, false)
+				.goToStartOfLine(false)
+				.String=" "
+				.collapseToStart
+				.CharWeight=com.sun.star.awt.FontWeight.BOLD 'set the bold format
+				.String=data(i)(1) & ")" 'Sr. No.
+				do 'find "यांचे न्यायालयात" in lines above the Sr. No.
+					.goUp(1, false)
+					.goToStartOfLine(false)
+					.goToEndOfLine(true)
+					sLine=oVCur.String
+					if InStr(sLine, "यांचे न्यायालयात")>0 then 'test if "यांचे न्यायालयात" is in current line
+						rem 1st line
+						.goToEndOfLine(false)
+						oDoc.Text.insertControlCharacter(oVCur.End, com.sun.star.text.ControlCharacter.LINE_BREAK, false) 'add Shift+Enter at the top of Found
+						.String=data(i)(2) 'Act Section
+						rem 2nd line
+						.goToEndOfLine(false)
+						oDoc.Text.insertControlCharacter(oVCur.End, com.sun.star.text.ControlCharacter.LINE_BREAK, false) 'add Shift+Enter at the top of Found
+						.CharWeight=com.sun.star.awt.FontWeight.BOLD
+						.String=data(i)(0) 'CASE NO from ODS (column A) 
+						'oFound.String 'string found in ODT (instead CASE NO from ODS)
+						exit do
+					end if
+					iLine=iLine+1
+				loop while iLine<5 'maximum lines to try above Sr. No.
+			end with
+			undoMgr.leaveUndoContext(sUndo) 'more operations (Sr. No. + Act Section) as one operation for Undo
+		end if
+		if i MOD 10=0 then oStatusbar.setValue(i) 'update statusbar
+	next i
+	oVCur.goToStart(false)
+	if oDoc.hasControllersLocked then oDoc.unlockControllers 'screen rendering yes
+	oStatusbar.end : oStatusbar.reset
+	
+	dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc1.createReplaceDescriptor
+        with oDesc1
+                .SearchString="\n[:print:]{1,100}/[:digit:]{1,10}/[:digit:]{1,4}" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc1.replaceAll(oDesc1)
+	exit sub
+bug: 'some error
+	if NOT isNull(ODS) then ODS.close(true)
+	if oDoc.hasControllersLocked then oDoc.unlockControllers
+	msgbox("line: " & Erl & chr(13) & Err & ": " & Error, 16, "addDataFromODSMarathi")
+dim oDoc2 as object, oDesc2 as object
+        oDoc2=ThisComponent
+        oDesc2=oDoc2.createReplaceDescriptor
+        with oDesc2
+                .SearchString="\n[:print:]{1,100}/[:digit:]{1,10}/[:digit:]{1,4}" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc2.replaceAll(oDesc2)
+
+		dim oDoc3 as object, oDesc3 as object
+        oDoc3=ThisComponent
+        oDesc3=oDoc3.createReplaceDescriptor
+        with oDesc3
+                .SearchString="\n\n" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString="\n"
+        end with
+        oDoc3.replaceAll(oDesc3)
+end sub
+
+
+Sub ExhibitBold
+rem define variables
+dim dispatcher as object
+Dim sText As String
+sText = ""
+rem ----------------------------------------------------------------------
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+rem ----------------------------------------------------------------------
+
+rem ----------------------------------------------------------------------
+sText = InputBox("Please enter the way you type Exhibit. e.g. Exh. Ex. Exh. No. etc.", "Roznama Setting Shortcut by Mr. Aniruddha Mohod, Amravati (Maharashtra)")
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n"+sText+"[:print:]{0,100}"+"-"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n"+sText+"[:print:]{0,100}"+"-"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+End Sub
+
+sub MarthiPONameDecidedCases
+rem define variables
+dim dispatcher as object
+Dim sText As String
+sText = "A. P. Mohod"
+rem ----------------------------------------------------------------------
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+rem ----------------------------------------------------------------------
+
+rem ----------------------------------------------------------------------
+sText = InputBox("Please enter name of Hon. P. O.", "Roznama Setting Shortcut by Mr. Aniruddha Mohod, Amravati (Maharashtra)")
+
+	dim oDoc as object, oVCur as object, oFound as object, oDesc as object, s$, o as object, oCur as object, oSel as object
+	oDoc=ThisComponent
+	oVCur=oDoc.CurrentController.ViewCursor 'visible cursor
+	oDoc.lockControllers 'no screen rendering, faster
+	oDesc=oDoc.createSearchDescriptor
+	oDesc.SearchString="यांचे न्यायालयात"
+	oFound=oDoc.findFirst(oDesc)
+	if NOT isNull(oFound) then 'यांचे न्यायालयात is found
+		oVCur.goToRange(oFound.End, false)
+		oVCur.goToEndOfLine(true)
+		s=oVCur.String
+		with oDesc
+			.SearchString="प्रकरण बंद करण्यात आले"
+			.SearchCaseSensitive=false 'for sure no case-sensitive searching
+		end with
+		oFound=oDoc.findAll(oDesc)
+		if NOT isNull(oFound) then 'found: प्रकरण बंद करण्यात आले
+			for each o in oFound 'traverse particular "प्रकरण बंद करण्यात आले"
+				rem macro supposes all findings are in TextTables
+				with oVCur
+					.goToRange(o.End, false)
+					.goDown(1, false) 'go one line below "प्रकरण बंद करण्यात आले" - it supposes there is empty line between "Proceeding is closed" and "Judge"
+					.ParaAdjust=1 'align to right
+				end with
+				rem problem is, the Visible Cursor doesn't want to set the String, so it need use Text Cursor in current Cell
+				oSel=oDoc.CurrentController.Selection.getByIndex(0) 'current selection is Visible Cursor
+				oCur=oSel.Cell.createTextCursor 'Text Cursor in current Cell
+				with oCur
+				.goToRange(oVCur.End, false)
+				.String="(" & sText & ")" 'write String with brackets
+				.CharWeightComplex=com.sun.star.awt.FontWeight.BOLD
+end with
+			next
+		end if
+	end if
+	if oDoc.hasControllersLocked then oDoc.unlockControllers 'screen rendering ON
+
+end sub
+
+Sub RemoveFirstRowInAllTextTables()
+Dim oTextTable As Variant
+	For Each oTextTable In ThisComponent.getTextTables()
+		oTextTable.getRows().removeByIndex(0, 1)
+	Next oTextTable
+End Sub  
+
+Sub MarathiReadyUnready 'extract parts of text to new document, the array in conditions() has the conditions for one new document
+        dim oDoc as object, oFound as object, oCur as object, o1 as object, o2 as object, i&, calc as object, s$, regex$, copy as object, oTable as object, _
+                oDesc1 as object, oDesc2 as object, p(), cond, oDocNew as object, oVCurNew as object, args(0) as new com.sun.star.beans.PropertyValue
+                args(0).Name="Hidden" : args(0).Value=true
+        const repl="@@@" 'replacement for | in conditions, because the whole regexp 'condition1|condition2|condition3|...' is searched
+        const iEnters=4 'count of empty paragraphs in new document between pasted text
+
+        'add new array("condition1", "condition2", ...) next new document
+        conditions=array( _
+                array("न्यायनिर्णय: प्रकरण करिता तहकुब", "युक्तीवाद: प्रकरण करिता तहकुब", "अंशतः झालेला पुरावा: प्रकरण करिता तहकुब", "सुनावणी: प्रकरण करिता तहकुब", "फौज. प्रक्रिया संहिता कलम ३१३ खाली निवेदन: प्रकरण करिता तहकुब", "नोटीस/सूचना( तयार प्रकरण): प्रकरण करिता तहकुब", "समन्स(तयार प्रकरण): प्रकरण करिता तहकुब", "दोषारोप: प्रकरण करिता तहकुब", "सुनावणी तारीख निश्चितीसाठी: प्रकरण करिता तहकुब", "बिन जमानती अधिपत्र(तयार प्रकरण): प्रकरण करिता तहकुब", "जमानती अधिपत्र(तयार प्रकरण): प्रकरण करिता तहकुब", "कबूली व नाकबुली: प्रकरण करिता तहकुब", "अभिलेख येणे(तयार प्रकरण): प्रकरण करिता तहकुब", "आदेश: प्रकरण करिता तहकुब", "निशाणी______वर म्हणणे देण्यासाठी(तयार प्रकरण): प्रकरण करिता तहकुब", "पुर्तता: प्रकरण करिता तहकुब", "बचावपक्ष पुरावा: प्रकरण करिता तहकुब", "पुरावा: प्रकरण करिता तहकुब", "औपचारिक सुनावणी: प्रकरण करिता तहकुब", "साक्षीदारांची यादी: प्रकरण करिता तहकुब", "अतिरिक्त मुद्दे/वादप्रश्न: प्रकरण करिता तहकुब", "जवाब/म्हणणे: प्रकरण करिता तहकुब", "लोक-न्यायालय: प्रकरण करिता तहकुब", "अधिपत्र येणेसाठी: प्रकरण करिता तहकुब", "नकला/प्रती पुरविण्यासाठी: प्रकरण करिता तहकुब", "जाहीरनामा/उदघोषणा: प्रकरण करिता तहकुब", "निशाणी___वर म्हणणे/सुनावणी(तयार प्रकरण): प्रकरण करिता तहकुब", "निशाणी___वर युक्तिवाद(तयार प्रकरण): प्रकरण करिता तहकुब", "मोटार अपघात दावा प्राधिकरण(लोक-न्यायालय): प्रकरण करिता तहकुब", "अधिसुचना- प्रसिद्धी/प्रकाशन: प्रकरण करिता तहकुब", "प्रावाहन/अवतरण: प्रकरण करिता तहकुब", "लेखी युक्तीवाद: प्रकरण करिता तहकुब", "वैकल्पीक वाद निवारण: प्रकरण करिता तहकुब", "एक-तर्फी सुनावणी: प्रकरण करिता तहकुब", "लेखी जवाबा विना सुनावणी: प्रकरण करिता तहकुब", "पुन्हा मुद्दे/वादप्रश्न काढणेसाठी: प्रकरण करिता तहकुब", "मुद्देमाल येणेसाठी: प्रकरण करिता तहकुब", "प्रापकाचा अहवाल येणेसाठी: प्रकरण करिता तहकुब", "सलोखा: प्रकरण करिता तहकुब", "विशोधित लेखी जवाब/ दुरुस्ती केलेला लेखी जवाब: प्रकरण करिता तहकुब", "मा. सर्वोच्च न्यायालयाद्वारे स्थगित: प्रकरण करिता तहकुब", "मा.उच्च न्यायालयाद्वारे स्थगित: प्रकरण करिता तहकुब", "दिवाणी प्रक्रिया संहितेच्या कलम १० नुसार स्थगित: प्रकरण करिता तहकुब", "जिल्हा न्यायालयाद्वारे स्थगित: प्रकरण करिता तहकुब"), _
+array("पेपरबुक: प्रकरण करिता तहकुब", "नोटीस/सूचना(तयार नसलेले): प्रकरण करिता तहकुब", "समन्स येणेसाठी: प्रकरण करिता तहकुब", "बिन जमानती अधिपत्र(तयार नसलेले प्रकरण): प्रकरण करिता तहकुब", "जमानती अधिपत्र(तयार नसलेले प्रकरण): प्रकरण करिता तहकुब", "अभिलेख येणेसाठी: प्रकरण करिता तहकुब", "वकीलपत्र दाखल करणेसाठी: प्रकरण करिता तहकुब", "वकीलपत्र दाखल करणेसाठी(तयार नसलेले प्रकरण): प्रकरण करिता तहकुब", "निशाणी____ वर आदेश: प्रकरण करिता तहकुब", "पेपरबुक तयार करणेसाठी: प्रकरण करिता तहकुब", "वकीलपत्र दाखल करणेसाठी: प्रकरण करिता तहकुब", "निशाणी___वर म्हणणे देण्यासाठी(तयार नसलेले प्रकरण): प्रकरण करिता तहकुब", "पुर्तता(तयार नसलेले प्रकरण): प्रकरण करिता तहकुब", "दोषारोपा पूर्वीची सुनावणी: प्रकरण करिता तहकुब", "दोषारोपा पुर्वीचा पुरावा: प्रकरण करिता तहकुब", "मुद्दे/वादप्रश्न: प्रकरण करिता तहकुब", "मुद्दे पूर्व युक्तिवाद: प्रकरण करिता तहकुब", "दस्तऐवज: प्रकरण करिता तहकुब", "प्रतिज्ञा लेख दाखल करणेसाठी: प्रकरण करिता तहकुब", "अनुपालन: प्रकरण करिता तहकुब", "आयुक्त अहवाल येणेसाठी: प्रकरण करिता तहकुब", "जामीन दाखल करणेसाठी: प्रकरण करिता तहकुब", "स्थळ निरिक्षण: प्रकरण करिता तहकुब", "रक्कम भरणेसाठी: प्रकरण करिता तहकुब", "विशोधित वाद्पत्र(दुरुस्ती केलेले वाद्पत्र): प्रकरण करिता तहकुब", "एकतर्फी आदेश: प्रकरण करिता तहकुब", "तडजोड/तडजोड़ीसाठी: प्रकरण करिता तहकुब", "सत्यापन/पडताळणी: प्रकरण करिता तहकुब", "कनिष्ट न्यायालयाचे अभिलेख येणेसाठी: प्रकरण करिता तहकुब", "कुळ वहिवाटी न्यायालयाचा अहवाल येणेसाठी: प्रकरण करिता तहकुब", "ना. दोष दायित्व अर्जावारिल आदेश: प्रकरण करिता तहकुब", "ना. दोष दायित्व अर्जावर सुनावणी: प्रकरण करिता तहकुब", "उदघोषणा/जाहीर नोटीस/ जाहीरनामा: प्रकरण करिता तहकुब", "नोटीस येणेसाठी: प्रकरण करिता तहकुब", "आदेशिका शुल्क: प्रकरण करिता तहकुब", "प्रमाणित प्रत दाखल करणेसाठी: प्रकरण करिता तहकुब", "ना. दोष दायित्व अर्जावर सुनावणी: प्रकरण करिता तहकुब", "जवाब(तयार नसलेले प्रकरण): प्रकरण करिता तहकुब", "हजेरी/उपस्थिती: प्रकरण करिता तहकुब", "निशाणी__वर युक्तिवाद(तयार नसलेले प्रकरण): प्रकरण करिता तहकुब", "मो.अप.दा.प्राधि.तयारनसलेल्या प्रकरणाचा दैनिक तक्ता: प्रकरण करिता तहकुब", "सुप्त प्रकरणे: प्रकरण करिता तहकुब", "अहवाल: प्रकरण करिता तहकुब", "तयार नसलेल्या प्रकरणाचा दैनिक तक्ता: प्रकरण करिता तहकुब", "लेखी जबाब: प्रकरण करिता तहकुब", "चर्चा: प्रकरण करिता तहकुब", "प्रतिकथन/म्हणणे/तपशील: प्रकरण करिता तहकुब", "खारिज करणे बाबत आदेश: प्रकरण करिता तहकुब", "लेखी जवाबा विना प्रकरण चालविंण्याचा आदेश: प्रकरण करिता तहकुब", "जवाबा विना/म्हणणे न देता प्रकरण चालविण्याचा आदेश: प्रकरण करिता तहकुब", "लेखी जवाब व म्हणणे: प्रकरण करिता तहकुब", "अतिरिक्त लेखी जवाब: प्रकरण करिता तहकुब", "अधिक तपशील पुरविणेसाठी: प्रकरण करिता तहकुब", "हरकत/आक्षेप: प्रकरण करिता तहकुब", "कायदेशीर वारस आणणेसाठी: प्रकरण करिता तहकुब", "आरोपीस हजर करणेसाठी: प्रकरण करिता तहकुब", "पेपर बुक चार्जेस: प्रकरण करिता तहकुब", "प्रथम आदेश: प्रकरण करिता तहकुब", "आकस्मीक व घटनात्मक प्रकरण: प्रकरण करिता तहकुब"), _
+        )
+
+        oDoc=ThisComponent
+        calc=CreateUnoService("com.sun.star.sheet.FunctionAccess") 'function from Calc
+        oCur=oDoc.Text.createTextCursor 'Text cursor in document
+        oDesc1=oDoc.createSearchDescriptor
+        with oDesc1 'for searching 
+                .SearchString="[:print:]{1,100}यांचे\s+न्यायालयात\s"   
+                .SearchRegularExpression=true
+                .SearchBackwards=true
+        end with
+        oDesc2=oDoc.createSearchDescriptor
+        with oDesc2
+                .SearchString="^-{5,}$"
+                .SearchRegularExpression=true
+                .SearchBackwards=false
+        end with
+        
+        for each cond in conditions
+                redim p(ubound(cond))
+                for i=lbound(cond) to ubound(cond) 'spaces in user conditions are transformed to regexp: \s+
+                        s=calc.callFunction("REGEX", array(cond(i), "\s+", "\\s+", "g"))
+                        p(i)=replace(s, "|", repl) 'replace the | in conditions
+                next i
+                regex=join(p, "|") 'string with conditions for regex -> condition1|condition2|condition3
+                oDocNew=StarDesktop.loadComponentFromUrl("private:factory/swriter", "_blank", 0, args) 'new document
+                oVCurNew=oDocNew.CurrentController.ViewCursor
+                rem search TextTables for regex condition
+                for each oTable in oDoc.TextTables
+                        if searchInTable(oTable, regex, repl) then 'text in table is found
+                                o1=oDoc.findNext(oTable.Anchor, oDesc1) 'find यांचे न्यायालयात before table
+                                if NOT isNull(o1) then ' यांचे न्यायालयात is found
+                                        o2=oDoc.findNext(oTable.Anchor, oDesc2) 'find line with -----
+                                        if NOT isNull(o2) then 'line ----- is found
+                                                oCur.goToRange(o1.Start, false)
+                                                oCur.goToRange(o2.End, true)
+                                                copy=oDoc.CurrentController.getTransferableForTextRange(oCur)
+                                                oDocNew.CurrentController.insertTransferable(copy)
+                                                for i=1 to iEnters 'add blank paragraphs to new document to has spaces between pasted parts
+                                                        oVCurNew.goToEnd(false)
+                                                        oDocNew.Text.InsertControlCharacter(oVCurNew.End, com.sun.star.text.ControlCharacter.APPEND_PARAGRAPH, false) 'add new Paragraph
+                                                next i
+                                                oVCurNew.goToEnd(false)
+                                        end if
+                                end if
+                        end if
+                next
+                oDocNew.CurrentController.Frame().ContainerWindow.Visible=true
+        next
+End Sub
+
+ 
+
+Sub ReadyUnready 'extract parts of text to new document, the array in conditions() has the conditions for one new document
+	dim oDoc as object, oFound as object, oCur as object, o1 as object, o2 as object, i&, calc as object, s$, regex$, copy as object, oTable as object, _
+		oDesc1 as object, oDesc2 as object, p(), cond, oDocNew as object, oVCurNew as object, args(0) as new com.sun.star.beans.PropertyValue
+		args(0).Name="Hidden" : args(0).Value=true
+	const repl="@@@" 'replacement for | in conditions, because the whole regexp 'condition1|condition2|condition3|...' is searched
+	const iEnters=4 'count of empty paragraphs in new document between pasted text
+
+	'add new array("condition1", "condition2", ...) next new document
+	conditions=array( _
+		array("Case Adjourn for: Judgment", "Case Adjourn for: Arguments", "Case Adjourn for: Evidence Part Heard", "Case Adjourn for: Hearing", "Case Adjourn for: Statement U/sec.313 Cr.P.C.", "Case Adjourn for: Notice Ready", "Case Adjourn for: Summons_Ready", "Case Adjourn for: Charge", "Case Adjourn for: Fixing date of Hearing", "Case Adjourn for: N.B.W._Ready", "Case Adjourn for: B.W._Ready", "Case Adjourn for: Admission and Denial", "Case Adjourn for: R and P Ready", "Case Adjourn for: Order", "Case Adjourn for: Filing of Say on Exh___Ready", "Case Adjourn for: Steps", "Case Adjourn for: Defence Evidence", "Case Adjourn for: Evidence", "Case Adjourn for: Formal Hearing", "Case Adjourn for: List of Witness", "Case Adjourn for: Additional Issues", "Case Adjourn for: Reply/Say", "Case Adjourn for: Lok-Nyayalaya", "Case Adjourn for: Awaiting Warrant", "Case Adjourn for: Supply of Copies", "Case Adjourn for: Proclomation", "Case Adjourn for: Say / Hearing on Exh____Ready", "Case Adjourn for: Argument on Exh.____Ready", "Case Adjourn for: M.A.C.T. Lok_Nyayalaya", "Case Adjourn for: Notification / Publication", "Case Adjourn for: Citation", "Case Adjourn for: Written Arguments", "Case Adjourn for: A. D. R.", "Case Adjourn for: Ex_Party Hearing", "Case Adjourn for: Hearing Without W.S.", "Case Adjourn for: Recasting of Issues", "Case Adjourn for: Awaiting Muddemal", "Case Adjourn for: Awaiting Report of Receiver", "Case Adjourn for: Reconciliation", "Case Adjourn for: Amended W.S.", "Case Adjourn for: Stayed by Honble Supreme Court", "Case Adjourn for: Stayed by Honble High Court", "Case Adjourn for: Stayed U./S. 10 of CPC", "Case Adjourn for: Stayed by District Court"), _
+		array("Case Adjourn for: Paper Book", "Case Adjourn for: Notice_Unready", "Case Adjourn for: Awaiting Summons", "Case Adjourn for: N.B.W._Unready", "Case Adjourn for: B.W._Unready", "Case Adjourn for: Awaiting R and P", "Case Adjourn for: FILING OF V.P.", "Case Adjourn for: Filing of Vakilpatra_Unready", "Case Adjourn for: Order on Exh", "Case Adjourn for: Preparation of Paper Book", "Case Adjourn for: Filing of Vakilpatra", "Case Adjourn for: Filing of Say on Exh___Unready", "Case Adjourn for: Steps_Unready", "Case Adjourn for: Hearing Before Charge", "Case Adjourn for: Evidence Before Charge", "Case Adjourn for: Issues", "Case Adjourn for: Argument on Pre_Issues", "Case Adjourn for: Documents", "Case Adjourn for: Filing of Affidavit", "Case Adjourn for: Compliance", "Case Adjourn for: Awaiting Report of Commissioner", "Case Adjourn for: Filing of Surety", "Case Adjourn for: Spot Inspection", "Case Adjourn for: Depositing Amount", "Case Adjourn for: Amended Plaint", "Case Adjourn for: Ex-Parte Order", "Case Adjourn for: Compromise", "Case Adjourn for: Verification", "Case Adjourn for: Awaiting R and P Lower Court", "Case Adjourn for: Awaiting Report of T.C.", "Case Adjourn for: Order on NFL Appln.", "Case Adjourn for: Hearing on NFL Appln.", "Case Adjourn for: Public Notice/Proclamation", "Case Adjourn for: Awaiting Notice", "Case Adjourn for: Process Fee", "Case Adjourn for: Filing of Certified Copies", "Case Adjourn for: NFL Hearing", "Case Adjourn for: Reply Unready", "Case Adjourn for: Appearance", "Case Adjourn for: Argument on Exh.____Unready", "Case Adjourn for: M.A.C.T. Unready Board", "Case Adjourn for: Dormant File", "Case Adjourn for: Report", "Case Adjourn for: Unready Board", "Case Adjourn for: Written Statement", "Case Adjourn for: Discussion", "Case Adjourn for: Plea / Particulars", "Case Adjourn for: Dismissal Order", "Case Adjourn for: No W.S. Order", "Case Adjourn for: No Say Order", "Case Adjourn for: W.S. and Say", "Case Adjourn for: Additional W.S.", "Case Adjourn for: Supply of better particulars", "Case Adjourn for: Awaiting Objection", "Case Adjourn for: Bringing L.R.s", "Case Adjourn for: Production of Accused", "Case Adjourn for: Payment of Paper Book Charges", "Case Adjourn for: First Order", "Case Adjourn for: Incidental and Supplemental Proceedings if any"), _
+	)
+
+	oDoc=ThisComponent
+	calc=CreateUnoService("com.sun.star.sheet.FunctionAccess") 'function from Calc
+	oCur=oDoc.Text.createTextCursor 'Text cursor in document
+	oDesc1=oDoc.createSearchDescriptor
+	with oDesc1 'for searching 
+		.SearchString="IN\s+THE\s+COURT\s+OF"
+		.SearchRegularExpression=true
+		.SearchBackwards=true
+	end with
+	oDesc2=oDoc.createSearchDescriptor
+	with oDesc2
+		.SearchString="^-{5,}$"
+		.SearchRegularExpression=true
+		.SearchBackwards=false
+	end with
+	
+	for each cond in conditions
+		redim p(ubound(cond))
+		for i=lbound(cond) to ubound(cond) 'spaces in user conditions are transformed to regexp: \s+
+			s=calc.callFunction("REGEX", array(cond(i), "\s+", "\\s+", "g"))
+			p(i)=replace(s, "|", repl) 'replace the | in conditions
+		next i
+		regex=join(p, "|") 'string with conditions for regex -> condition1|condition2|condition3
+		oDocNew=StarDesktop.loadComponentFromUrl("private:factory/swriter", "_blank", 0, args) 'new document
+		oVCurNew=oDocNew.CurrentController.ViewCursor
+		rem search TextTables for regex condition
+		for each oTable in oDoc.TextTables
+			if searchInTable(oTable, regex, repl) then 'text in table is found
+				o1=oDoc.findNext(oTable.Anchor, oDesc1) 'find IN THE COURT OF before table
+				if NOT isNull(o1) then 'IN THE COURT OF is found
+					o2=oDoc.findNext(oTable.Anchor, oDesc2) 'find line with -----
+					if NOT isNull(o2) then 'line ----- is found
+						oCur.goToRange(o1.Start, false)
+						oCur.goToRange(o2.End, true)
+						copy=oDoc.CurrentController.getTransferableForTextRange(oCur)
+						oDocNew.CurrentController.insertTransferable(copy)
+						for i=1 to iEnters 'add blank paragraphs to new document to has spaces between pasted parts
+							oVCurNew.goToEnd(false)
+							oDocNew.Text.InsertControlCharacter(oVCurNew.End, com.sun.star.text.ControlCharacter.APPEND_PARAGRAPH, false) 'add new Paragraph
+						next i
+						oVCurNew.goToEnd(false)
+					end if
+				end if
+			end if
+		next
+		oDocNew.CurrentController.Frame().ContainerWindow.Visible=true
+	next
+End Sub
+
+
+Sub AricleBold
+rem define variables
+dim dispatcher as object
+Dim sText As String
+sText = ""
+rem ----------------------------------------------------------------------
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+rem ----------------------------------------------------------------------
+
+rem ----------------------------------------------------------------------
+sText = InputBox("Please enter the way you type Exhibit. e.g. Exh. Ex. Exh. No. etc.", "Roznama Setting Shortcut by Mr. Aniruddha Mohod, Amravati (Maharashtra)")
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n"+sText+"[:print:]{0,100}"+"-"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n"+sText+"[:print:]{0,100}"+"-"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+End Sub
+
+Sub AdjournedBold
+rem define variables
+dim dispatcher as object
+Dim sText As String
+sText = ""
+rem ----------------------------------------------------------------------
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService("com.sun.star.frame.DispatchHelper")
+rem ----------------------------------------------------------------------
+
+rem ----------------------------------------------------------------------
+sText = InputBox("Please enter the way you type Adjourned. e.g. Matter adjourned for, Case Adjourned for, Case fixed for, Case for", "Roznama Setting Shortcut by Mr. Aniruddha Mohod, Amravati (Maharashtra)")
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n"+sText+"[:print:]{0,1000}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontName = "Bitstream Charter"
+	foundText.CharHeight = 12
+   foundText.CharWeight = 150
+next i
+
+RDescrip = ThisComponent.createReplaceDescriptor
+RDescrip.searchRegularExpression = True
+RDescrip.searchString = "\n"+sText+"[:print:]{0,1000}"
+rngs = ThisComponent.findAll(RDescrip)
+for i = 0 to rngs.count-1
+   foundText = rngs.getByIndex(i)
+	foundText.CharFontNameComplex = "Lohit Devanagari"
+	foundText.CharHeightComplex = 12
+   foundText.CharWeightComplex = 150
+next i
+End Sub 
+
+Sub ExtractCaseNumbersRoznama
+	dim oDoc as object, oDesc as object, oFound as object, data as object, oDoc2 as object
+	oDoc=ThisComponent
+	oDesc=oDoc.createSearchDescriptor
+	with oDesc
+		.SearchString="Case No.: [:print:]{1,100} / [:digit:]{1,100} / [:digit:]{1,4}|प्रकरण क्रमांक: [:print:]{1,100} / [:digit:]{1,100} / [:digit:]{1,4}"
+		.SearchRegularExpression=true
+	end with
+	oFound=oDoc.findAll(oDesc)
+	if NOT isNull(oFound) then 'something is found
+		oDoc.CurrentController.Select(oFound) 'Select
+		data=oDoc.currentController.getTransferable 'Copy
+		oDoc2=StarDesktop.LoadComponentFromUrl("private:factory/swriter", "_blank", 0, array()) 'new document
+		oDoc2.CurrentController.insertTransferable(data) 'Paste
+	end if
+	
+        dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc1.createReplaceDescriptor
+        with oDesc1
+                .SearchString="Case No.: " 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString="\n"
+        end with
+        oDoc1.replaceAll(oDesc1)	
+
+        dim oDoc5 as object, oDesc5 as object
+        oDoc5=ThisComponent
+        oDesc5=oDoc5.createReplaceDescriptor
+        with oDesc5
+                .SearchString="." 
+                .ReplaceString=""
+        end with
+        oDoc5.replaceAll(oDesc5)	
+
+        dim oDoc3 as object, oDesc3 as object
+        oDoc3=ThisComponent
+        oDesc3=oDoc3.createReplaceDescriptor
+        with oDesc3
+                .SearchString=" / " 
+                .ReplaceString="/"
+        end with
+        oDoc3.replaceAll(oDesc3)	
+        
+                dim oDoc4 as object, oDesc4 as object
+        oDoc4=ThisComponent
+        oDesc4=oDoc4.createReplaceDescriptor
+        with oDesc4
+                .SearchString="प्रकरण क्रमांक: " 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString="\n"
+        end with
+        oDoc4.replaceAll(oDesc4)	
+        
+        dim oDoc6 as object, oDesc6 as object
+        oDoc6=ThisComponent
+        oDesc6=oDoc5.createReplaceDescriptor
+        with oDesc6
+                .SearchString="^$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc6.replaceAll(oDesc6)
+End Sub
+
+Sub ExtractCNRNumbersRoznama
+	dim oDoc as object, oDesc as object, oFound as object, data as object, oDoc2 as object
+	oDoc=ThisComponent
+	oDesc=oDoc.createSearchDescriptor
+	with oDesc
+		.SearchString="CNR Number: [:print:]{16}"
+		.SearchRegularExpression=true
+	end with
+	oFound=oDoc.findAll(oDesc)
+	if NOT isNull(oFound) then 'something is found
+		oDoc.CurrentController.Select(oFound) 'Select
+		data=oDoc.currentController.getTransferable 'Copy
+		oDoc2=StarDesktop.LoadComponentFromUrl("private:factory/swriter", "_blank", 0, array()) 'new document
+		oDoc2.CurrentController.insertTransferable(data) 'Paste
+	end if
+	
+        dim oDoc1 as object, oDesc1 as object
+        oDoc1=ThisComponent
+        oDesc1=oDoc1.createReplaceDescriptor
+        with oDesc1
+                .SearchString="CNR Number: " 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString="\n"
+        end with
+        oDoc1.replaceAll(oDesc1)	
+
+		dim oDoc6 as object, oDesc6 as object
+        oDoc6=ThisComponent
+        oDesc6=oDoc6.createReplaceDescriptor
+        with oDesc6
+                .SearchString="^$" 
+                .SearchRegularExpression=true 'by regexp
+                .ReplaceString=""
+        end with
+        oDoc6.replaceAll(oDesc6)
+        
+End Sub
+
+Sub MarathiRoznameSeparate 'extract parts of text to new document, the array in conditions() has the conditions for one new document
+	dim oDoc as object, oFound as object, oCur as object, o1 as object, o2 as object, i&, calc as object, s$, regex$, copy as object, oTable as object, _
+		oDesc1 as object, oDesc2 as object, p(), cond, oDocNew as object, oVCurNew as object, args(0) as new com.sun.star.beans.PropertyValue
+		args(0).Name="Hidden" : args(0).Value=true
+	const repl="@@@" 'replacement for | in conditions, because the whole regexp 'condition1|condition2|condition3|...' is searched
+	const iEnters=4 'count of empty paragraphs in new document between pasted text
+
+	'add new array("condition1", "condition2", ...) next new document
+	conditions=array("अ", "आ", "इ", "ई", "उ", "ऊ", "ए", "ऐ", "ओ", "औ", "अं", "अ:", "क", "ख", "ग", "घ", "च", "छ", "ज", "झ", "त्र", "ट", "ठ", "ड", "ढ", "ण", "त", "थ", "द", "ध", "न", "प", "फ", "ब", "भ", "म", "य", "र", "ल", "व", "श", "ष", "स", "ह", "ळ", "क्ष", "ज्ञ")
+
+	oDoc=ThisComponent
+	calc=CreateUnoService("com.sun.star.sheet.FunctionAccess") 'function from Calc
+	oCur=oDoc.Text.createTextCursor 'Text cursor in document
+	oDesc1=oDoc.createSearchDescriptor
+	with oDesc1 'for searching 
+		.SearchString="IN\s+THE\s+COURT\s+OF"
+		.SearchRegularExpression=true
+		.SearchBackwards=true
+	end with
+	oDesc2=oDoc.createSearchDescriptor
+	with oDesc2
+		.SearchString="^-{5,}$"
+		.SearchRegularExpression=true
+		.SearchBackwards=false
+	end with
+	
+	for each cond in conditions
+		redim p(ubound(cond))
+		for i=lbound(cond) to ubound(cond) 'spaces in user conditions are transformed to regexp: \s+
+			s=calc.callFunction("REGEX", array(cond(i), "\s+", "\\s+", "g"))
+			p(i)=replace(s, "|", repl) 'replace the | in conditions
+		next i
+		regex=join(p, "|") 'string with conditions for regex -> condition1|condition2|condition3
+		oDocNew=StarDesktop.loadComponentFromUrl("private:factory/swriter", "_blank", 0, args) 'new document
+		oVCurNew=oDocNew.CurrentController.ViewCursor
+		rem search TextTables for regex condition
+		for each oTable in oDoc.TextTables
+			if searchInTable(oTable, regex, repl) then 'text in table is found
+				o1=oDoc.findNext(oTable.Anchor, oDesc1) 'find IN THE COURT OF before table
+				if NOT isNull(o1) then 'IN THE COURT OF is found
+					o2=oDoc.findNext(oTable.Anchor, oDesc2) 'find line with -----
+					if NOT isNull(o2) then 'line ----- is found
+						oCur.goToRange(o1.Start, false)
+						oCur.goToRange(o2.End, true)
+						copy=oDoc.CurrentController.getTransferableForTextRange(oCur)
+						oDocNew.CurrentController.insertTransferable(copy)
+						for i=1 to iEnters 'add blank paragraphs to new document to has spaces between pasted parts
+							oVCurNew.goToEnd(false)
+							oDocNew.Text.InsertControlCharacter(oVCurNew.End, com.sun.star.text.ControlCharacter.APPEND_PARAGRAPH, false) 'add new Paragraph
+						next i
+						oVCurNew.goToEnd(false)
+					end if
+				end if
+			end if
+		next
+		oDocNew.CurrentController.Frame().ContainerWindow.Visible=true
+	next
+End Sub
+
+Sub delete1line 'delete all 1st lines from 2nd page to last page
+	dim oDoc as object, oVCur as object, iPage&, i&, s$, undoMgr as object, oPos as object
+	const cUndo="delete 1st lines"
+	oDoc=ThisComponent
+	oDoc.lockControllers
+	oVCur=oDoc.CurrentController.ViewCursor 'visible cursor
+	oPos=oVCur.start 'remember the position of visible cursor
+	iPage=oDoc.CurrentController.PageCount
+	undoMgr=oDoc.UndoManager 'undo manager
+	undoMgr.enterUndoContext(cUndo) 'only one step in Undo
+	for i=2 to iPage
+		with oVCur
+			.jumpToPage(i)
+			.jumpToStartOfPage() 
+			.gotoStartOfLine(false) 'start of 1st line
+			.goDown(1, true) '1 step down
+			.gotoStartOfLine(true) 'start of 2nd line to delete all 1st line without empty space instead of deleted line
+			.String=""
+		end with
+	next i
+	undoMgr.leaveUndoContext(cUndo)
+	oVCur.gotoRange(oPos, false) 'cursor to initial position
+	oDoc.unlockControllers
+End Sub
+
+Sub MultipleMacros
+Call Roznama
+Call RemoveFirstRowInAllTextTables
+Call SortBlocksOfText
+Call HighlightTheSameCaseNumbers
+End Sub

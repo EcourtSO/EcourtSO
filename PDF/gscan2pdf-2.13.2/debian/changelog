@@ -1,0 +1,1013 @@
+gscan2pdf (2.13.2-1) unstable; urgency=medium
+
+  * New upstream release
+    Closes: #1026205: Unpaper errors for every scanned page
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 17 Jan 2023 18:20:33 +0100
+
+gscan2pdf (2.13.1-2) unstable; urgency=medium
+
+  * + /usr/share/perl5/Gscan2pdf/Canvas.pm to syntax-skip
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 18 Dec 2022 18:42:00 +0100
+
+gscan2pdf (2.13.1-1) unstable; urgency=medium
+
+  * New upstream release
+    Closes: #1025202:autopkgtest regression:Can't open scanners/Brother_DCP-7025
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 16 Dec 2022 18:54:21 +0100
+
+gscan2pdf (2.13.0-2) unstable; urgency=medium
+
+  * + Testsuite: autopkgtest-pkg-perl in debian/control
+    - debian/tests/control
+    Closes: #1022864: gscan2pdf: unnecessary test dependency on autopkgtest?
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 15 Nov 2022 21:31:43 +0100
+
+gscan2pdf (2.13.0-1) unstable; urgency=medium
+
+  * New upstream release
+    Closes: #1008717: Feature request: invert selection
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 15 Oct 2022 08:01:05 +0200
+
+gscan2pdf (2.12.8-2) unstable; urgency=medium
+
+  * Apply upstream patch to fix tests broken by ffmpeg-5.1
+    Closes: #1020458: Test t351_unpaper fails two tests with unpaper 7.0.0
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 25 Sep 2022 17:18:01 +0200
+
+gscan2pdf (2.12.8-1) unstable; urgency=medium
+
+  * New upstream release
+  * Bumped standards to 4.6.1.0 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 11 Jul 2022 20:36:01 +0200
+
+gscan2pdf (2.12.7-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 29 May 2022 13:04:39 +0200
+
+gscan2pdf (2.12.6-1) unstable; urgency=medium
+
+  * New upstream release
+    Closes: #1008724: date out of range after changing date before saving
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 03 Apr 2022 13:07:50 +0200
+
+gscan2pdf (2.12.5-1) unstable; urgency=high
+
+  * New upstream release
+    Closes: #1005576: gscan2pdf: FTBFS: dh_auto_test: error:
+                            make -j4 test TEST_VERBOSE=1 returned exit code 2
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 15 Feb 2022 19:21:52 +0100
+
+gscan2pdf (2.12.4-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 20 Nov 2021 16:12:34 +0100
+
+gscan2pdf (2.12.3-1) unstable; urgency=medium
+
+  * New upstream release
+    Closes: #987057 (gscan2pdf: fixes to hOCR)
+    Closes: #987058 (gscan2pdf: fix displaying rotated text)
+    Closes: #987211
+    (gscan2pdf: separate tab for Post-processing options in Scan dialog)
+    Closes: #987212 (gscan2pdf: visually align 'Threshold before OCR')
+    Closes: #987059 (gscan2pdf: POD and manpage improvements)
+  * Update depends libpdf-builder-perl to require 3.022 or better
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 17 Sep 2021 19:26:26 +0200
+
+gscan2pdf (2.11.0-1) unstable; urgency=medium
+
+  * New upstream release
+  * Bumped standards to 4.5.1 (no changes required)
+  * + patch to remove unnecessary inverted commas from test cases
+  * + patch to switch to graphicsmagick for tests that fail due to imagemagick
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 17 Jan 2021 11:28:42 +0100
+
+gscan2pdf (2.10.2-1) unstable; urgency=high
+
+  * New upstream release
+  * Check both stderr and stdout for libtiff-tools version
+    Closes: #977532 (gscan2pdf: save option not available)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 17 Dec 2020 21:28:26 +0100
+
+gscan2pdf (2.10.1-1) unstable; urgency=medium
+
+  * New upstream release
+    Closes: #968918 (Threshold function is extremely slow)
+  * Added new build dependency libipc-system-simple-perl.
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 03 Dec 2020 19:26:05 +0100
+
+gscan2pdf (2.10.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Make dependency liblocale-codes-perl versioned
+    Closes: #972218 (gscan2pdf should depend on liblocale-codes-perl)
+  * Removed dependency libpdf-api2-perl
+  * Added new dependency libpdf-builder-perl.
+    Closes: #602486 (heavily distored scans)
+    Closes: #703768 (parts of the page translated to the right, black border)
+  * Added new build dependency fonts-noto-extra to ensure non-ascii fonts
+    available for tests.
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 31 Oct 2020 15:04:34 +0100
+
+gscan2pdf (2.9.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 25 Sep 2020 12:38:54 +0200
+
+gscan2pdf (2.9.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Added new dependency liblocale-codes-perl
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 19 Sep 2020 18:52:14 +0200
+
+gscan2pdf (2.8.2-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #965153 ("fails to open device" for Epson NX100)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 25 Jul 2020 18:38:25 +0200
+
+gscan2pdf (2.8.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 11 Jul 2020 09:16:42 +0200
+
+gscan2pdf (2.8.0-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #962151
+    (Failure to save: unitialized value $SETTINGS{"ps_backend"})
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 10 Jun 2020 23:08:36 +0200
+
+gscan2pdf (2.7.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Removed source dependency on libgail-common left over from gtk+2
+  * Removed recommends: sane,
+    as saneadf doesn't offer any advantage over scanimage
+  * Bumped debhelper-compat to 13
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 08 May 2020 08:24:47 +0200
+
+gscan2pdf (2.6.7-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 08 Apr 2020 22:49:37 +0200
+
+gscan2pdf (2.6.6-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 06 Apr 2020 16:18:46 +0200
+
+gscan2pdf (2.6.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 06 Mar 2020 16:57:43 +0100
+
+gscan2pdf (2.6.4-1) unstable; urgency=low
+
+  * New upstream release
+  * Bumped standards to 4.5.0 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 06 Feb 2020 13:31:04 +0100
+
+gscan2pdf (2.6.3-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 06 Jan 2020 18:04:49 +0100
+
+gscan2pdf (2.6.2-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 27 Nov 2019 20:19:08 +0100
+
+gscan2pdf (2.6.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 12 Nov 2019 22:55:11 +0100
+
+gscan2pdf (2.6.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Updated copyright to include icons
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 10 Nov 2019 15:01:15 +0100
+
+gscan2pdf (2.5.7-1) unstable; urgency=low
+
+  * New upstream release
+  * Bumped standards to 4.4.1 (no changes required)
+  * Bumped debhelper-compat to 12
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 12 Oct 2019 09:47:31 +0200
+
+gscan2pdf (2.5.6-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #934107
+    (Importing with --import=file.pdf does not import anything)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 11 Sep 2019 18:23:19 +0200
+
+gscan2pdf (2.5.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 19 Jul 2019 22:32:27 +0200
+
+gscan2pdf (2.5.4-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 20 Jun 2019 15:18:29 +0200
+
+gscan2pdf (2.5.3-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 20 May 2019 18:48:20 +0200
+
+gscan2pdf (2.5.2-1) experimental; urgency=low
+
+  * New upstream release
+    Closes: #926634
+    (Delays opening dialogs, possibly related to defunct fc-list process)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 22 Apr 2019 12:46:45 +0200
+
+gscan2pdf (2.5.1-1) experimental; urgency=low
+
+  * New upstream release
+  * + recommends: pdftk
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 23 Mar 2019 18:52:38 +0100
+
+gscan2pdf (2.5.0-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 22 Mar 2019 19:37:59 +0100
+
+gscan2pdf (2.4.0-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 24 Feb 2019 12:02:44 +0100
+
+gscan2pdf (2.3.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Corrected dates in debian/copyright
+  * Corrected licence of gscan2pdf.appdata.xml in debian/copyright
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 26 Jan 2019 19:48:49 +0100
+
+gscan2pdf (2.2.2-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #916011 (Blank dialog - Can't locate object method "vbox")
+  * Bumped standards to 4.3.0 (no changes required)
+  * Export minimal upstream key
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 31 Dec 2018 11:58:28 +0100
+
+gscan2pdf (2.2.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 06 Dec 2018 22:48:32 +0100
+
+gscan2pdf (2.2.0-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 30 Nov 2018 20:14:08 +0100
+
+gscan2pdf (2.1.7-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 12 Oct 2018 21:36:37 +0200
+
+gscan2pdf (2.1.6-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 20 Sep 2018 21:17:49 +0200
+
+gscan2pdf (2.1.5-1) unstable; urgency=low
+
+  * New upstream release
+  * Bumped standards to 4.2.1 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 16 Sep 2018 20:44:30 +0200
+
+gscan2pdf (2.1.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 29 Jul 2018 23:07:45 +0200
+
+gscan2pdf (2.1.3-1) unstable; urgency=low
+
+  * New upstream release
+  * Bumped standards to 4.1.5 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 28 Jul 2018 15:21:42 +0200
+
+gscan2pdf (2.1.2-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 23 May 2018 10:55:20 +0200
+
+gscan2pdf (2.1.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 14 May 2018 15:36:10 +0200
+
+gscan2pdf (2.1.0-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #894764 (Please prompt for password on import of encrypted file)
+  * + Depends: libgtk3-perl (>= 0.028) as older versions do not pass callback
+    data from filechooser
+  * Bumped standards to 4.1.4 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 20 Apr 2018 18:08:52 +0200
+
+gscan2pdf (2.0.3-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #893026 (Preview pane does not update)
+    Closes: #893024 (Manual entry into UI date widget is broken)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 30 Mar 2018 15:42:33 +0200
+
+gscan2pdf (2.0.2-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #893024 (Manual entry into UI date widget is broken)
+    Closes: #893025 (White UI background makes page borders disappear)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 26 Mar 2018 13:54:57 +0200
+
+gscan2pdf (2.0.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 12 Mar 2018 13:27:02 +0100
+
+gscan2pdf (2.0.0-1) unstable; urgency=low
+
+  * New upstream release
+    Removed Depends: libgtk2-ex-simple-list-perl, libgtk2-imageview-perl,
+                     libgoo-canvas-perl, libgtk2-ex-podviewer-perl
+    Added Depends: libgoocanvas2-perl, libgtk3-simplelist-perl
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 08 Mar 2018 08:50:35 +0100
+
+gscan2pdf (1.8.11-1) unstable; urgency=low
+
+  * New upstream release
+  * Bumped standards to 4.1.3 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 26 Jan 2018 21:21:41 +0100
+
+gscan2pdf (1.8.10-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 27 Nov 2017 16:11:06 +0100
+
+gscan2pdf (1.8.9-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 24 Nov 2017 20:56:57 +0100
+
+gscan2pdf (1.8.8-1) unstable; urgency=low
+
+  * New upstream release
+  * Bumped standards to 4.1.1 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 29 Oct 2017 19:19:48 +0100
+
+gscan2pdf (1.8.7-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 22 Sep 2017 18:35:36 +0200
+
+gscan2pdf (1.8.6-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 22 Aug 2017 19:05:54 +0200
+
+gscan2pdf (1.8.5-1) unstable; urgency=low
+
+  * New upstream release
+    Removed Depends: libsane-perl
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 18 Aug 2017 19:05:54 +0200
+
+gscan2pdf (1.8.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 28 Jul 2017 22:07:56 +0200
+
+gscan2pdf (1.8.3-1) unstable; urgency=low
+
+  * New upstream release
+    New Depends: libimage-sane-perl
+  * Reformatted extended description
+  * Bumped standards to 4.0.0 (no changes required)
+  * Changed distribution back to "unstable" from "experimental" after
+    stretch release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 01 Jul 2017 18:00:13 +0200
+
+gscan2pdf (1.8.2-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 01 Jun 2017 19:15:01 +0200
+
+gscan2pdf (1.8.1-1) experimental; urgency=low
+
+  * New upstream release
+    Closes: #858767 (fixes & improvements to gscan2pdf)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 27 May 2017 10:35:35 +0200
+
+gscan2pdf (1.8.0-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 12 Apr 2017 21:30:03 +0200
+
+gscan2pdf (1.7.3-1) experimental; urgency=low
+
+  * New upstream release
+    Closes: #756897 (Specify ways to proof-read document post-save)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 12 Mar 2017 11:27:33 +0100
+
+gscan2pdf (1.7.2-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 12 Feb 2017 22:03:47 +0100
+
+gscan2pdf (1.7.1-1) experimental; urgency=low
+
+  * New upstream release
+    Closes: #852506 (Command-line option to import file)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 26 Jan 2017 19:35:20 +0100
+
+gscan2pdf (1.6.0-5) unstable; urgency=low
+
+  * Closes: #854956 (fails to reload settings after scanning for devices)
+  * Closes: #854957 (rounding error from scanimage causes device to be rejected)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 12 Feb 2017 16:01:45 +0100
+
+gscan2pdf (1.6.0-4) unstable; urgency=low
+
+  * + patch to fix bug attaching PDF to email
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 15 Jan 2017 15:52:43 +0100
+
+gscan2pdf (1.6.0-3) unstable; urgency=low
+
+  * + patch to fix bug saving TIFF with compression
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 03 Jan 2017 20:05:31 +0100
+
+gscan2pdf (1.6.0-2) unstable; urgency=low
+
+  * Fixed bug preventing append prepend PDF in combination with timestamp
+    Closes: #848318 (append and prepend to PDF no longer work)
+  * Catch error setting timestamp for dates prior to 1970
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 16 Dec 2016 21:27:48 +0100
+
+gscan2pdf (1.6.0-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #842239 (Arbitrary document metadata date chosen)
+    New Depends: libdate-calc-perl
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 02 Dec 2016 20:51:27 +0100
+
+gscan2pdf (1.5.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 23 Oct 2016 19:29:53 +0200
+
+gscan2pdf (1.5.4-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #840534 (#Pages scan option always defaults to '1')
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 14 Oct 2016 17:58:30 +0200
+
+gscan2pdf (1.5.3-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 12 Oct 2016 21:13:34 +0200
+
+gscan2pdf (1.5.2-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #833521 (unpaper AVStream codec deprecation warning)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 24 Aug 2016 17:48:26 +0200
+
+gscan2pdf (1.5.1-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #831597 (Can't use string ("gimp %i") as an ARRAY ref)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 26 Jul 2016 09:41:04 +0200
+
+gscan2pdf (1.5.0-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #823626 (Date in file name off by one day when saving)
+  * Bumped standards to 3.9.8 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 11 Jun 2016 16:07:28 +0200
+
+gscan2pdf (1.4.0-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 14 Apr 2016 18:55:53 +0200
+
+gscan2pdf (1.3.9-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #815552 (fails to set geometry when loading saved profile)
+  * Bumped standards to 3.9.7 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 06 Mar 2016 12:07:24 +0100
+
+gscan2pdf (1.3.8-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #812684 (cannot save in .tif format)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 04 Feb 2016 21:52:08 +0100
+
+gscan2pdf (1.3.7-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #807565 (Unpaper error dialog cannot be hidden permanently)
+    Closes: #810834 (Always Getting Some Pages Not Saved Warning)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 16 Jan 2016 13:30:33 +0100
+
+gscan2pdf (1.3.6-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #648627
+    (post-dialog selection changes influence which pages are saved)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 20 Dec 2015 20:46:31 +0100
+
+gscan2pdf (1.3.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 04 Oct 2015 14:58:23 +0200
+
+gscan2pdf (1.3.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 04 Aug 2015 21:25:20 +0200
+
+gscan2pdf (1.3.3-2) unstable; urgency=low
+
+  * Declared libossp-uuid-perl as an alternative to libdata-uuid-perl
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 02 Aug 2015 10:20:00 +0200
+
+gscan2pdf (1.3.3-1) unstable; urgency=low
+
+  * New upstream release
+    New Depends: libdata-uuid-perl
+    Removed depends: liblinux-distribution-perl
+  * Changed perlmagick dependency to libimage-magick-perl
+    Closes: #789229 (gscan2pdf depends on transition package perlmagick)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 01 Aug 2015 14:23:51 +0200
+
+gscan2pdf (1.3.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Changed source format from 1.0 to 3.0 (quilt)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 13 May 2015 19:25:27 +0200
+
+gscan2pdf (1.3.1-1) unstable; urgency=low
+
+  * New upstream release
+    New Depends: liblinux-distribution-perl, libfilesys-df-perl
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 10 May 2015 14:16:50 +0200
+
+gscan2pdf (1.3.0-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #774099
+    (avoid leading and trailing blanks in expanded filename template)
+    Closes: #774103 (fixes for date offset calculation)
+    Closes: #710428
+    (Add "Found ocropus" to log information on application start)
+    Closes: #774093 (various consistency updates for dialogs)
+    Closes: #774094 (misc. improvements for OCR'ed texts)
+    Closes: #774097 (when saving as DjVU, use MetaData)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Fri, 30 Jan 2015 21:49:19 +0100
+
+gscan2pdf (1.2.7-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #769823 (menu entry Tools > Unsharp Mask lacks OK & Cancel buttons)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 23 Nov 2014 16:54:03 +0100
+
+gscan2pdf (1.2.6-1) unstable; urgency=low
+
+  * New upstream release
+  * Bumped standards to 3.9.6 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 27 Sep 2014 15:21:20 +0200
+
+gscan2pdf (1.2.5-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #742233 (wrong resolution)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 17 May 2014 13:59:19 +0200
+
+gscan2pdf (1.2.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 26 Mar 2014 15:13:42 +0100
+
+gscan2pdf (1.2.3-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #734854 (gscan2pdf wrong resolution)
+  * Added depends: liblist-moreutils-perl
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Mon, 27 Jan 2014 22:18:41 +0100
+
+gscan2pdf (1.2.0-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #701581
+    (Thunderbird detection (for send email) does not work reliably on XFCE)
+    Closes: #729589
+    (Can not scan using a Canon LiDE 210 with version 1.1.3-1)
+    Closes: #717479
+    (Background-scanning for devices and options)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 23 Nov 2013 23:07:51 +0100
+
+gscan2pdf (1.1.3-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #723784 (gscan2pdf: New upstream version available)
+  * Removed all patches
+    Removed Build-Depends: quilt
+    Updated rules not to use quilt
+  * Bumped standards to 3.9.4 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 08 Oct 2013 09:38:10 +0200
+
+gscan2pdf (1.0.4-5) unstable; urgency=low
+
+  * Add support for unpaper > 0.3
+    Closes: #680158 (Incompatible with unpaper 0.4.2)
+  * Fix applying default settings with CLI frontends
+    Closes: #682818 (Presets aren't working)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 31 Jul 2012 16:14:59 +0200
+
+gscan2pdf (1.0.4-4) unstable; urgency=low
+
+  * Recommend tesseract OR gocr OR cuneiform, rather than AND
+    Closes: #682100 gscan2pdf Recommends cuneiform which is in non-free
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 19 Jul 2012 22:16:51 +0200
+
+gscan2pdf (1.0.4-3) unstable; urgency=low
+
+  * Fix updating widgets in scanimage dialog
+    Closes: #678911
+    (Device-dependent options disappear after selecting Lineart mode)
+  * Fixed warning in lib/Gscan2pdf/Scanner/Options.pm
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 14 Jul 2012 23:36:40 +0200
+
+gscan2pdf (1.0.4-2) unstable; urgency=low
+
+  * Fix unpaper as part of scan process
+    Closes: #670640 (Can't call method get_cmdline)
+  * Deal with non-utf-8 characters in OCR output
+    Closes: #670831 (not resilient against non utf-8 from tesseract)
+  * Bumped standards to 3.9.3 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sat, 23 Jun 2012 13:34:06 +0200
+
+gscan2pdf (1.0.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Wed, 11 Apr 2012 22:37:52 +0200
+
+gscan2pdf (1.0.3-1) unstable; urgency=low
+
+  * New upstream release
+  * Updated Depends on libsane-perl to 0.05
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 08 Apr 2012 23:29:12 +0200
+
+gscan2pdf (1.0.2-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #663584 (copy-paste of pages corrupts document)
+    Closes: #664635 (Fails to restore session, invalid pathname)
+    Closes: #665871 (no longer offers 'tesseract' OCR, persistently)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Tue, 27 Mar 2012 10:56:33 +0200
+
+gscan2pdf (1.0.1-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #653918 (gscan2pdf doesn't save metadata anymore)
+    Closes: #646298 (pdf-exports of ocropus texts are slow, big)
+    Closes: #646246 (gscan2pdf ignores html-entities returned by ocropus
+                     documents)
+    Closes: #651666 (ability to preview saved files)
+    Closes: #645322 (No lock after recovery can result in data loss)
+    Closes: #645323 (Imported pages have no thumbnails)
+  * Bumped standards to 3.9.2 (no changes required)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Sun, 05 Feb 2012 22:13:28 +0100
+
+gscan2pdf (1.0.0-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #622616 (gscan2pdf: error message)
+    Closes: #622844 (gscan2pdf + libsane-perl frontend + Canon CanoScan LiDE25
+                     results in "End of file reached")
+    Closes: #563461 (ability to remove unreferenced temporary files)
+    Closes: #577144 (gscan2pdf: lost option for editing/scanning simultaneously
+                     in newer versions)
+    Closes: #602578 (Clearing the OCR text)
+    Closes: #617886 ("Open gscan2pdf session file" icon looks too much like
+                     "Save" icon)
+
+ -- Jeffrey Ratcliffe <jjr@debian.org>  Thu, 22 Sep 2011 21:37:23 +0200
+
+gscan2pdf (0.9.32-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #599181 (gscan2pdf: OCR doesn't support Umlauts/national characters)
+    Closes: #608226 (pressing space causes unexpected data loss)
+    New Depends: liblog-log4perl-perl
+    Removed Depends: libarchive-tar-perl, as now in perl
+  * Removed debian/patches/replace-forks-with-threads
+    Removed Build-Depends: quilt
+    Updated rules not to use quilt
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Mon, 14 Feb 2011 11:30:39 +0100
+
+gscan2pdf (0.9.31-2) unstable; urgency=low
+
+  * Replace forks with threads
+    Closes: #591404 (gscan2pdf: libforks-perl could be removed)
+    Removed Depends: libforks-perl
+    Added Build-Depends: quilt
+    Updated rules to use quilt
+  * Bumped standards to 3.9.1 (no changes required)
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Sat, 07 Aug 2010 23:35:46 +0200
+
+gscan2pdf (0.9.31-1) unstable; urgency=low
+
+  * New upstream release
+    Closes: #510309 (gscan2pdf: Ability to configure how GIMP is started)
+    Closes: #576193 (gscan2pdf: OCR does not works, due to Goo::Canvas::Text
+                                                            programming error)
+    Closes: #584787 (gscan2pdf: Gscan2pdf quits without saving)
+    Closes: #585441 (gscan2pdf: "Useless use of sort in void context")
+    New Depends: libhtml-parser-perl, libreadonly-perl
+    Removed Depends: libxml-simple-perl
+    New Recommends: cuneiform
+  * Minor editing of description
+  * Patched the clean target to fix FTBFS
+  * Bumped standards to 3.9.0 (no changes required)
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Wed, 14 Jul 2010 16:08:09 +0200
+
+gscan2pdf (0.9.30-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #461086 (embed OCR output at correct position)
+    Closes: #510314 (gscan2pdf: Mapping File_Scan to a shortcut key)
+    Closes: #557657 (gscan2pdf binarization option [wishlist])
+    New Depends: libxml-simple-perl, libgoo-canvas-perl,
+	         libproc-processtable-perl
+  * Removed URL from description
+    Closes: #564325 (gscan2pdf: please remove homepage from description)
+  * Fixed VCS-URLs
+  * Bumped standards to 3.8.3 (no changes required)
+  * Switch to tiny dh7 rules
+  * Added ${misc:Depends}
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Mon, 01 Feb 2010 20:31:10 +0100
+
+gscan2pdf (0.9.29-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #526845
+     (gscan2pdf: Renaming of frontends breaks current settings)
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Mon, 04 May 2009 21:32:43 +0200
+
+gscan2pdf (0.9.28-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #506150
+     (gscan2pdf: pdf creation failes when using LZW compression)
+    Closes: #512758 (Error handling: 'Unknown message: "scanimage: sane_read:
+     Operation was cancelled"')
+    Closes: #512760 (Error reporting: empty document feeder not reported)
+    Closes: #515605 (gscan2pdf: repeating save-dialog when saving as pnm)
+    Closes: #517913 (gscan2pdf: Tools -> Gimp broken)
+    New Depends: libset-intspan-perl, libforks-perl
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Thu, 30 Apr 2009 21:51:12 +0200
+
+gscan2pdf (0.9.27-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #500547 (fails to save PDF files)
+    Closes: #497629 (Rotation of pages does work on manual double sided
+                                                                      scanning)
+    Closes: #497630 (Selection of all odd pages or all even pages)
+    Closes: #504543 (gscan2pdf: Resolution strangeness)
+    Closes: #504546 (gscan2pdf: Resolution not sent to gimp)
+    Closes: #507032 (improper window split between page list and preview pane)
+    New Depends: libsane-perl
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Thu, 11 Dec 2008 21:18:04 +0100
+
+gscan2pdf (0.9.26-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #490356 (gscan2pdf: It is impossible to save current session)
+    Closes: #486115 (PDF files from gscan2pdf are huge)
+    Closes: #493837 (gscan2pdf: should depend on sane-utils, not libsane)
+    Closes: #494074 (Select All Text; Save all OCRed text)
+    New Depends: libarchive-tar-perl
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Sun, 24 Aug 2008 10:21:14 +0200
+
+gscan2pdf (0.9.25-1) unstable; urgency=low
+
+  * New upstream release.
+    Now Depends: libconfig-general-perl (>= 2.40) to avoid heredoc bug
+    Closes: #480947 (gscan2pdf: Defaults for pages are weird now)
+    Closes: #486553 (gscan2pdf: unable to save as DjVu)
+    Closes: #486680 (gscan2pdf: bizarre DjVu text zones)
+    Closes: #485641 (gscan2pdf: No longer saves resolution in TIFF files)
+    Closes: #484641 (gscan2pdf: prefix option for scanimage command)
+  * Bumped Standards-Version
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Fri, 04 Jul 2008 22:54:16 +0200
+
+gscan2pdf (0.9.24-1) unstable; urgency=low
+
+  * New upstream release.
+    New Depends: libgtk2-imageview-perl
+  * Updated Homepage and Vcs* sections
+  * Bumped compat 4->5
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Sun, 11 May 2008 15:23:17 +0200
+
+gscan2pdf (0.9.23-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #463708 (gscan2pdf: Error when saving as PNG)
+    Closes: #462171 (importing DjVu files fails, hogs memory)
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Fri, 14 Mar 2008 17:55:03 +0100
+
+gscan2pdf (0.9.21-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #461859 (better selected/current/all heuristic)
+    Closes: #461076 (importing PDFs causes /tmp/ overflow)
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Fri, 01 Feb 2008 21:01:10 +0100
+
+gscan2pdf (0.9.20-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #449421 (Recognise warm-up message from gt68xx driver)
+    Closes: #457377 (Can't save files with spaces in names)
+    Closes: #457376 (gscan2pdf: Some paper sizes not available)
+    Closes: #457249 (gscan2pdf: Tries to set threshold option for color scans)
+    Closes: #457375 (gscan2pdf: Nondeterministic duplex scanning)
+    Closes: #461058 (does not ask when quitting without saving the PDF)
+  * Updated rules to dh-make-perl 0.35
+  * Bumped Standards-Version
+  * + watch file
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Fri, 18 Jan 2008 23:58:58 +0100
+
+gscan2pdf (0.9.19-1) unstable; urgency=low
+
+  * New upstream release.
+    Closes: #440902 (window placement of scan dialog)
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Mon, 19 Nov 2007 19:58:59 +0100
+
+gscan2pdf (0.9.17-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeffrey Ratcliffe <Jeffrey.Ratcliffe@gmail.com>  Tue, 02 Oct 2007 20:02:22 +0200
+
+gscan2pdf (0.9.16-1) unstable; urgency=low
+
+  * New upstream release.  Closes: #433497, #426525, #440204.
+  * Thanks to Jeffrey Ratcliffe for contributing to this Debian release.
+  * Added Jeffrey Ratcliffe to Uploaders.
+
+ -- John Goerzen <jgoerzen@complete.org>  Thu, 06 Sep 2007 08:45:00 -0500
+
+gscan2pdf (0.9.10-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- John Goerzen <jgoerzen@complete.org>  Wed, 06 Jun 2007 10:08:53 -0500
+
+gscan2pdf (0.9.9-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- John Goerzen <jgoerzen@complete.org>  Fri, 01 Jun 2007 04:55:12 -0500
+
+gscan2pdf (0.9.7-1) unstable; urgency=low
+
+  * Initial upload to Debian.  Closes: #420953.
+  * Added support for negative ranges on sliders. [516c47fb2f00]
+  * Added support for brightness slider.  Needed for Visioneer Strobe XP
+    450 scanners.  [516c47fb2f00]
+  * Added scanners/xp450 [b68d6a627700]
+  * Add .tif extension when saving TIFF and DjVu files, to match PDF
+    code.  Fix up PDF saving extension regexp. [a0354eeeb4bf, 06425ce40520]
+
+ -- John Goerzen <jgoerzen@complete.org>  Wed, 25 Apr 2007 09:31:38 -0500

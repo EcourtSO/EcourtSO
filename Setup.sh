@@ -91,12 +91,12 @@ REBOOT_REQUIRED=false
 
 show_matrix() {
     echo -e "${HACKER_NEON_GREEN}${BOLD}"
-    echo "  ███████╗██╗  ██╗██╗   ██╗███████╗███╗   ███╗"
-    echo "  ██╔════╝██║  ██║╚██╗ ██╔╝██╔════╝████╗ ████║"
-    echo "  ███████╗███████║ ╚████╔╝ █████╗  ██╔████╔██║"
-    echo "  ╚════██║██╔══██║  ╚██╔╝  ██╔══╝  ██║╚██╔╝██║"
-    echo "  ███████║██║  ██║   ██║   ███████╗██║ ╚═╝ ██║"
-    echo "  ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝     ╚═╝"
+    echo " ███████╗ ██████╗ ██████╗ ██╗   ██╗██████╗ ████████╗███████╗ ██████╗ "
+    echo " ██╔════╝██╔════╝██╔═══██╗██║   ██║██╔══██╗╚══██╔══╝██╔════╝██╔═══██╗"
+    echo " █████╗  ██║     ██║   ██║██║   ██║██████╔╝   ██║   ███████╗██║   ██║"
+    echo " ██╔══╝  ██║     ██║   ██║██║   ██║██╔══██╗   ██║   ╚════██║██║   ██║"
+    echo " ███████╗╚██████╗╚██████╔╝╚██████╔╝██║  ██║   ██║   ███████║╚██████╔╝"
+    echo " ╚══════╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝ ╚═════╝ "
     echo -e "${RESET}"
 }
 
@@ -129,9 +129,7 @@ parse_arguments() {
                 echo "  --auto         Run in automatic mode (no prompts)"
                 echo "  --install-all  Install all packages"
                 echo "  --fix-pdf      Fix PDF Signer only"
-                echo "  --install-newsigner  Install NewSigner from files"
-                echo "  --install-digisigner Install DIGISigner from files"
-                echo "  --install-digisigner-jar Install DigiSigner JAR from GitHub"
+                echo "  --install-digisigner Install DIGISigner/NewSigner from files"
                 echo "  --cleanup      Run system cleanup"
                 echo "  --backup       Backup configuration"
                 echo "  --restore      Restore configuration"
@@ -151,16 +149,8 @@ parse_arguments() {
                 fix_pdf_signer
                 exit 0
                 ;;
-            --install-newsigner)
-                install_newsigner
-                exit 0
-                ;;
             --install-digisigner)
-                install_digisigner
-                exit 0
-                ;;
-            --install-digisigner-jar)
-                install_digisigner_jar
+                install_digisigner_unified
                 exit 0
                 ;;
             --cleanup)
@@ -509,122 +499,72 @@ install_deb() {
 }
 
 # =============================================================================
-# DigiSigner JAR Installation Function
+# Unified Digital Signature Application Installation
 # =============================================================================
 
-install_digisigner_jar() {
-    log_section "DigiSigner JAR Installation"
+install_digisigner_unified() {
+    log_section "Digital Signature Application Installation"
     
     echo -e "${HACKER_NEON_GREEN}${BOLD}"
     echo "  ╔═══════════════════════════════════════════════════════════╗"
-    echo "  ║        📄 DigiSigner JAR Installation                    ║"
-    echo "  ║        Digital Signature Application                     ║"
+    echo "  ║        📄 Digital Signature Applications                 ║"
+    echo "  ║        Unified Installer                                 ║"
     echo "  ╚═══════════════════════════════════════════════════════════╝"
     echo -e "${RESET}"
     
-    if ! confirm "Install DigiSigner from GitHub?"; then
-        log "INFO" "DigiSigner installation skipped"
+    if ! confirm "Install Digital Signature Applications?"; then
+        log "INFO" "Installation skipped"
         return 0
     fi
     
-    # Check internet connection
-    if ! check_internet; then
-        log "ERROR" "Internet connection required for DigiSigner installation"
-        return 1
-    fi
-    
-    # Check Java
-    echo -e "${HACKER_BLUE}  [*] Checking Java installation...${RESET}"
-    if ! command_exists java; then
-        log "WARNING" "Java is not installed"
-        echo -e "${BRIGHT_YELLOW}  [⚠] Java is required for DigiSigner.${RESET}"
-        if confirm "Install OpenJDK JRE now?"; then
-            apt_update || return 1
-            install_packages "default-jre" || return 1
-        else
-            FAILED_TASKS+=("DigiSigner JAR")
-            return 1
-        fi
-    fi
-    
-    JAVA_VERSION=$(java -version 2>&1 | head -1)
-    echo -e "${BRIGHT_GREEN}  [✓] Detected Java: ${WHITE}$JAVA_VERSION${RESET}"
-    
-    # Setup installation directory
-    local real_user="$(get_real_user)"
-    local real_home="$(get_real_home)"
-    local INSTALL_DIR="${real_home}/DigiSigner"
-    local DESKTOP_FILE="${real_home}/Desktop/DigiSigner.desktop"
-    local JAR_URL="https://raw.githubusercontent.com/EcourtSO/EcourtSO/main/DigiSigner-4.0/DigiSigner.jar"
-    
-    echo -e "${HACKER_BLUE}  [*] Creating installation directory...${RESET}"
-    mkdir -p "$INSTALL_DIR"
-    echo -e "${BRIGHT_GREEN}  [✓] Directory created: ${WHITE}$INSTALL_DIR${RESET}"
-    
-    # Download DigiSigner JAR
-    echo -e "${HACKER_BLUE}  [*] Downloading DigiSigner from GitHub...${RESET}"
-    echo -e "${HACKER_ORANGE}  [*] URL: ${WHITE}$JAR_URL${RESET}"
-    
-    if wget -q --show-progress -O "$INSTALL_DIR/DigiSigner.jar" "$JAR_URL" 2>&1; then
-        echo -e "${BRIGHT_GREEN}  [✓] DigiSigner downloaded successfully${RESET}"
-    else
-        log "ERROR" "Failed to download DigiSigner JAR"
-        echo -e "${BRIGHT_RED}  [!] Download failed. Please check your internet connection.${RESET}"
-        FAILED_TASKS+=("DigiSigner JAR")
-        return 1
-    fi
-    
-    # Set permissions
-    chown -R "$real_user":"$real_user" "$INSTALL_DIR" 2>/dev/null || true
-    
-    # Create desktop shortcut
-    echo -e "${HACKER_BLUE}  [*] Creating desktop shortcut...${RESET}"
-    
-    cat > "$DESKTOP_FILE" <<EOF
-[Desktop Entry]
-Version=1.0
-Type=Application
-Name=DigiSigner
-Comment=Launch DigiSigner
-Exec=java -jar $INSTALL_DIR/DigiSigner.jar
-Icon=application-x-java-archive
-Terminal=false
-Categories=Office;Utility;
-EOF
-    
-    chown "$real_user":"$real_user" "$DESKTOP_FILE" 2>/dev/null || true
-    chmod +x "$DESKTOP_FILE"
-    
-    # Trust launcher on GNOME
-    if command_exists gio; then
-        sudo -u "$real_user" gio set "$DESKTOP_FILE" metadata::trusted true 2>/dev/null || true
-        echo -e "${BRIGHT_GREEN}  [✓] Desktop file trusted${RESET}"
-    fi
-    
+    echo -e "${HACKER_NEON_GREEN}${BOLD}"
+    echo "  ╔═══════════════════════════════════════════════════════════╗"
+    echo "  ║      Select Digital Signature Application to Install     ║"
+    echo "  ╚═══════════════════════════════════════════════════════════╝"
+    echo -e "${RESET}"
     echo
-    echo -e "${BRIGHT_GREEN}${BOLD}  ═══════════════════════════════════════════════════════════${RESET}"
-    echo -e "${BRIGHT_GREEN}${BOLD}  [✓] DigiSigner installed successfully!${RESET}"
-    echo -e "${HACKER_ORANGE}  [*] JAR Location : ${WHITE}$INSTALL_DIR/DigiSigner.jar${RESET}"
-    echo -e "${HACKER_ORANGE}  [*] Desktop Icon : ${WHITE}$DESKTOP_FILE${RESET}"
-    echo -e "${BRIGHT_YELLOW}  [⚠] If the icon doesn't launch immediately, right-click it and select 'Allow Launching'.${RESET}"
-    echo -e "${BRIGHT_GREEN}${BOLD}  ═══════════════════════════════════════════════════════════${RESET}"
+    echo "  1. Install DIGISigner (from .deb file in ./files/)"
+    echo "  2. Install NewSigner (from .deb file in ./files/)"
+    echo "  3. Install DigiSigner JAR (download from GitHub)"
+    echo "  4. Install All (DIGISigner + NewSigner + DigiSigner JAR)"
+    echo "  5. Return to Main Menu"
+    echo
+    echo -ne "${HACKER_NEON_GREEN}${BOLD}  [?] Choose option [1-5]: ${RESET}"
+    read choice
     
-    # Ask to launch
-    if confirm "Launch DigiSigner now?"; then
-        echo -e "${HACKER_BLUE}  [*] Launching DigiSigner...${RESET}"
-        sudo -u "$real_user" java -jar "$INSTALL_DIR/DigiSigner.jar" &
-        echo -e "${BRIGHT_GREEN}  [✓] DigiSigner launched${RESET}"
-    fi
+    case "$choice" in
+        1)
+            install_digisigner_deb
+            ;;
+        2)
+            install_newsigner_deb
+            ;;
+        3)
+            install_digisigner_jar
+            ;;
+        4)
+            install_digisigner_deb
+            install_newsigner_deb
+            install_digisigner_jar
+            ;;
+        5)
+            log "INFO" "Returning to main menu"
+            return 0
+            ;;
+        *)
+            echo -e "${BRIGHT_RED}  [!] Invalid option${RESET}"
+            sleep 1
+            ;;
+    esac
     
-    log "SUCCESS" "DigiSigner JAR installed successfully"
     return 0
 }
 
 # =============================================================================
-# DIGISigner Installation Function
+# DIGISigner .deb Installation
 # =============================================================================
 
-install_digisigner() {
+install_digisigner_deb() {
     log_section "DIGISigner Installation"
     
     echo -e "${HACKER_NEON_GREEN}${BOLD}"
@@ -633,11 +573,6 @@ install_digisigner() {
     echo "  ║        Digital Signature Application                     ║"
     echo "  ╚═══════════════════════════════════════════════════════════╝"
     echo -e "${RESET}"
-    
-    if ! confirm "Install DIGISigner digital signature application?"; then
-        log "INFO" "DIGISigner installation skipped"
-        return 0
-    fi
     
     # Setup files
     setup_files || return 1
@@ -672,7 +607,7 @@ install_digisigner() {
     
     echo -e "${BRIGHT_GREEN}  [✓] Found DIGISigner: ${WHITE}$(basename "$digisigner_deb")${RESET}"
     
-    # Check if Java is installed (required for DIGISigner)
+    # Check if Java is installed
     echo -e "${HACKER_BLUE}  [*] Checking Java installation...${RESET}"
     if ! command_exists java; then
         log "WARNING" "Java is not installed"
@@ -701,17 +636,6 @@ install_digisigner() {
         
         echo -e "${BRIGHT_GREEN}${BOLD}  [✓] DIGISigner installation completed successfully!${RESET}"
         echo -e "${HACKER_ORANGE}  [*] You can find DIGISigner in your applications menu or on the desktop${RESET}"
-        
-        # Ask to launch
-        if confirm "Launch DIGISigner now?"; then
-            echo -e "${HACKER_BLUE}  [*] Launching DIGISigner...${RESET}"
-            if command_exists gtk-launch; then
-                gtk-launch "DIGISigner" 2>/dev/null || find /usr -name "digisigner" -type f 2>/dev/null | head -1 | xargs -r
-            else
-                find /usr -name "digisigner" -type f 2>/dev/null | head -1 | xargs -r
-            fi
-            echo -e "${BRIGHT_GREEN}  [✓] DIGISigner launched${RESET}"
-        fi
         
         return 0
     else
@@ -800,14 +724,15 @@ fix_digisigner_java_path() {
             chmod +x "$start_script"
             echo -e "${BRIGHT_GREEN}  [✓] Java path fixed in $start_script${RESET}"
             break
-        fi    done
+        fi
+    done
 }
 
 # =============================================================================
-# NewSigner Installation Function
+# NewSigner .deb Installation
 # =============================================================================
 
-install_newsigner() {
+install_newsigner_deb() {
     log_section "NewSigner Installation"
     
     echo -e "${HACKER_NEON_GREEN}${BOLD}"
@@ -816,11 +741,6 @@ install_newsigner() {
     echo "  ║        Digital Signature Application                     ║"
     echo "  ╚═══════════════════════════════════════════════════════════╝"
     echo -e "${RESET}"
-    
-    if ! confirm "Install NewSigner digital signature application?"; then
-        log "INFO" "NewSigner installation skipped"
-        return 0
-    fi
     
     # Setup files
     setup_files || return 1
@@ -886,17 +806,6 @@ install_newsigner() {
         
         echo -e "${BRIGHT_GREEN}${BOLD}  [✓] NewSigner installation completed successfully!${RESET}"
         echo -e "${HACKER_ORANGE}  [*] You can find NewSigner in your applications menu or on the desktop${RESET}"
-        
-        # Ask to launch
-        if confirm "Launch NewSigner now?"; then
-            echo -e "${HACKER_BLUE}  [*] Launching NewSigner...${RESET}"
-            if command_exists gtk-launch; then
-                gtk-launch "NewSigner" 2>/dev/null || find /usr -name "newsigner" -type f 2>/dev/null | head -1 | xargs -r
-            else
-                find /usr -name "newsigner" -type f 2>/dev/null | head -1 | xargs -r
-            fi
-            echo -e "${BRIGHT_GREEN}  [✓] NewSigner launched${RESET}"
-        fi
         
         return 0
     else
@@ -995,6 +904,113 @@ EOF
     else
         log "INFO" "NewSigner configuration already exists"
     fi
+}
+
+# =============================================================================
+# DigiSigner JAR Installation
+# =============================================================================
+
+install_digisigner_jar() {
+    log_section "DigiSigner JAR Installation"
+    
+    echo -e "${HACKER_NEON_GREEN}${BOLD}"
+    echo "  ╔═══════════════════════════════════════════════════════════╗"
+    echo "  ║        📄 DigiSigner JAR Installation                    ║"
+    echo "  ║        Digital Signature Application                     ║"
+    echo "  ╚═══════════════════════════════════════════════════════════╝"
+    echo -e "${RESET}"
+    
+    # Check internet connection
+    if ! check_internet; then
+        log "ERROR" "Internet connection required for DigiSigner installation"
+        return 1
+    fi
+    
+    # Check Java
+    echo -e "${HACKER_BLUE}  [*] Checking Java installation...${RESET}"
+    if ! command_exists java; then
+        log "WARNING" "Java is not installed"
+        echo -e "${BRIGHT_YELLOW}  [⚠] Java is required for DigiSigner.${RESET}"
+        if confirm "Install OpenJDK JRE now?"; then
+            apt_update || return 1
+            install_packages "default-jre" || return 1
+        else
+            FAILED_TASKS+=("DigiSigner JAR")
+            return 1
+        fi
+    fi
+    
+    JAVA_VERSION=$(java -version 2>&1 | head -1)
+    echo -e "${BRIGHT_GREEN}  [✓] Detected Java: ${WHITE}$JAVA_VERSION${RESET}"
+    
+    # Setup installation directory
+    local real_user="$(get_real_user)"
+    local real_home="$(get_real_home)"
+    local INSTALL_DIR="${real_home}/DigiSigner"
+    local DESKTOP_FILE="${real_home}/Desktop/DigiSigner.desktop"
+    local JAR_URL="https://raw.githubusercontent.com/EcourtSO/EcourtSO/main/DigiSigner-4.0/DigiSigner.jar"
+    
+    echo -e "${HACKER_BLUE}  [*] Creating installation directory...${RESET}"
+    mkdir -p "$INSTALL_DIR"
+    echo -e "${BRIGHT_GREEN}  [✓] Directory created: ${WHITE}$INSTALL_DIR${RESET}"
+    
+    # Download DigiSigner JAR
+    echo -e "${HACKER_BLUE}  [*] Downloading DigiSigner from GitHub...${RESET}"
+    echo -e "${HACKER_ORANGE}  [*] URL: ${WHITE}$JAR_URL${RESET}"
+    
+    if wget -q --show-progress -O "$INSTALL_DIR/DigiSigner.jar" "$JAR_URL" 2>&1; then
+        echo -e "${BRIGHT_GREEN}  [✓] DigiSigner downloaded successfully${RESET}"
+    else
+        log "ERROR" "Failed to download DigiSigner JAR"
+        echo -e "${BRIGHT_RED}  [!] Download failed. Please check your internet connection.${RESET}"
+        FAILED_TASKS+=("DigiSigner JAR")
+        return 1
+    fi
+    
+    # Set permissions
+    chown -R "$real_user":"$real_user" "$INSTALL_DIR" 2>/dev/null || true
+    
+    # Create desktop shortcut
+    echo -e "${HACKER_BLUE}  [*] Creating desktop shortcut...${RESET}"
+    
+    cat > "$DESKTOP_FILE" <<EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=DigiSigner
+Comment=Launch DigiSigner
+Exec=java -jar $INSTALL_DIR/DigiSigner.jar
+Icon=application-x-java-archive
+Terminal=false
+Categories=Office;Utility;
+EOF
+    
+    chown "$real_user":"$real_user" "$DESKTOP_FILE" 2>/dev/null || true
+    chmod +x "$DESKTOP_FILE"
+    
+    # Trust launcher on GNOME
+    if command_exists gio; then
+        sudo -u "$real_user" gio set "$DESKTOP_FILE" metadata::trusted true 2>/dev/null || true
+        echo -e "${BRIGHT_GREEN}  [✓] Desktop file trusted${RESET}"
+    fi
+    
+    echo
+    echo -e "${BRIGHT_GREEN}${BOLD}  ═══════════════════════════════════════════════════════════${RESET}"
+    echo -e "${BRIGHT_GREEN}${BOLD}  [✓] DigiSigner installed successfully!${RESET}"
+    echo -e "${HACKER_ORANGE}  [*] JAR Location : ${WHITE}$INSTALL_DIR/DigiSigner.jar${RESET}"
+    echo -e "${HACKER_ORANGE}  [*] Desktop Icon : ${WHITE}$DESKTOP_FILE${RESET}"
+    echo -e "${BRIGHT_YELLOW}  [⚠] If the icon doesn't launch immediately, right-click it and select 'Allow Launching'.${RESET}"
+    echo -e "${BRIGHT_GREEN}${BOLD}  ═══════════════════════════════════════════════════════════${RESET}"
+    
+    # Ask to launch
+    if confirm "Launch DigiSigner now?"; then
+        echo -e "${HACKER_BLUE}  [*] Launching DigiSigner...${RESET}"
+        sudo -u "$real_user" java -jar "$INSTALL_DIR/DigiSigner.jar" &
+        echo -e "${BRIGHT_GREEN}  [✓] DigiSigner launched${RESET}"
+    fi
+    
+    log "SUCCESS" "DigiSigner JAR installed successfully"
+    return 0
 }
 
 # =============================================================================
@@ -2183,13 +2199,13 @@ show_menu() {
     echo -e "  ${HACKER_ORANGE}${BOLD}─── Printer Drivers ───${RESET}"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
         "1." "Install NAPS Scanner" \
-        "9." "Install Canon 246 Driver"
+        "8." "Install Canon 246 Driver"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
         "2." "Install Epson Drivers" \
-        "10." "Install Canon 465 Driver"
+        "9." "Install Canon 465 Driver"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
         "3." "Install Fujitsu Scanner" \
-        "11." "Auto-detect Canon Printer"
+        "10." "Auto-detect Canon Printer"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
         "4." "Install HP Printer Drivers"
     
@@ -2197,42 +2213,39 @@ show_menu() {
     echo -e "  ${HACKER_ORANGE}${BOLD}─── System Tools ───${RESET}"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
         "5." "Install Basic Applications" \
-        "13." "Setup Wi-Fi Hotspot"
+        "12." "Setup Wi-Fi Hotspot"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
         "6." "Install/Update Proxykey" \
-        "14." "Brightness Control"
+        "13." "Brightness Control"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
         "7." "Repair AnyDesk" \
-        "15." "Reset CUPS"
+        "14." "Reset CUPS"
     
     echo
     echo -e "  ${HACKER_ORANGE}${BOLD}─── Digital Signature Apps ───${RESET}"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
-        "8." "Install DIGISigner" \
-        "16." "Install NewSigner"
-    printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
-        "12." "Install DigiSigner JAR" \
-        "17." "Fix PDF Signer Java Path"
+        "11." "Install Digital Signature Apps" \
+        "15." "Fix PDF Signer Java Path"
     
     echo
     echo -e "  ${HACKER_ORANGE}${BOLD}─── Maintenance ───${RESET}"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
-        "18." "System Health Summary" \
-        "19." "Install LibreWriter Extension"
+        "16." "System Health Summary" \
+        "17." "Install LibreWriter Extension"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
-        "20." "System Cleanup" \
-        "21." "Backup Configuration"
+        "18." "System Cleanup" \
+        "19." "Backup Configuration"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
-        "22." "Restore Configuration"
+        "20." "Restore Configuration"
     
     echo
     echo -e "  ${HACKER_ORANGE}${BOLD}─── Advanced ───${RESET}"
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${WHITE}%-28s${RESET}\n" \
-        "23." "Security Hardening"
+        "21." "Security Hardening"
     
     echo
     printf "  ${HACKER_NEON_GREEN}${BOLD}%2s${RESET} ${BRIGHT_RED}%-28s${RESET}\n" \
-        "24." "Exit"
+        "22." "Exit"
     
     echo
     echo -e "${HACKER_MINT}${BOLD}  ════════════════════════════════════════════════════════════${RESET}"
@@ -2243,8 +2256,8 @@ show_menu() {
     echo -ne "${HACKER_NEON_GREEN}${BOLD}  [?] Enter target option: ${RESET}"
     read REPLY
     
-    if [[ "$REPLY" =~ ^[0-9]+$ ]] && [[ "$REPLY" -ge 1 ]] && [[ "$REPLY" -le 24 ]]; then
-        if [[ "$REPLY" -eq 24 ]]; then
+    if [[ "$REPLY" =~ ^[0-9]+$ ]] && [[ "$REPLY" -ge 1 ]] && [[ "$REPLY" -le 22 ]]; then
+        if [[ "$REPLY" -eq 22 ]]; then
             echo -e "${BRIGHT_GREEN}${BOLD}  [+] System shutting down...${RESET}"
             exit 0
         fi
@@ -2266,22 +2279,20 @@ execute_task() {
         5) install_apps ;;
         6) install_proxykey ;;
         7) repair_anydesk ;;
-        8) install_digisigner ;;
-        9) install_canon_246 ;;
-        10) install_canon_465 ;;
-        11) install_canon_auto ;;
-        12) install_digisigner_jar ;;
-        13) setup_hotspot ;;
-        14) brightness_control_main ;;
-        15) reset_cups ;;
-        16) install_newsigner ;;
-        17) fix_pdf_signer ;;
-        18) health_summary ;;
-        19) install_librewriter_roznama ;;
-        20) system_cleanup ;;
-        21) backup_config ;;
-        22) restore_config ;;
-        23) security_hardening ;;
+        8) install_canon_246 ;;
+        9) install_canon_465 ;;
+        10) install_canon_auto ;;
+        11) install_digisigner_unified ;;
+        12) setup_hotspot ;;
+        13) brightness_control_main ;;
+        14) reset_cups ;;
+        15) fix_pdf_signer ;;
+        16) health_summary ;;
+        17) install_librewriter_roznama ;;
+        18) system_cleanup ;;
+        19) backup_config ;;
+        20) restore_config ;;
+        21) security_hardening ;;
     esac
     
     echo
@@ -2376,12 +2387,10 @@ main() {
         install_apps
         install_proxykey
         repair_anydesk
-        install_digisigner
         install_canon_246
         install_canon_465
-        install_digisigner_jar
+        install_digisigner_unified
         setup_hotspot
-        install_newsigner
         install_librewriter_roznama
         system_cleanup
         security_hardening
